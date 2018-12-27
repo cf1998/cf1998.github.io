@@ -2,17 +2,17 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <sitemap>
-        <loc>http://yoursite-url/post-sitemap.xml</loc>
+        <loc>https://baishuchao.github.io/post-sitemap.xml</loc>
         <lastmod>2018-12-27T10:06:25.000Z</lastmod>
     </sitemap>
 
     <sitemap>
-        <loc>http://yoursite-url/page-sitemap.xml</loc>
+        <loc>https://baishuchao.github.io/page-sitemap.xml</loc>
         <lastmod>2018-12-27T10:06:25.000Z</lastmod>
     </sitemap>
 
     <sitemap>
-        <loc>http://yoursite-url/tag-sitemap.xml</loc>
+        <loc>https://baishuchao.github.io/tag-sitemap.xml</loc>
         <lastmod>2018-12-27T10:06:25.000Z</lastmod>
     </sitemap>
 
