@@ -151,14 +151,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -217,16 +217,16 @@
                 <blockquote>
 <p><code>Dockerfile</code>是一个文本文件，其内内包含了一条条的指令（instruction），每一条指令构建一层，因此每一条指令的内容，就是描述该层当如何构建。</p>
 </blockquote>
-<h2><span id="1-from-指定基础镜像">1. <code>FROM</code> 指定基础镜像</span></h2>
+<h2><span id="from-指定基础镜像"><code>FROM</code> 指定基础镜像</span></h2>
 <p><code>FROM</code>指令是最重的一个且必须为Dockerfile文件开篇的第一个非注释行，用于为映像文件构建过程指定基准镜像，后续的指令运行于此基准镜像所提供的运行环境</p>
 <p>实践中，基准镜像可以是任何可用镜像文件，默认情况下，<code>docker build</code>会在docker主机上查找指定的镜像文件，在其不存在时，则会从<code>Docker Hub Registry</code>上拉取所需的镜像文件,如果找不到指定的镜像文件，docker build会返回一个错误信息;</p>
 <p><strong>Syntax</strong></p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-- FROM <span class="tag">&lt;<span class="name">repository</span>&gt;</span>[:<span class="tag">&lt;<span class="name">tag</span>&gt;</span>] 或</span><br><span class="line">        -- FROM <span class="tag">&lt;<span class="name">repository</span>&gt;</span>@<span class="tag">&lt;<span class="name">digest</span>&gt;</span></span><br><span class="line">            * <span class="tag">&lt;<span class="name">reposotiry</span>&gt;</span>: 指定作为base image的名称；</span><br><span class="line">            * <span class="tag">&lt;<span class="name">tag</span>&gt;</span>: base image的标签，为可选项，省略时默认为latest；</span><br></pre></td></tr></table></figure>
-<h2><span id="2-maintanier-注释">2 MAINTANIER 注释</span></h2>
+<h2><span id="maintanier-注释">MAINTANIER 注释</span></h2>
 <p><code>MAINTANIER</code> 用于让Dockerfile制定者提供本人的详细信息，Dockerfile并不限制MAINTANIER指令可出现的位置，但推荐将其放置于FROM指令之后；</p>
 <p><strong>Syntax</strong></p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">* MAINTAINER &lt;authto<span class="string">r's detail&gt;</span></span><br><span class="line"><span class="string">            - &lt;authort'</span>s detail&gt;可是任何文本信息，但约定俗称地使用作者名称及邮件地址</span><br><span class="line">            - MAINTAINER “baishuchao95@gmail.com”</span><br></pre></td></tr></table></figure>
-<h2><span id="3-copy-复制文件">3 COPY 复制文件</span></h2>
+<h2><span id="copy-复制文件">COPY 复制文件</span></h2>
 <ul>
 <li>COPY &lt;源路径&gt;… &lt;目标路径&gt;</li>
 <li>COPY [&quot;&lt;源路径1&gt;&quot;,… “&lt;目标路径&gt;”]</li>
@@ -237,7 +237,7 @@
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">COPY</span><span class="bash"> hom* /mydir/</span></span><br><span class="line"><span class="bash">COPY hom?.txt /mydir/</span></span><br></pre></td></tr></table></figure>
 <p><code>&lt;目标路径&gt;</code> 可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用 WORKDIR 指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先行创建缺失目录。</p>
 <p>此外，还需要注意一点，使用 COPY 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等。这个特性对于镜像定制很有用。特别是构建相关文件都在使用 Git 进行管理的时候。</p>
-<h2><span id="4-add-更高级的复制文件">4 ADD 更高级的复制文件</span></h2>
+<h2><span id="add-更高级的复制文件">ADD 更高级的复制文件</span></h2>
 <p><code>ADD</code> 指令和  <code>COPY</code>的格式和性质基本一致。但是在<code>COPY</code>  基础增加了一些功能。</p>
 <p>比如 <code>&lt;源路径&gt;</code> 可以是一个 <code>URL</code>，这种情况下，<code>Docker</code> 引擎会试图去下载这个链接的文件放到 &lt;目标路径&gt; 去。下载后的文件权限自动设置为 600，如果这并不是想要的权限，那么还需要增加额外的一层 <code>RUN</code> 进行权限调整，另外，如果下载的是个压缩包，需要解压缩，也一样还需要额外的一层 RUN 指令进行解压缩。所以不如直接使用 RUN 指令，然后使用 <code>wget</code> 或者 <code>curl</code> 工具下载，处理权限、解压缩、然后清理无用文件更合理。因此，这个功能其实并不实用，而且不推荐使用。</p>
 <p>如果 <code>&lt;源路径&gt;</code> 为一个 tar 压缩文件的话，压缩格式为 gzip, bzip2 以及 xz 的情况下，ADD 指令将会自动解压缩这个压缩文件到 <code>&lt;目标路径&gt;</code> 去。</p>
@@ -247,7 +247,7 @@
 <p>在 <code>Docker</code> 官方的 Dockerfile 最佳实践文档 中要求，尽可能的使用 COPY，因为 COPY 的语义很明确，就是复制文件而已，而 ADD 则包含了更复杂的功能，其行为也不一定很清晰。最适合使用 ADD 的场合，就是所提及的需要自动解压缩的场合。</p>
 <p>另外需要注意的是，ADD 指令会令镜像构建缓存失效，从而可能会令镜像构建变得比较缓慢。</p>
 <p>因此在 <code>COPY</code> 和 <code>ADD</code> 指令中选择的时候，可以遵循这样的原则，所有的文件复制均使用 COPY 指令，仅在需要自动解压缩的场合使用 ADD</p>
-<h2><span id="5-cmd-容器启动命令">5 CMD 容器启动命令</span></h2>
+<h2><span id="cmd-容器启动命令">CMD 容器启动命令</span></h2>
 <p><code>CMD</code>指令的格式和<code>RUN</code>相似，也是两种格式：</p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">* <span class="keyword">shell</span><span class="bash"> 格式：CMD &lt;命令&gt;</span></span><br><span class="line"><span class="bash">* <span class="built_in">exec</span> 格式：CMD [<span class="string">"可执行文件"</span>, <span class="string">"参数1"</span>, <span class="string">"参数2"</span>...]</span></span><br><span class="line"><span class="bash">* 参数列表格式：CMD [<span class="string">"参数1"</span>, <span class="string">"参数2"</span>...]。在指定了 ENTRYPOINT 指令后，用 CMD 指定具体的参数。</span></span><br></pre></td></tr></table></figure>
 <p>在运行时可以指定新的命令来替快镜像设置中的默认命令，比如，<code>ubuntu</code> 镜像默认的 <code>CMD</code>是 <code>/bin/bash</code>,如果我们直接<code>docker run -it ubuntu</code> 的话，会直接进入 <code>bash</code>。我们也可以在运行时指定运行别的命令，如 <code>docker run -it ubuntu cat /etc/os-release。</code>这就是用 <code>cat /etc/os-release</code> 命令替换了默认的 <code>/bin/bash</code> 命令了，输出了系统版本信息。</p>
@@ -263,7 +263,7 @@
 <p>而使用 <code>service nginx start</code> 命令，则是希望 <code>upstart</code> 来以后台守护进程形式启动 <code>nginx</code> 服务。而刚才说了 <code>CMD service nginx start</code>会被理解为 <code>CMD [ &quot;sh&quot;, &quot;-c&quot;, &quot;service nginx start&quot;]</code>，因此主进程实际上是 sh。那么当 <code>service nginx start</code> 命令结束后，sh 也就结束了，sh 作为主进程退出了，自然就会令容器退出。</p>
 <p>正确的做法是直接执行 nginx 可执行文件，并且要求以前台形式运行。比如：</p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">"nginx"</span>, <span class="string">"-g"</span>, <span class="string">"daemon off;"</span>]</span></span><br></pre></td></tr></table></figure>
-<h2><span id="6-run-运行">6 RUN 运行</span></h2>
+<h2><span id="run-运行">RUN 运行</span></h2>
 <ul>
 <li>用于指定docker build 过程中运行的程序，其可以是任何命令
 <ul>
@@ -287,7 +287,7 @@
 </ul>
 </li>
 </ul>
-<h2><span id="7-entrypoint-入口点">7 ENTRYPOINT 入口点</span></h2>
+<h2><span id="entrypoint-入口点">ENTRYPOINT 入口点</span></h2>
 <p><code>ENTRYPOINT</code> 的格式和 <code>RUN</code> 指令格式一样，分为 <code>exec</code> 格式和 <code>shell</code> 格式。</p>
 <p><code>ENTRYPOINT</code> 的目的和<code>CMD</code>一样，都是在指定容器启动程序及参数。ENTRYPOINT 在运行时也可以替代，不过比 CMD 要略显繁琐，需要通过 <code>docker run</code> 的参数 --entrypoint 来指定。</p>
 <p>当指定了 ENTRYPOINT 后，CMD 的含义就发生了改变，不再是直接的运行其命令，而是将 CMD 的内容作为参数传给 ENTRYPOINT 指令，换句话说实际执行时，将变为：</p>
@@ -318,7 +318,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">...</span><br><span class="line"><span class="comment"># allow the container to be started with `--user`</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$1</span>"</span> = <span class="string">'redis-server'</span> -a <span class="string">"<span class="variable">$(id -u)</span>"</span> = <span class="string">'0'</span> ]; <span class="keyword">then</span></span><br><span class="line">    chown -R redis .</span><br><span class="line">    <span class="built_in">exec</span> su-exec redis <span class="string">"<span class="variable">$0</span>"</span> <span class="string">"<span class="variable">$@</span>"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exec</span> <span class="string">"<span class="variable">$@</span>"</span></span><br></pre></td></tr></table></figure>
 <p>该脚本的内容就是根据 CMD 的内容来判断，如果是 redis-server 的话，则切换到 redis 用户身份启动服务器，否则依旧使用 root 身份执行。比如：</p>
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker <span class="builtin-name">run</span> -it redis id</span><br><span class="line"><span class="attribute">uid</span>=0(root) <span class="attribute">gid</span>=0(root) <span class="attribute">groups</span>=0(root)</span><br></pre></td></tr></table></figure>
-<h2><span id="8-env-设置环境变量">8 ENV 设置环境变量</span></h2>
+<h2><span id="env-设置环境变量">ENV 设置环境变量</span></h2>
 <p>格式有两种：</p>
 <ul>
 <li>ENV <key> <value></value></key></li>
@@ -332,12 +332,12 @@
 <p>在这里先定义了环境变量 NODE_VERSION，其后的 RUN 这层里，多次使用 $NODE_VERSION 来进行操作定制。可以看到，将来升级镜像构建版本的时候，只需要更新 7.2.0 即可，Dockerfile 构建维护变得更轻松了。</p>
 <p>下列指令可以支持环境变量展开：<code>ADD、COPY、ENV、EXPOSE、LABEL、USER、WORKDIR、VOLUME、STOPSIGNAL、ONBUILD</code>。</p>
 <p>可以从这个指令列表里感觉到，环境变量可以使用的地方很多，很强大。通过环境变量，我们可以让一份 Dockerfile 制作更多的镜像，只需使用不同的环境变量即可。</p>
-<h2><span id="9-arg-构建参数">9 ARG 构建参数</span></h2>
+<h2><span id="arg-构建参数">ARG 构建参数</span></h2>
 <p>格式：ARG &lt;参数名&gt;[=&lt;默认值&gt;]</p>
 <p>构建参数和<code>ENV</code>的效果一样，都是设置环境变量。所不同的是，<code>ARG</code>所设置的构建环境的环境变量，在将来容器运行时是不会存在这些环境变量的。但是不要因此就使用<code>ARG</code>保存密码之类的信息，因为<code>docker history</code> 还是可以看到所有值的。</p>
 <p>Dockerfile 中的 ARG 指令是定义参数名称，以及定义其默认值。该默认值可以在构建命令 docker build 中用 --build-arg &lt;参数名&gt;=&lt;值&gt; 来覆盖。</p>
 <p>在 1.13 之前的版本，要求 --build-arg 中的参数名，必须在 Dockerfile 中用 ARG 定义过了，换句话说，就是 --build-arg 指定的参数，必须在 Dockerfile 中使用了。如果对应参数没有被使用，则会报错退出构建。从 1.13 开始，这种严格的限制被放开，不再报错退出，而是显示警告信息，并继续构建。这对于使用 CI 系统，用同样的构建流程构建不同的 Dockerfile 的时候比较有帮助，避免构建命令必须根据每个 Dockerfile 的内容修改。</p>
-<h2><span id="10-volume-定义匿名卷">10 VOLUME 定义匿名卷</span></h2>
+<h2><span id="volume-定义匿名卷">VOLUME 定义匿名卷</span></h2>
 <p>格式为：</p>
 <ul>
 <li>VOLUME [&quot;&lt;路径1&gt;&quot;, “&lt;路径2&gt;”…]</li>
@@ -348,12 +348,12 @@
 <p>这里的 /data 目录就会在运行时自动挂载为匿名卷，任何向 /data 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行时可以覆盖这个挂载设置。比如：</p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">run</span><span class="bash"> -d -v mydata:/data xxxx</span></span><br></pre></td></tr></table></figure>
 <p>在这行命令中，就使用了 mydata 这个命名卷挂载到了 /data 这个位置，替代了 Dockerfile 中定义的匿名卷的挂载配置。</p>
-<h2><span id="11-expose-声明端口">11 EXPOSE 声明端口</span></h2>
+<h2><span id="expose-声明端口">EXPOSE 声明端口</span></h2>
 <p>格式为 EXPOSE &lt;端口1&gt; [&lt;端口2&gt;…]。</p>
 <p><code>EXPOSE</code> 指令是声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个声明应用就会开启这个端口的服务。在 <code>Dockerfile</code> 中写入这样的声明有两个好处，一个是帮助镜像使用者理解这个镜像服务的守护端口，以方便配置映射；另一个用处则是在运行时使用随机端口映射时，也就是 <code>docker run -P</code>时，会自动随机映射 <code>EXPOSE</code>的端口。</p>
 <p>此外，在早期 <code>Docker</code> 版本中还有一个特殊的用处。以前所有容器都运行于默认桥接网络中，因此所有容器互相之间都可以直接访问，这样存在一定的安全性问题。于是有了一个 <code>Docker</code> 引擎参数<code>--icc=false</code>，当指定该参数后，容器间将默认无法互访，除非互相间使用了 <code>--links</code> 参数的容器才可以互通，并且只有镜像中 <code>EXPOSE</code> 所声明的端口才可以被访问。这个 <code>--icc=false</code>的用法，在引入了 <code>docker network</code> 后已经基本不用了，通过自定义网络可以很轻松的实现容器间的互联与隔离。</p>
 <p>要将 EXPOSE 和在运行时使用 <code>-p &lt;宿主端口&gt;:&lt;容器端口&gt;</code> 区分开来。-p，是映射宿主端口和容器端口，换句话说，就是将容器的对应端口服务公开给外界访问，而 EXPOSE 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主进行端口映射。</p>
-<h2><span id="12-workdir-指定工作目录">12 WORKDIR 指定工作目录</span></h2>
+<h2><span id="workdir-指定工作目录">WORKDIR 指定工作目录</span></h2>
 <p>格式为 <code>WORKDIR &lt;工作目录路径&gt;</code>。</p>
 <p>使用 WORKDIR 指令可以来指定工作目录（或者称为当前目录），以后各层的当前目录就被改为指定的目录，如该目录不存在，WORKDIR 会帮你建立目录。</p>
 <p>之前提到一些初学者常犯的错误是把 <code>Dockerfile</code> 等同于 <code>Shell</code> 脚本来书写，这种错误的理解还可能会导致出现下面这样的错误：</p>
@@ -361,14 +361,14 @@
 <p>如果将这个 <code>Dockerfile</code> 进行构建镜像运行后，会发现找不到 <code>/app/world.txt</code> 文件，或者其内容不是 <code>hello</code>。原因其实很简单，在 Shell 中，连续两行是同一个进程执行环境，因此前一个命令修改的内存状态，会直接影响后一个命令；而在 <code>Dockerfile</code> 中，这两行 RUN 命令的执行环境根本不同，是两个完全不同的容器。这就是对 <code>Dockerfile</code> 构建分层存储的概念不了解所导致的错误。</p>
 <p>之前说过每一个 RUN 都是启动一个容器、执行命令、然后提交存储层文件变更。第一层 <code>RUN cd /app</code> 的执行仅仅是当前进程的工作目录变更，一个内存上的变化而已，其结果不会造成任何文件变更。而到第二层的时候，启动的是一个全新的容器，跟第一层的容器更完全没关系，自然不可能继承前一层构建过程中的内存变化。</p>
 <p>因此如果需要改变以后各层的工作目录的位置，那么应该使用 <code>WORKDIR</code> 指令。</p>
-<h2><span id="13-user-指定当前用户">13 USER 指定当前用户</span></h2>
+<h2><span id="user-指定当前用户">USER 指定当前用户</span></h2>
 <p>格式：USER &lt;用户名&gt;</p>
 <p><code>USER</code> 指令和 <code>WORKDIR</code> 相似，都是改变环境状态并影响以后的层。WORKDIR 是改变工作目录，USER 则是改变之后层的执行 <code>RUN</code>, <code>CMD</code> 以及 <code>ENTRYPOINT</code> 这类命令的身份。</p>
 <p>当然，和 WORKDIR 一样，USER 只是帮助你切换到指定用户而已，这个用户必须是事先建立好的，否则无法切换。</p>
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">RUN</span> groupadd -r redis &amp;&amp; useradd -r -g redis redis</span><br><span class="line">USER redis</span><br><span class="line"><span class="builtin-name">RUN</span> [ <span class="string">"redis-server"</span> ]</span><br></pre></td></tr></table></figure>
 <p>如果以 root 执行的脚本，在执行期间希望改变身份，比如希望以某个已经建立好的用户来运行某个服务进程，不要使用 su 或者 sudo，这些都需要比较麻烦的配置，而且在 TTY 缺失的环境下经常出错。建议使用 gosu。</p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 建立 redis 用户，并使用 gosu 换另一个用户执行命令</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> groupadd -r redis &amp;&amp; useradd -r -g redis redis</span></span><br><span class="line"><span class="bash"><span class="comment"># 下载 gosu</span></span></span><br><span class="line"><span class="bash">RUN wget -O /usr/<span class="built_in">local</span>/bin/gosu <span class="string">"https://github.com/tianon/gosu/releases/download/1.7/gosu-amd64"</span> \</span></span><br><span class="line"><span class="bash">    &amp;&amp; chmod +x /usr/<span class="built_in">local</span>/bin/gosu \</span></span><br><span class="line"><span class="bash">    &amp;&amp; gosu nobody <span class="literal">true</span></span></span><br><span class="line"><span class="bash"><span class="comment"># 设置 CMD，并以另外的用户执行</span></span></span><br><span class="line"><span class="bash">CMD [ <span class="string">"exec"</span>, <span class="string">"gosu"</span>, <span class="string">"redis"</span>, <span class="string">"redis-server"</span> ]</span></span><br></pre></td></tr></table></figure>
-<h2><span id="14-healthcheck-健康检查">14 HEALTHCHECK 健康检查</span></h2>
+<h2><span id="healthcheck-健康检查">HEALTHCHECK 健康检查</span></h2>
 <p>格式：</p>
 <ul>
 <li>HEALTHCHECK [选项] CMD &lt;命令&gt;：设置检查容器健康状况的命令</li>
@@ -400,7 +400,7 @@
 <p>如果健康检查连续失败超过了重试次数，状态就会变为 (unhealthy)。</p>
 <p>为了帮助排障，健康检查命令的输出（包括 stdout 以及 stderr）都会被存储于健康状态里，可以用 <code>docker inspect</code>来查看。</p>
 <figure class="highlight django"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml">$ docker inspect --format '</span><span class="template-variable">&#123;&#123;json .State.Health&#125;&#125;</span><span class="xml">' web | python -m json.tool</span></span><br><span class="line"><span class="xml">&#123;</span></span><br><span class="line"><span class="xml">    "FailingStreak": 0,</span></span><br><span class="line"><span class="xml">    "Log": [</span></span><br><span class="line"><span class="xml">        &#123;</span></span><br><span class="line"><span class="xml">            "End": "2016-11-25T14:35:37.940957051Z",</span></span><br><span class="line"><span class="xml">            "ExitCode": 0,</span></span><br><span class="line"><span class="xml">            "Output": "<span class="meta">&lt;!DOCTYPE html&gt;</span>\n<span class="tag">&lt;<span class="name">html</span>&gt;</span>\n<span class="tag">&lt;<span class="name">head</span>&gt;</span>\n<span class="tag">&lt;<span class="name">title</span>&gt;</span>Welcome to nginx!<span class="tag">&lt;/<span class="name">title</span>&gt;</span>\n<span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined">\n    body &#123;\n        width: 35em;\n        margin: 0 auto;\n        font-family: Tahoma, Verdana, Arial, sans-serif;\n    &#125;\n</span><span class="tag">&lt;/<span class="name">style</span>&gt;</span>\n<span class="tag">&lt;/<span class="name">head</span>&gt;</span>\n<span class="tag">&lt;<span class="name">body</span>&gt;</span>\n<span class="tag">&lt;<span class="name">h1</span>&gt;</span>Welcome to nginx!<span class="tag">&lt;/<span class="name">h1</span>&gt;</span>\n<span class="tag">&lt;<span class="name">p</span>&gt;</span>If you see this page, the nginx web server is successfully installed and\nworking. Further configuration is required.<span class="tag">&lt;/<span class="name">p</span>&gt;</span>\n\n<span class="tag">&lt;<span class="name">p</span>&gt;</span>For online documentation and support please refer to\n<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">\</span>"<span class="attr">http:</span>//<span class="attr">nginx.org</span>/\"&gt;</span>nginx.org<span class="tag">&lt;/<span class="name">a</span>&gt;</span>.<span class="tag">&lt;<span class="name">br</span>/&gt;</span>\nCommercial support is available at\n<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">\</span>"<span class="attr">http:</span>//<span class="attr">nginx.com</span>/\"&gt;</span>nginx.com<span class="tag">&lt;/<span class="name">a</span>&gt;</span>.<span class="tag">&lt;/<span class="name">p</span>&gt;</span>\n\n<span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">em</span>&gt;</span>Thank you for using nginx.<span class="tag">&lt;/<span class="name">em</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span>\n<span class="tag">&lt;/<span class="name">body</span>&gt;</span>\n<span class="tag">&lt;/<span class="name">html</span>&gt;</span>\n",</span></span><br><span class="line"><span class="xml">            "Start": "2016-11-25T14:35:37.780192565Z"</span></span><br><span class="line"><span class="xml">        &#125;</span></span><br><span class="line"><span class="xml">    ],</span></span><br><span class="line"><span class="xml">    "Status": "healthy"</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
-<h2><span id="15-onbuild-为他人做嫁衣裳">15 ONBUILD 为他人做嫁衣裳</span></h2>
+<h2><span id="onbuild-为他人做嫁衣裳">ONBUILD 为他人做嫁衣裳</span></h2>
 <p>格式：ONBUILD &lt;其它指令&gt;。</p>
 <p><code>ONBUILD</code> 是一个特殊的指令，它后面跟的是其它指令，比如 <code>RUN</code>, <code>COPY</code> 等，而这些指令，在当前镜像构建时并不会被执行。只有当以当前镜像为基础镜像，去构建下一级镜像的时候才会被执行。</p>
 <p><code>Dockerfile</code> 中的其它指令都是为了定制当前镜像而准备的，唯有<code>ONBUILD</code>是为了帮助别人定制自己而准备的。</p>
@@ -458,7 +458,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1. FROM 指定基础镜像</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2 MAINTANIER 注释</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3 COPY 复制文件</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4 ADD 更高级的复制文件</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">5 CMD 容器启动命令</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">6 RUN 运行</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">7 ENTRYPOINT 入口点</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">8 ENV 设置环境变量</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">9.</span> <span class="toc-nav-text">9 ARG 构建参数</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">10.</span> <span class="toc-nav-text">10 VOLUME 定义匿名卷</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">11.</span> <span class="toc-nav-text">11 EXPOSE 声明端口</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">12.</span> <span class="toc-nav-text">12 WORKDIR 指定工作目录</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">13.</span> <span class="toc-nav-text">13 USER 指定当前用户</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">14.</span> <span class="toc-nav-text">14 HEALTHCHECK 健康检查</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">15.</span> <span class="toc-nav-text">15 ONBUILD 为他人做嫁衣裳</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">FROM 指定基础镜像</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">MAINTANIER 注释</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">COPY 复制文件</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">ADD 更高级的复制文件</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">CMD 容器启动命令</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">RUN 运行</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">ENTRYPOINT 入口点</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">ENV 设置环境变量</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">9.</span> <span class="toc-nav-text">ARG 构建参数</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">10.</span> <span class="toc-nav-text">VOLUME 定义匿名卷</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">11.</span> <span class="toc-nav-text">EXPOSE 声明端口</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">12.</span> <span class="toc-nav-text">WORKDIR 指定工作目录</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">13.</span> <span class="toc-nav-text">USER 指定当前用户</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">14.</span> <span class="toc-nav-text">HEALTHCHECK 健康检查</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">15.</span> <span class="toc-nav-text">ONBUILD 为他人做嫁衣裳</span></a></li></ol>
         
         </div>
       </aside>

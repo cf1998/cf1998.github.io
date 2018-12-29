@@ -151,14 +151,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -214,8 +214,8 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2><span id="1-简介">1 简介</span></h2>
-<h3><span id="11-什么是docker">1.1 什么是Docker</span></h3>
+                <h2><span id="简介">简介</span></h2>
+<h3><span id="什么是docker">什么是Docker</span></h3>
 <blockquote>
 <p>Docker 最初是 dotCloud 公司创始人 Solomon Hykes 在法国期间发起的一个公司内部项目，它是基于 dotCloud 公司多年云服务技术的一次革新，并于 2013 年 3 月以 Apache 2.0 授权协议开源，主要项目代码在 GitHub 上进行维护。Docker 项目后来还加入了 Linux 基金会，并成立推动 开放容器联盟（OCI）。</p>
 </blockquote>
@@ -231,7 +231,7 @@
 <p>下面的图片比较了 Docker 和传统虚拟化方式的不同之处。传统虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。因此容器要比传统虚拟机更为轻便。</p>
 <p><img src="15459647633145.png" alt=""></p>
 <p><img src="15459647741112.png" alt=""></p>
-<h3><span id="12-为什么要用docker">1.2 为什么要用Docker</span></h3>
+<h3><span id="为什么要用docker">为什么要用Docker</span></h3>
 <p>作为一种新兴的虚拟化方式，Docker跟传统的虚拟化方式相比具有众多的优势。</p>
 <p><strong>更高效的利用系统资源</strong></p>
 <blockquote>
@@ -259,8 +259,8 @@
 </blockquote>
 <p><strong>对比传统虚拟机总结</strong></p>
 <p><img src="15459657490062.jpg" alt=""></p>
-<h2><span id="2-基本概念">2 基本概念</span></h2>
-<h3><span id="21-docker-镜像">2.1 Docker 镜像</span></h3>
+<h2><span id="基本概念">基本概念</span></h2>
+<h3><span id="docker-镜像">Docker 镜像</span></h3>
 <blockquote>
 <p>我们都知道，操作系统分别为内核和用户空间。对于Linux而言，内核启动后，会挂载root文件系统为其提供用户空间的支持。而Docker镜像（image），就相当于是一个root文件系统。比如官方镜像<code>ubuntu:16:04</code>就包含了完整的一套<code>Ubuntu 16.04</code> 就包含了完整的一套Ubuntu 16.04最小系统的<code>root</code>文件系统；</p>
 </blockquote>
@@ -277,7 +277,7 @@
 <blockquote>
 <p>分层存储的特征还使得镜像的复用、定制变的更为容易。甚至可以用之前构建好的镜像作为基础层，然后进一步添加新的层，以定制自己所需的内容，构建新的镜像。</p>
 </blockquote>
-<h3><span id="22-docker容器">2.2 Docker容器</span></h3>
+<h3><span id="docker容器">Docker容器</span></h3>
 <blockquote>
 <p>镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建，启动，停止，删除，暂停等。</p>
 </blockquote>
@@ -296,7 +296,7 @@
 <blockquote>
 <p>数据卷的生存周期独立于容器，容器消亡，数据卷不会消亡。因此，使用数据卷后，容器删除或者重新运行之后，数据却不会丢失。</p>
 </blockquote>
-<h3><span id="23-docker-registry">2.3 Docker Registry</span></h3>
+<h3><span id="docker-registry">Docker Registry</span></h3>
 <blockquote>
 <p>镜像构建完成后，可以很容易的在当前宿主机上运行，但是，如果需要在其它服务器上使用这个镜像，我们就需要一个集中的存储、分发镜像的服务，Docker Registry 就是这样的服务。</p>
 </blockquote>
@@ -329,12 +329,12 @@
 <p>除了使用公开服务外，用户还可以在本地搭建私有 Docker Registry。Docker 官方提供了 Docker Registry 镜像，可以直接使用做为私有 Registry 服务。在 私有仓库 一节中，会有进一步的搭建私有 Registry 服务的讲解。</p>
 <p>开源的 Docker Registry 镜像只提供了 Docker Registry API 的服务端实现，足以支持 docker 命令，不影响使用。但不包含图形界面，以及镜像维护、用户管理、访问控制等高级功能。在官方的商业化版本 Docker Trusted Registry 中，提供了这些高级功能。</p>
 <p>除了官方的 Docker Registry 外，还有第三方软件实现了 Docker Registry API，甚至提供了用户界面以及一些高级功能。比如，VMWare Harbor 和 Sonatype Nexus。</p>
-<h2><span id="3-安装-docker">3 安装 Docker</span></h2>
+<h2><span id="安装-docker">安装 Docker</span></h2>
 <p>Docker在 1.13 版本之后，从 2017 年的 3 月 1 日开始，版本命名规则变为如下：</p>
 <p><img src="15459737522138.jpg" alt=""></p>
 <p>同时 Docker 划分为 CE 和 EE。CE 即社区版（免费，支持周期三个月），EE 即企业版，强调安全，付费使用。</p>
 <p>Docker CE 每月发布一个 Edge 版本 (17.03, 17.04, 17.05…)，每三个月发布一个 Stable 版本 (17.03, 17.06, 17.09…)，Docker EE 和 Stable 版本号保持一致，但每个版本提供一年维护。</p>
-<h3><span id="31-环境准备">3.1 环境准备</span></h3>
+<h3><span id="环境准备">环境准备</span></h3>
 <p><strong>系统要求</strong></p>
 <blockquote>
 <p>Docker CE 支持 64 位版本 CentOS 7，并且要求内核版本不低于 3.10。 CentOS 7 满足最低内核的要求，但由于内核版本比较低，部分功能（如 overlay2 存储层驱动）无法使用，并且部分功能可能不太稳定。</p>
@@ -342,7 +342,7 @@
 <p><strong>卸载旧版本</strong></p>
 <p>旧版本的 Docker 称为 docker 或者 docker-engine，使用以下命令卸载旧版本：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum remove docker \</span><br><span class="line">           docker-common \</span><br><span class="line">           docker-selinux \</span><br><span class="line">           docker-engine</span><br></pre></td></tr></table></figure>
-<h3><span id="32-使用-yum-源-安装">3.2 使用 yum 源 安装</span></h3>
+<h3><span id="使用-yum-源-安装">使用 yum 源 安装</span></h3>
 <p>执行以下命令安装依赖包：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum install -y yum-utils \</span><br><span class="line">           device-mapper-persistent-data \</span><br><span class="line">           lvm2</span><br></pre></td></tr></table></figure>
 <p>鉴于国内网络问题，强烈建议使用国内源，官方源请在注释中查看</p>
@@ -352,10 +352,10 @@
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum-<span class="built_in">config</span>-manager <span class="comment">--enable docker-ce-edge</span></span><br></pre></td></tr></table></figure>
 <p>如果需要测试版本的 Docker CE 请使用以下命令：</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum-<span class="built_in">config</span>-manager <span class="comment">--enable docker-ce-test</span></span><br></pre></td></tr></table></figure>
-<h3><span id="33-安装-docker-ce">3.3 安装 Docker CE</span></h3>
+<h3><span id="安装-docker-ce">安装 Docker CE</span></h3>
 <p>更新 yum 软件源缓存，并安装 docker-ce。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum makecache fast</span><br><span class="line">$ sudo yum install docker-ce</span><br></pre></td></tr></table></figure>
-<h3><span id="34-启动-docker-ce">3.4 启动 Docker CE</span></h3>
+<h3><span id="启动-docker-ce">启动 Docker CE</span></h3>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl <span class="built_in">enable</span> docker</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl start docker</span></span><br></pre></td></tr></table></figure>
 
                 
@@ -400,7 +400,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1 简介</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">1.1 什么是Docker</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">1.2 为什么要用Docker</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2 基本概念</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">2.1 Docker 镜像</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">2.2 Docker容器</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">2.3 Docker Registry</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3 安装 Docker</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">3.1 环境准备</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">3.2 使用 yum 源 安装</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">3.3 安装 Docker CE</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">3.4 启动 Docker CE</span></a></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">简介</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">什么是Docker</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">为什么要用Docker</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">基本概念</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">Docker 镜像</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">Docker容器</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">Docker Registry</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">安装 Docker</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">环境准备</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">使用 yum 源 安装</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">安装 Docker CE</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">启动 Docker CE</span></a></li></ol></li></ol>
         
         </div>
       </aside>
