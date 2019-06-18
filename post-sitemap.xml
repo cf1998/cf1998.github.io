@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>https://baishuchao.github.io/2019/06/18/Kubernetes-%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2-v1-14-3/</loc>
+        <lastmod>2019-06-18T07:03:35.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://baishuchao.github.io/2019/04/10/kubernetes-Pod-%E4%B9%8B-%E7%AE%A1%E7%90%86Pod%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AE%B9%E5%99%A8/</loc>
         <lastmod>2019-04-10T12:54:07.000Z</lastmod>
         <changefreq>weekly</changefreq>
