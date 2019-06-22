@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Helm Charts - Docker | Kubernetes
+        
+    </title>
+
+    <link rel="canonical" href="https://baishuchao.github.io/2019/06/22/Helm-Charts/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('helmo.png')
+            /*post*/
+        
+    }
+    
+    #signature{
+        background-image: url('/undefined');
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
+                            
+                        </div>
+                        <h1>Helm Charts</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Hi,I'm John on
+                            2019-06-22
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Hi,I&#39;m John</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>Charts是Helm 使用的Kubernetes程序包打包格式，一个Charts就是一个描述一组Kubernetes资源的文件的集合。事实上，一个单独的Charts既能用于部署简单应用，例如一个nginx pod，也能部署复杂的应用，如由HTTP服务器，DB服务器，Cache服务器和应用程序服务器等共同组成的Web应用栈。</p>
+<p>从物理的角度来描述，Charts是一个遵循特定规范的目录结构，它能够打包成为一个可用于部署的版本化归档文件。</p>
+<h3><span id="charts-文件组织结构">Charts 文件组织结构</span></h3>
+<p>一个Charts就是按特定格式组织的目录结构，目录名为Chart名：如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ helm create mychart</span><br><span class="line">Creating mychart</span><br><span class="line">$ tree mychart/</span><br><span class="line">mychart/</span><br><span class="line">├── charts</span><br><span class="line">├── Chart.yaml</span><br><span class="line">├── templates</span><br><span class="line">│   ├── deployment.yaml</span><br><span class="line">│   ├── _helpers.tpl</span><br><span class="line">│   ├── ingress.yaml</span><br><span class="line">│   ├── NOTES.txt</span><br><span class="line">│   └── service.yaml</span><br><span class="line">└── values.yaml</span><br></pre></td></tr></table></figure>
+<p><strong>文件解释</strong></p>
+<ul>
+<li>NOTES.txt：chart 的 “帮助文本”。这会在用户运行 helm install 时显示给用户。</li>
+<li>deployment.yaml：创建 Kubernetes deployment 的基本 manifest</li>
+<li>service.yaml：为 deployment 创建 service 的基本 manifest</li>
+<li>ingress.yaml: 创建 ingress 对象的资源清单文件</li>
+<li>_helpers.tpl：放置模板助手的地方，可以在整个 chart 中重复使用</li>
+</ul>
+<h3><span id="chartyaml文件">Chart.yaml文件</span></h3>
+<p><strong>Chart.yaml文件是chart所必需的。它包含以下字段：</strong></p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: The chart API <span class="built_in">version</span>, always <span class="string">"v1"</span> (required)</span><br><span class="line"><span class="built_in">name</span>: The <span class="built_in">name</span> <span class="keyword">of</span> <span class="keyword">the</span> chart (required)</span><br><span class="line"><span class="built_in">version</span>: A SemVer <span class="number">2</span> <span class="built_in">version</span> (required)</span><br><span class="line">kubeVersion: A SemVer range <span class="keyword">of</span> compatible Kubernetes versions (optional)</span><br><span class="line">description: A single-sentence description <span class="keyword">of</span> this project (optional)</span><br><span class="line">keywords:</span><br><span class="line">  - A <span class="built_in">list</span> <span class="keyword">of</span> keywords <span class="keyword">about</span> this project (optional)</span><br><span class="line">home: The URL <span class="keyword">of</span> this project's home page (optional)</span><br><span class="line">sources:</span><br><span class="line">  - A <span class="built_in">list</span> <span class="keyword">of</span> URLs <span class="keyword">to</span> source code <span class="keyword">for</span> this project (optional)</span><br><span class="line">maintainers: <span class="comment"># (optional)</span></span><br><span class="line">  - <span class="built_in">name</span>: The maintainer's <span class="built_in">name</span> (required <span class="keyword">for</span> each maintainer)</span><br><span class="line">    email: The maintainer's email (optional <span class="keyword">for</span> each maintainer)</span><br><span class="line">    url: A URL <span class="keyword">for</span> <span class="keyword">the</span> maintainer (optional <span class="keyword">for</span> each maintainer)</span><br><span class="line">engine: gotpl <span class="comment"># The name of the template engine (optional, defaults to gotpl)</span></span><br><span class="line">icon: A URL <span class="keyword">to</span> an SVG <span class="keyword">or</span> PNG image <span class="keyword">to</span> be used <span class="keyword">as</span> an icon (optional).</span><br><span class="line">appVersion: The <span class="built_in">version</span> <span class="keyword">of</span> <span class="keyword">the</span> app <span class="keyword">that</span> this <span class="keyword">contains</span> (optional). This needn't be SemVer.</span><br><span class="line">deprecated: Whether this chart <span class="keyword">is</span> deprecated (optional, <span class="built_in">boolean</span>)</span><br><span class="line">tillerVersion: The <span class="built_in">version</span> <span class="keyword">of</span> Tiller <span class="keyword">that</span> this chart requires. This should be expressed <span class="keyword">as</span> a SemVer range: <span class="string">"&gt;2.0.0"</span> (optional)</span><br></pre></td></tr></table></figure>
+<p><strong>Charts和版本控制</strong></p>
+<p>每个chart都必须有一个版本号。版本必须遵循SemVer 2标准。与Helm Class 格式不同，Kubernetes Helm使用版本号作为发布标记。存储库中的软件包由名称加版本识别。</p>
+<p>例如，nginx version字段设置为1.0将被命名为：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">nginx-1</span><span class="selector-class">.0</span><span class="selector-class">.tgz</span></span><br></pre></td></tr></table></figure>
+<p>注意：虽然Helm Classic和Deployment Manager在chart方面都非常适合GitHub，但Kubernetes Helm并不依赖或需要GitHub甚至Git。因此，它不使用Git SHA进行版本控制。</p>
+<p>许多Helm工具都使用Chart.yaml的version字段，其中包括CLI和Tiller服务。在生成包时，helm package命令将使用它在Chart.yaml中的版本名作为包名。系统假定chart包名称中的版本号与Chart.yaml中的版本号相匹配。不符合这个情况会导致错误。</p>
+<p><strong>弃用charts</strong></p>
+<p>在管理chart tepo库中的chart时，有时需要弃用chart。Chart.yaml的deprecated字段可用于将chart标记为已弃用。如果存储库中最新版本的chart标记为已弃用，则整个chart被视为已弃用。chart名称稍后可以通过发布未标记为已弃用的较新版本来重新使用。废弃chart的工作流程根据kubernetes/charts 项目的工作流程如下：</p>
+<ul>
+<li>更新chart的Chart.yaml以将chart标记为启用，并且更新版本</li>
+<li>在chart Repository中发布新的chart版本</li>
+<li>从源代码库中删除chart（例如git）</li>
+</ul>
+<h3><span id="chart许可证文件自述文件和说明文件">Chart许可证文件，自述文件和说明文件</span></h3>
+<p>chart还可以包含描述chart的安装，配置，使用和许可证的文件。chart的自述文件应由Markdown（<a href="http://README.md" target="_blank" rel="noopener">README.md</a>）语法格式化，并且通常应包含：</p>
+<ul>
+<li>chart提供的应用程序或服务的描述</li>
+<li>运行chart的任何前提条件或要求</li>
+<li>选项values.yaml和默认值的说明</li>
+<li>任何其他可能与安装或配置chart相关的信息</li>
+</ul>
+<p>chart还可以包含一个简短的纯文本templates/NOTES.txt文件，在安装后以及查看版本状态时将打印出来。此文件将作为模板template进行评估 ，并可用于显示使用说明，后续步骤或任何其他与发布chart相关的信息。例如，可以提供用于连接到数据库或访问Web UI的指令。由于运行时，该文件被打印到标准输出 helm install或helm status，建议保持内容简短并把更多细节指向自述文件。</p>
+<h3><span id="chart依赖关系">Chart依赖关系</span></h3>
+<p>在Helm中，一个chart可能依赖于任何数量的其他chart。这些依赖关系可以通过requirements.yaml 文件动态链接或引入charts/目录并手动管理。</p>
+<p>虽然有一些团队需要手动管理依赖关系的优势，但声明依赖关系的首选方法是使用 chart 内部的requirements.yaml文件。</p>
+<p>注意： 传统Helm 的Chart.yaml dependencies:部分字段已被完全删除弃用。</p>
+<p>用<code>requirements.yaml</code>来管理依赖关系<br>
+<code>requirements.yaml</code>文件是列出chart的依赖关系的简单文件。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">dependencies</span>:</span><br><span class="line">  - <span class="attribute">name</span>: apache</span><br><span class="line">    <span class="attribute">version</span>: <span class="number">1.2</span>.<span class="number">3</span></span><br><span class="line">    <span class="attribute">repository</span>: <span class="attribute">http</span>:<span class="comment">//example.com/charts</span></span><br><span class="line">  - <span class="attribute">name</span>: mysql</span><br><span class="line">    <span class="attribute">version</span>: <span class="number">3.2</span>.<span class="number">1</span></span><br><span class="line">    <span class="attribute">repository</span>: <span class="attribute">http</span>:<span class="comment">//another.example.com/charts</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>该name字段是chart的名称。</li>
+<li>version字段是chart的版本。</li>
+<li>repository字段是chart repo的完整URL。请注意，还必须使用helm repo add添加该repo到本地才能使用。</li>
+</ul>
+<p>有了依赖关系文件，你可以通过运行<code>helm dependency update</code>，它会使用你的依赖关系文件将所有指定的chart下载到你的<code>charts/</code>目录中。</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ helm dep up foochart</span><br><span class="line">Hang tight <span class="keyword">while</span> we grab <span class="keyword">the</span> latest <span class="built_in">from</span> your chart repositories...</span><br><span class="line">...Successfully got <span class="keyword">an</span> update <span class="built_in">from</span> <span class="keyword">the</span> <span class="string">"local"</span> chart repository</span><br><span class="line">...Successfully got <span class="keyword">an</span> update <span class="built_in">from</span> <span class="keyword">the</span> <span class="string">"stable"</span> chart repository</span><br><span class="line">...Successfully got <span class="keyword">an</span> update <span class="built_in">from</span> <span class="keyword">the</span> <span class="string">"example"</span> chart repository</span><br><span class="line">...Successfully got <span class="keyword">an</span> update <span class="built_in">from</span> <span class="keyword">the</span> <span class="string">"another"</span> chart repository</span><br><span class="line">Update Complete. Happy Helming!</span><br><span class="line">Saving <span class="number">2</span> charts</span><br><span class="line">Downloading apache <span class="built_in">from</span> repo <span class="keyword">http</span>://example.com/charts</span><br><span class="line">Downloading mysql <span class="built_in">from</span> repo <span class="keyword">http</span>://another.example.com/charts</span><br></pre></td></tr></table></figure>
+<p>当helm dependency update检索chart时，它会将它们作为chart存档存储在charts/目录中。因此，对于上面的示例，可以在chart目录中看到以下文件：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">charts/</span><br><span class="line">  apache<span class="number">-1.2</span><span class="number">.3</span>.tgz</span><br><span class="line">  mysql<span class="number">-3.2</span><span class="number">.1</span>.tgz</span><br></pre></td></tr></table></figure>
+<p>通过<code>requirements.yaml</code>管理chart是一种轻松更新chart的好方法，还可以在整个团队中共享requirements信息。</p>
+<p><code>requirements.yaml</code>中的<code>alias</code>字段<br>
+除上述其他字段外，每个<code>requirement</code>条目可能包含可选字段<code>alias</code>。</p>
+<p>为依赖的chart添加别名会将chart放入依赖关系中，并使用别名作为新依赖关系的名称。</p>
+<p>如果需要使用其他名称访问chart，可以使用alias。</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># parentchart/requirements.yaml</span></span><br><span class="line">dependencies:</span><br><span class="line">  - name: subchart</span><br><span class="line">    repository: http://localhost:10191</span><br><span class="line">    version: 0.1.0</span><br><span class="line">    alias: new-subchart-1</span><br><span class="line">  - name: subchart</span><br><span class="line">    repository: http://localhost:10191</span><br><span class="line">    version: 0.1.0</span><br><span class="line">    alias: new-subchart-2</span><br><span class="line">  - name: subchart</span><br><span class="line">    repository: http://localhost:10191</span><br><span class="line">    version: 0.1.0</span><br></pre></td></tr></table></figure>
+<p>在上面的例子中，我们将得到parentchart的3个依赖关系</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">subchart</span><br><span class="line">new-subchart-1</span><br><span class="line">new-subchart-2</span><br></pre></td></tr></table></figure>
+<p>实现这一目的的手动方法是<code>charts/</code>中用不同名称多次复制/粘贴目录中的同一chart 。</p>
+<p><code>requirements.yaml</code>中的<code>tags</code>和<code>condition</code>字段<br>
+除上述其他字段外，每个需求条目可能包含可选字段<code>tags</code>和<code>condition</code>。</p>
+<p>所有charts都会默认加载。如果存在tags或condition字段，将对它们进行评估并用于控制应用的chart的加载。</p>
+<p><code>Condition – condition</code> 字段包含一个或多个YAML路径（用逗号分隔）。如果此路径存在于顶级父级的值中并且解析为布尔值，则将根据该布尔值启用或禁用chart。只有在列表中找到的第一个有效路径才被评估，如果没有路径存在，那么该条件不起作用。</p>
+<p><code>Tags</code> – 标签字段是与此chart关联的YAML标签列表。在顶级父级的值中，可以通过指定标签和布尔值来启用或禁用所有带有标签的chart。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># parentchart/requirements.yaml</span></span><br><span class="line"><span class="attr">dependencies:</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">subchart1</span></span><br><span class="line"><span class="attr">        repository:</span> <span class="attr">http://localhost:10191</span></span><br><span class="line"><span class="attr">        version:</span> <span class="number">0.1</span><span class="number">.0</span></span><br><span class="line"><span class="attr">        condition:</span> <span class="string">subchart1.enabled,</span> <span class="string">global.subchart1.enabled</span></span><br><span class="line"><span class="attr">        tags:</span></span><br><span class="line"><span class="bullet">          -</span> <span class="string">front-end</span></span><br><span class="line"><span class="bullet">          -</span> <span class="string">subchart1</span></span><br><span class="line"></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">subchart2</span></span><br><span class="line"><span class="attr">        repository:</span> <span class="attr">http://localhost:10191</span></span><br><span class="line"><span class="attr">        version:</span> <span class="number">0.1</span><span class="number">.0</span></span><br><span class="line"><span class="attr">        condition:</span> <span class="string">subchart2.enabled,global.subchart2.enabled</span></span><br><span class="line"><span class="attr">        tags:</span></span><br><span class="line"><span class="bullet">          -</span> <span class="string">back-end</span></span><br><span class="line"><span class="bullet">          -</span> <span class="string">subchart2</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># parentchart/values.yaml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">subchart1:</span></span><br><span class="line"><span class="attr">  enabled:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">tags:</span></span><br><span class="line"><span class="attr">  front-end:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">  back-end:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>在上面的示例中，所有带有标签的front-end的charts都将被禁用，但由于 subchart1.enabled的值在父项值中为“真”，因此条件将覆盖该 front-end标签，subchart1会启用。</p>
+<p>由于subchart2被标记back-end和标签的计算结果为true，subchart2将被启用。还要注意的是，虽然subchart2有一个在requirements.yaml中指定的条件，但父项的值中没有对应的路径和值，因此条件无效。</p>
+<p>使用命令行时带有tag和conditions<br>
+–set参数可使用来更改tag和conditions值。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">helm install --<span class="builtin-name">set</span> tags.<span class="attribute">front-end</span>=<span class="literal">true</span> --<span class="builtin-name">set</span> subchart2.<span class="attribute">enabled</span>=<span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<p><strong>tags和conditions解析</strong><br>
+Conditions (设置 values) 会覆盖tags配置.。第一个存在的condition路径生效，后续该chart的condition路径将被忽略。<br>
+如果chart的某tag的任一tag的值为true，那么该tag的值为true，并启用这个chart。<br>
+Tags 和 conditions值必须在顶级父级的值中进行设置。<br>
+tags:值中的关键字必须是顶级关键字。目前不支持全局和嵌套tags:表格。<br>
+通过requirements.yaml导入子值<br>
+在某些情况下，希望允许子chart的值传到父chart并作为通用默认值共享。使用这种exports格式的另一个好处是它可以使未来的工具能够考虑用户可设置的值。</p>
+<p>要导入的值的键可以在父chart文件中requirements.yaml使用YAML list指定。list中的每个项目都是从子chart exports字段导入的key。</p>
+<p>使用exports格式<br>
+如果子chart的values.yaml文件exports在根目录中包含一个字段，则可以通过指定要导入的关键字将其内容直接导入到父项的值中，如下例所示：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># parent's requirements.yaml file</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">import</span>-values:</span><br><span class="line">      - <span class="class"><span class="keyword">data</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># child's values.yaml file</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="attr">exports:</span></span><br><span class="line"><span class="attr">  data:</span></span><br><span class="line"><span class="attr">    myint:</span> <span class="number">99</span></span><br></pre></td></tr></table></figure>
+<p>由于我们在导入列表中指定了<code>data</code>键，因此Helm会在exports子图的字段中查找data键并导入其内容。</p>
+<p>最终的父值将包含我们的导出字段：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># parent's values file</span></span><br><span class="line">...</span><br><span class="line"><span class="symbol">myint:</span> <span class="number">99</span></span><br></pre></td></tr></table></figure>
+<p>请注意，父键data不包含在父chart的最终值中。如果需要指定父键，请使用’child-parent’格式。</p>
+<p>使用child-parent格式<br>
+要访问未包含在子chart键值exports的中的值，需要指定要导入的值的源键（child）和父chart值（parent）中的目标路径。</p>
+<p>下面的例子中的import-values告诉Helm去拿在child:路径发现的任何值，并将其复制到父值parent:指定的路径</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># parent's requirements.yaml file</span></span><br><span class="line"><span class="attr">dependencies:</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">subchart1</span></span><br><span class="line"><span class="attr">    repository:</span> <span class="attr">http://localhost:10191</span></span><br><span class="line"><span class="attr">    version:</span> <span class="number">0.1</span><span class="number">.0</span></span><br><span class="line">    <span class="string">...</span></span><br><span class="line"><span class="attr">    import-values:</span></span><br><span class="line"><span class="attr">      - child:</span> <span class="string">default.data</span></span><br><span class="line"><span class="attr">        parent:</span> <span class="string">myimports</span></span><br></pre></td></tr></table></figure>
+<p>在上面的例子中，在subchart1default.data的值中找到的值将被导入到父chart值中myimports的键值，详细如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># parent's values.yaml file</span></span><br><span class="line"></span><br><span class="line"><span class="attr">myimports:</span></span><br><span class="line"><span class="attr">  myint:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">  mybool:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">  mystring:</span> <span class="string">"helm rocks!"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># subchart1's values.yaml file</span></span><br><span class="line"></span><br><span class="line"><span class="attr">default:</span></span><br><span class="line"><span class="attr">  data:</span></span><br><span class="line"><span class="attr">    myint:</span> <span class="number">999</span></span><br><span class="line"><span class="attr">    mybool:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>父chart的结果值为：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># parent's final values</span></span><br><span class="line"></span><br><span class="line"><span class="attr">myimports:</span></span><br><span class="line"><span class="attr">  myint:</span> <span class="number">999</span></span><br><span class="line"><span class="attr">  mybool:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">  mystring:</span> <span class="string">"helm rocks!"</span></span><br></pre></td></tr></table></figure>
+<p>父chart的最终值现在包含从subchart1导入的myint和mybool字段。</p>
+<p>通过<code>charts/</code>目录手动管理依赖性</p>
+<p>如果需要更多的控制依赖关系，可以通过将依赖的charts复制到charts/目录中来明确表达这些依赖关系 。</p>
+<p>依赖关系可以是chart归档（foo-1.2.3.tgz）或解压缩的chart目录。但它的名字不能从_或.开始。这些文件被chart加载器忽略。</p>
+<p>例如，如果WordPress chart依赖于Apache chart，则在WordPress chart的charts/目录中提供（正确版本的）Apache chart：</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">wordpress:</span><br><span class="line">  Chart.yaml</span><br><span class="line">  requirements.yaml</span><br><span class="line">  # ...</span><br><span class="line">  charts/</span><br><span class="line">    apache/</span><br><span class="line">      Chart.yaml</span><br><span class="line">      # ...</span><br><span class="line">    mysql/</span><br><span class="line">      Chart.yaml</span><br><span class="line">      # ...</span><br></pre></td></tr></table></figure>
+<p>上面的示例显示了WordPress chart如何通过在其`charts/“目录中包含这些charts来表示它对Apache和MySQL的依赖关系。</p>
+<p>提示： 将依赖项放入charts/目录，请使用helm fetch命令</p>
+<p>使用依赖关系的操作方面影响<br>
+上面的部分解释了如何指定chart依赖关系，但是这会如何影响使用helm install和helm upgrade的chart安装？</p>
+<p>假设名为“A”的chart创建以下Kubernetes对象</p>
+<p>namespace “A-Namespace”</p>
+<ul>
+<li>
+<p>statefulset “A-StatefulSet”</p>
+</li>
+<li>
+<p>service “A-Service”<br>
+此外，A依赖于创建对象的chart B.</p>
+</li>
+<li>
+<p>namespace “B-Namespace”</p>
+</li>
+<li>
+<p>replicaset “B-ReplicaSet”</p>
+</li>
+<li>
+<p>service “B-Service”</p>
+</li>
+</ul>
+<p>安装/升级chart A后，会创建/修改单个Helm版本。该版本将按以下顺序创建/更新所有上述Kubernetes对象：</p>
+<ul>
+<li>A-Namespace</li>
+<li>B-Namespace</li>
+<li>A-StatefulSet</li>
+<li>B-ReplicaSet</li>
+<li>A-Service</li>
+<li>B-Service</li>
+</ul>
+<p>这是因为当Helm安装/升级charts时，charts中的Kubernetes对象及其所有依赖项都是如下</p>
+<p>聚合成一个单一的集合; 然后<br>
+按类型排序，然后按名称排序; 接着<br>
+按该顺序创建/更新。<br>
+因此，单个release是使用charts及其依赖关系创建的所有对象。</p>
+<p>Kubernetes类型的安装顺序由kind_sorter.go中的枚举InstallOrder给出（the Helm source file)）。</p>
+<h3><span id="模板templates和值values">模板Templates和值Values</span></h3>
+<p>Helm chart模板是用Go模板语言Go template language编写的 ，其中添加了来自Sprig库from the Sprig library的50个左右的附加模板函数以及一些其他专用函数specialized functions。</p>
+<p>所有模板文件都存储在chart的templates/文件夹中。当Helm渲染charts时，它将通过模板引擎传递该目录中的每个文件。</p>
+<p>模板的值有两种提供方法：</p>
+<ul>
+<li>chart开发人员可能会在chart内部提供一个values.yaml文件。该文件可以包含默认值。</li>
+<li>chart用户可能会提供一个包含值的YAML文件。这可以通过命令行提供<code>helm install -f</code>。</li>
+</ul>
+<p>当用户提供自定义值时，这些值将覆盖chart中values.yaml文件中的值。</p>
+<h4><span id="模板文件">模板文件</span></h4>
+<p>模板文件遵循用于编写Go模板的标准约定（请参阅文the text/template Go package documentation 以了解详细信息）。示例模板文件可能如下所示：</p>
+ <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr"> apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">deis-database</span></span><br><span class="line"><span class="attr">  namespace:</span> <span class="string">deis</span></span><br><span class="line"><span class="attr">  labels:</span></span><br><span class="line"><span class="attr">    heritage:</span> <span class="string">deis</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  replicas:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">  selector:</span></span><br><span class="line"><span class="attr">    app:</span> <span class="string">deis-database</span></span><br><span class="line"><span class="attr">  template:</span></span><br><span class="line"><span class="attr">    metadata:</span></span><br><span class="line"><span class="attr">      labels:</span></span><br><span class="line"><span class="attr">        app:</span> <span class="string">deis-database</span></span><br><span class="line"><span class="attr">    spec:</span></span><br><span class="line"><span class="attr">      serviceAccount:</span> <span class="string">deis-database</span></span><br><span class="line"><span class="attr">      containers:</span></span><br><span class="line"><span class="attr">        - name:</span> <span class="string">deis-database</span></span><br><span class="line"><span class="attr">          image:</span> <span class="string">&#123;&#123;.Values.imageRegistry&#125;&#125;/postgres:&#123;&#123;.Values.dockerTag&#125;&#125;</span></span><br><span class="line"><span class="attr">          imagePullPolicy:</span> <span class="string">&#123;&#123;.Values.pullPolicy&#125;&#125;</span></span><br><span class="line"><span class="attr">          ports:</span></span><br><span class="line"><span class="attr">            - containerPort:</span> <span class="number">5432</span></span><br><span class="line"><span class="attr">          env:</span></span><br><span class="line"><span class="attr">            - name:</span> <span class="string">DATABASE_STORAGE</span></span><br><span class="line"><span class="attr">              value:</span> <span class="string">&#123;&#123;default</span> <span class="string">"minio"</span> <span class="string">.Values.storage&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+<p>上面的示例基于此网址，是Kubernetes replication controller的模板。它可以使用以下四个模板值（通常在values.yaml文件中定义 ）：</p>
+<ul>
+<li>imageRegistry：Docker镜像的源。</li>
+<li>dockerTag：docker镜像的标签。</li>
+<li>pullPolicy：Kubernetes镜像拉取策略。</li>
+<li>storage：存储后端，其默认设置为 “minio”</li>
+</ul>
+<p>所有这些值都由模板作者定义。Helm不需要或指定参数。</p>
+<blockquote>
+<p>要查更多charts，请查看Kubernetes charts项目</p>
+</blockquote>
+<h4><span id="预定义值">预定义值</span></h4>
+<p>通过values.yaml文件（或通过–set 标志）提供的值可以从.Values模板中的对象访问。可以在模板中访问其他预定义的数据片段。</p>
+<p>以下值是预定义的，可用于每个模板，并且不能被覆盖。与所有值一样，名称区分大小写。</p>
+<ul>
+<li><a href="http://Release.Name" target="_blank" rel="noopener">Release.Name</a>：release的名称（不是chart的）</li>
+<li>Release.Time：chart版本上次更新的时间。这将匹配Last Released发布对象上的时间。</li>
+<li>Release.Namespace：chart release发布的namespace。</li>
+<li>Release.Service：处理release的服务。通常是Tiller。</li>
+<li>Release.IsUpgrade：如果当前操作是升级或回滚，则设置为true。</li>
+<li>Release.IsInstall：如果当前操作是安装，则设置为true。</li>
+<li>Release.Revision：版本号。它从1开始，并随着每个helm upgrade增加。</li>
+<li>Chart：Chart.yaml的内容。chart版本可以从Chart.Version和维护人员 Chart.Maintainers一起获得。</li>
+<li>Files：包含chart中所有非特殊文件的map-like对象。不会允许你访问模板，但会让你访问存在的其他文件（除非它们被排除使用.helmignore）。可以使用index .Files “<a href="http://file.name" target="_blank" rel="noopener">file.name</a>”或使用.Files.Get name或 .Files.GetString name功能来访问文件。也可以使用.Files.GetBytes访问该文件的内容[byte]</li>
+<li>Capabilities：包含有关Kubernetes版本信息的map-like对象（.Capabilities.KubeVersion)，Tiller（.Capabilities.TillerVersion)和支持的Kubernetes API版本（.Capabilities.APIVersions.Has “batch/v1″）<br>
+注意: 任何未知的Chart.yaml字段将被删除。它们不会在chart对象内部被访问。因此，Chart.yaml不能用于将任意结构化的数据传递到模板中。values文件可以用于传递。</li>
+</ul>
+<blockquote>
+<p>注意: 任何未知的Chart.yaml字段将被删除。它们不会在chart对象内部被访问。因此，Chart.yaml不能用于将任意结构化的数据传递到模板中。values文件可以用于传递。</p>
+</blockquote>
+<h4><span id="值values文件">值values文件</span></h4>
+<p>考虑到上一节中的模板values.yaml，提供了如下必要值的信息：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">imageRegistry:</span> <span class="string">"quay.io/deis"</span></span><br><span class="line"><span class="symbol">dockerTag:</span> <span class="string">"latest"</span></span><br><span class="line"><span class="symbol">pullPolicy:</span> <span class="string">"Always"</span></span><br><span class="line"><span class="symbol">storage:</span> <span class="string">"s3"</span></span><br></pre></td></tr></table></figure>
+<p>values文件是YAML格式的。chart可能包含一个默认 values.yaml文件。Helm install命令允许用户通过提供额外的YAML值来覆盖值：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ helm install <span class="attribute">--values</span>=myvals.yaml wordpress</span><br></pre></td></tr></table></figure>
+<p>当以这种方式传递值时，它们将被合并到默认values文件中。例如，考虑一个如下所示的myvals.yaml文件：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">storage:</span> <span class="string">"gcs"</span></span><br></pre></td></tr></table></figure>
+<p>当它与chart中values.yaml的内容合并时，生成的内容将为：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">imageRegistry:</span> <span class="string">"quay.io/deis"</span></span><br><span class="line"><span class="symbol">dockerTag:</span> <span class="string">"latest"</span></span><br><span class="line"><span class="symbol">pullPolicy:</span> <span class="string">"Always"</span></span><br><span class="line"><span class="symbol">storage:</span> <span class="string">"gcs"</span></span><br></pre></td></tr></table></figure>
+<p>注意只有最后一个字段被覆盖了，其他的不变。</p>
+<p>注：包含在chart内的默认values文件必须命名 values.yaml。但是在命令行上指定的文件可以被命名为任何名称。</p>
+<p>注：如果在helm install或helm upgrade使用–set，则这些值仅在客户端转换为YAML。</p>
+<p>注意：如果values文件中存在任何必需的条目，则可以使用’required’函数在chart模板中声明它们</p>
+<p>然后可以在模板内部访问任何这些.Values对象值 ：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">deis-database</span></span><br><span class="line"><span class="attr">  namespace:</span> <span class="string">deis</span></span><br><span class="line"><span class="attr">  labels:</span></span><br><span class="line"><span class="attr">    heritage:</span> <span class="string">deis</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  replicas:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">  selector:</span></span><br><span class="line"><span class="attr">    app:</span> <span class="string">deis-database</span></span><br><span class="line"><span class="attr">  template:</span></span><br><span class="line"><span class="attr">    metadata:</span></span><br><span class="line"><span class="attr">      labels:</span></span><br><span class="line"><span class="attr">        app:</span> <span class="string">deis-database</span></span><br><span class="line"><span class="attr">    spec:</span></span><br><span class="line"><span class="attr">      serviceAccount:</span> <span class="string">deis-database</span></span><br><span class="line"><span class="attr">      containers:</span></span><br><span class="line"><span class="attr">        - name:</span> <span class="string">deis-database</span></span><br><span class="line"><span class="attr">          image:</span> <span class="string">&#123;&#123;.Values.imageRegistry&#125;&#125;/postgres:&#123;&#123;.Values.dockerTag&#125;&#125;</span></span><br><span class="line"><span class="attr">          imagePullPolicy:</span> <span class="string">&#123;&#123;.Values.pullPolicy&#125;&#125;</span></span><br><span class="line"><span class="attr">          ports:</span></span><br><span class="line"><span class="attr">            - containerPort:</span> <span class="number">5432</span></span><br><span class="line"><span class="attr">          env:</span></span><br><span class="line"><span class="attr">            - name:</span> <span class="string">DATABASE_STORAGE</span></span><br><span class="line"><span class="attr">              value:</span> <span class="string">&#123;&#123;default</span> <span class="string">"minio"</span> <span class="string">.Values.storage&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+<h4><span id="范围scope依赖dependencies和值values">范围Scope，依赖Dependencies和值Values</span></h4>
+<p>values文件可以声明顶级chart的值，也可以为chart的charts/目录中包含的任何chart声明值。或者，用不同的方式来描述它，values文件可以为chart及其任何依赖项提供值。例如，上面的演示WordPresschart具有mysql和apache依赖性。values文件可以为所有这些组件提供值：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">title:</span> <span class="string">"My WordPress Site"</span> <span class="meta"># Sent to the WordPress template</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">mysql:</span></span><br><span class="line"><span class="symbol">  max_connections:</span> <span class="number">100</span> <span class="meta"># Sent to MySQL</span></span><br><span class="line"><span class="symbol">  password:</span> <span class="string">"secret"</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">apache:</span></span><br><span class="line"><span class="symbol">  port:</span> <span class="number">8080</span> <span class="meta"># Passed to Apache</span></span><br></pre></td></tr></table></figure>
+<p>更高级别的chart可以访问下面定义的所有变量。所以WordPresschart可以访问MySQL密码 .Values.mysql.password。但较低级别的chart无法访问父chart中的内容，因此MySQL将无法访问该title属性。同样的，也不能访问apache.port。</p>
+<p>值是命名空间限制的，但命名空间已被修剪。因此对于WordPresschart来说，它可以访问MySQL密码字段.Values.mysql.password。但是对于MySQL chart来说，这些值的范围已经减小了，并且删除了名namespace前缀，所以它会将密码字段简单地视为 .Values.password。</p>
+<p><strong>全局值</strong><br>
+从2.0.0-Alpha.2开始，Helm支持特殊的“全局”值。考虑前面例子的这个修改版本：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">title:</span> <span class="string">"My WordPress Site"</span> <span class="meta"># Sent to the WordPress template</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">global:</span></span><br><span class="line"><span class="symbol">  app:</span> MyWordPress</span><br><span class="line"></span><br><span class="line"><span class="symbol">mysql:</span></span><br><span class="line"><span class="symbol">  max_connections:</span> <span class="number">100</span> <span class="meta"># Sent to MySQL</span></span><br><span class="line"><span class="symbol">  password:</span> <span class="string">"secret"</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">apache:</span></span><br><span class="line"><span class="symbol">  port:</span> <span class="number">8080</span> <span class="meta"># Passed to Apache</span></span><br></pre></td></tr></table></figure>
+<p>上面添加了一个global区块，值<code>app: MyWordPress</code>。此值可供所有chart使用.Values.global.app。</p>
+<p>比如，该mysql模板可以访问app如.Values.global.app，apache chart也同样的。上面的values文件是这样高效重新生成的：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">title:</span> <span class="string">"My WordPress Site"</span> <span class="meta"># Sent to the WordPress template</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">global:</span></span><br><span class="line"><span class="symbol">  app:</span> MyWordPress</span><br><span class="line"></span><br><span class="line"><span class="symbol">mysql:</span></span><br><span class="line"><span class="symbol">  global:</span></span><br><span class="line"><span class="symbol">    app:</span> MyWordPress</span><br><span class="line"><span class="symbol">  max_connections:</span> <span class="number">100</span> <span class="meta"># Sent to MySQL</span></span><br><span class="line"><span class="symbol">  password:</span> <span class="string">"secret"</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">apache:</span></span><br><span class="line"><span class="symbol">  global:</span></span><br><span class="line"><span class="symbol">    app:</span> MyWordPress</span><br><span class="line"><span class="symbol">  port:</span> <span class="number">8080</span> <span class="meta"># Passed to Apache</span></span><br></pre></td></tr></table></figure>
+<p>这提供了一种与所有子chart共享一个顶级变量的方法，这对设置metadata中像标签这样的属性很有用。</p>
+<p>如果子chart声明了一个全局变量，则该全局将向下传递 （到子chart的子chart），但不向上传递到父chart。子chart无法影响父chart的值。</p>
+<p>此外，父chart的全局变量优先于子chart中的全局变量。</p>
+<h3><span id="使用helm管理chart">使用Helm管理chart</span></h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 创建一个新的chart</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm create mychart</span></span><br><span class="line">Created mychart/</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 编辑完chart后，helm可以将其打包到chart压缩包中：</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm package mychart</span></span><br><span class="line">Archived mychart-0.1.-.tgz</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 可以用helm来帮助查找chart格式或信息的问题：</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm lint mychart</span></span><br><span class="line">No issues found</span><br></pre></td></tr></table></figure>
+<p><strong>Chart repo库</strong></p>
+<p>hart repo库是容纳一个或多个封装的chart的HTTP服务器。虽然helm可用于管理本地chart目录，但在共享chart时，首选机制是chart repo库。</p>
+<p>任何可以提供YAML文件和tar文件并可以回答GET请求的HTTP服务器都可以用作repo库服务器。</p>
+<p>Helm附带用于开发人员测试的内置服务器（helm serve）。Helm团队测试了其他服务器，包括启用了网站模式的Google Cloud Storage以及启用了网站模式的S3。</p>
+<p>repo库的主要特征是存在一个名为的特殊文件index.yaml，它具有repo库提供的所有软件包的列表以及允许检索和验证这些软件包的元数据。</p>
+<p>在客户端，repo库使用helm repo命令进行管理。但是，Helm不提供将chart上传到远程存储服务器的工具。这是因为这样做会增加部署服务器的需求，从而增加配置repo库的难度</p>
+<p><strong>Chart 起始包</strong></p>
+<p>helm create命令采用可选–starter选项，可以指定“起始chart”。</p>
+<p>起始chart只是普通的chart，位于$HELM_HOME/starters。作为chart开发人员，可以创作专门设计用作起始的chart。记住这些chart时应考虑以下因素：</p>
+<ul>
+<li>Chart.yaml将被生成器覆盖。</li>
+<li>用户将期望修改这样的chart内容，因此文档应该指出用户如何做到这一点。</li>
+<li>所有匹配项将被替换为指定的chart名称，以便起始chart可用作模板。</li>
+<li>目前添加chart的唯一方法是手动将其复制到$HELM_HOME/starters。在chart的文档中，你需要解释该过程。</li>
+</ul>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2019/06/22/Helm-入门/" data-toggle="tooltip" data-placement="top" title="Helm 入门">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Charts 文件组织结构</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Chart.yaml文件</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Chart许可证文件，自述文件和说明文件</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Chart依赖关系</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">模板Templates和值Values</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">5.1.</span> <span class="toc-nav-text">模板文件</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">5.2.</span> <span class="toc-nav-text">预定义值</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">5.3.</span> <span class="toc-nav-text">值values文件</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">5.4.</span> <span class="toc-nav-text">范围Scope，依赖Dependencies和值Values</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">使用Helm管理chart</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://www.cnblogs.com/baishuchao" target="_blank">baishuchao</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/weixin_40720226" target="_blank">summerxhs</a></li>
+                    
+                        <li><a href="https://runcc.github.io" target="_blank">devops for python </a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "your-disqus-ID";
+    var disqus_identifier = "https://baishuchao.github.io/2019/06/22/Helm-Charts/";
+    var disqus_url = "https://baishuchao.github.io/2019/06/22/Helm-Charts/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                <p class="copyright text-muted">
+                    Copyright &copy; Hi,I&#39;m John 2019 
+                    <br>
+                    Theme by <a href="http://www.baishuchao.com">john</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://www.baishuchao.com">john</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://baishuchao.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://baishuchao.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
