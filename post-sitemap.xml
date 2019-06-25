@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>https://baishuchao.github.io/2019/06/25/Xtrabackup-%E4%B9%8B%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D%E6%95%B0%E6%8D%AE/</loc>
+        <lastmod>2019-06-25T09:36:49.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://baishuchao.github.io/2019/06/25/MySQL-%E5%A4%87%E4%BB%BD%E5%B7%A5%E5%85%B7Xtrabackup/</loc>
         <lastmod>2019-06-25T08:33:51.000Z</lastmod>
         <changefreq>weekly</changefreq>
