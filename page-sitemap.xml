@@ -7,6 +7,20 @@
     </url>
     
     <url>
+        <loc>https://baishuchao.github.io/about/</loc>
+        <lastmod>2019-06-26T01:54:13.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://baishuchao.github.io/tags/</loc>
+        <lastmod>2019-06-26T01:49:24.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
         <loc>https://baishuchao.github.io/404.html</loc>
         <lastmod>2018-12-27T10:06:25.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -14,21 +28,7 @@
     </url>
     
     <url>
-        <loc>https://baishuchao.github.io/about/</loc>
-        <lastmod>2018-12-27T10:06:25.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
         <loc>https://baishuchao.github.io/archive/</loc>
-        <lastmod>2018-12-27T10:06:25.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
-        <loc>https://baishuchao.github.io/tags/</loc>
         <lastmod>2018-12-27T10:06:25.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
