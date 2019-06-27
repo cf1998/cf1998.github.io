@@ -136,14 +136,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -210,6 +210,40 @@
             
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2019/06/27/MySQL之主从复制实战/">
+        <h2 class="post-title">
+            MySQL之主从复制实战
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            MySQL主从复制原理描述
+
+
+在Slave服务器上执行start slave命令开启主从复制开关，主从复制开发进行。
+
+2）此时，Slave服务器的I/O线程会通过在Master上已经授权的复制用户权限请求连接Master服务器，并请求从指定binlog日志文件的指定位置(日志文件名和位置就是在配置主从复制服务时执行change master命令指定哒）之后开始发送binlog日志内容。
+......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Hi,I'm John on
+            2019-06-27
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#db" title="db">db</a>
+            
+        </div>
+    
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -488,40 +522,6 @@ HELM就是kubernets的应用程序包管理，类似于Linux系统之上的yum�
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2019/06/21/Alertmanager-钉钉告警/">
-        <h2 class="post-title">
-            Alertmanager 钉钉告警
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-alertmanager：alertmanager是一个告警机制，更具不同的需要可以设置邮件告警、钉钉告警，这里小编使用的是钉钉告警；钉钉告警需要接入prometheus-webhook-dingtalk
-
-创建钉钉机器人
-参考文档：https://open-doc.dingtalk.com/microapp/serverapi2/krgddi
-
-编译prometheus-webhook-......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Hi,I'm John on
-            2019-06-21
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -566,9 +566,9 @@ alertmanager：alertmanager是一个告警机制，更具不同的需要可以�
             
         
             
-        
+            <a href="/tags/#db" title="db" rel="8">db</a>
             
-            <a href="/tags/#db" title="db" rel="7">db</a>
+        
             
         
     </div>
@@ -668,6 +668,10 @@ alertmanager：alertmanager是一个告警机制，更具不同的需要可以�
     <ul>
       
         <li>
+          <a href="/2019/06/27/MySQL之主从复制实战/">MySQL之主从复制实战</a>
+        </li>
+      
+        <li>
           <a href="/2019/06/26/MySQL数据库日志详解/">MySQL数据库日志详解</a>
         </li>
       
@@ -681,10 +685,6 @@ alertmanager：alertmanager是一个告警机制，更具不同的需要可以�
       
         <li>
           <a href="/2019/06/25/Xtrabackup之增量备份/">Xtrabackup之增量备份</a>
-        </li>
-      
-        <li>
-          <a href="/2019/06/25/MySQL-备份工具Xtrabackup/">MySQL 备份工具Xtrabackup</a>
         </li>
       
     </ul>
@@ -711,7 +711,7 @@ alertmanager：alertmanager是一个告警机制，更具不同的需要可以�
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>

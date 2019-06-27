@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          MySQL之主从复制实战 - Docker | Kubernetes
+        
+    </title>
+
+    <link rel="canonical" href="https://baishuchao.github.io/2019/06/27/MySQL之主从复制实战/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('zcfz.jpg')
+            /*post*/
+        
+    }
+    
+    #signature{
+        background-image: url('/undefined');
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#db" title="db">db</a>
+                            
+                        </div>
+                        <h1>MySQL之主从复制实战</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Hi,I'm John on
+                            2019-06-27
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Hi,I&#39;m John</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3><span id="mysql主从复制原理描述">MySQL主从复制原理描述</span></h3>
+<p><img src="MySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E9%80%BB%E8%BE%91%E5%9B%BE.png" alt=""></p>
+<ol>
+<li>在Slave服务器上执行start slave命令开启主从复制开关，主从复制开发进行。</li>
+</ol>
+<p>2）此时，Slave服务器的I/O线程会通过在Master上已经授权的复制用户权限请求连接Master服务器，并请求从指定binlog日志文件的指定位置(日志文件名和位置就是在配置主从复制服务时执行change master命令指定哒）之后开始发送binlog日志内容。</p>
+<p>3）Master服务器接收来自Slave服务器的I/O线程的请求之后，其上负责复制的binlog dump线程会根据Slave服务器的I/O线程的请求之后，其上负责复制的binlog dump线程会根据Slave服务器的I/O线程请求的信息，分批读取指定binlog日志文件所指定位置之后的binlog日志信息，然后返回给Slave端的I/O线程。返回的信息中除了binlog日志之外，还包括在Master服务器端记录的新的binlog文件名称，以及在新的binlog中下一个指定的更新位置。</p>
+<p>4）当Slave服务器的I/O线程获取到Master服务器上I/O线程发送的日志内容及日志文件和位置点之后，会将binlog日志内容依次写入到Slave端自身的Relay Log(即中继日志)文件（MySQL-relay-bin.xxxxx）的最未端，并将新binlog日志时，能够告诉Master服务器需要从新binlog日志的指定文件及位置开发请求新的binlog日志内容。</p>
+<p>5）Slave服务器端的SQL线程会实时地检测本地Relay Log中I/O线程新增加的日志内容，然后及时地把Relay Log文件中的内容解析成SQL语句，并在自身Slave服务器上按<br>
+解析SQL语句的位置顺序执行和应用这些SQL语句，并将当前应用中继日志的文件名及位置点记录在relay-log.info中。</p>
+<h3><span id="开始部署主从复制">开始部署主从复制</span></h3>
+<h4><span id="环境信息">环境信息</span></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">数据库角色</th>
+<th style="text-align:center">主机名</th>
+<th style="text-align:center">IP Address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">主库</td>
+<td style="text-align:center">db01</td>
+<td style="text-align:center">192.168.1.36</td>
+</tr>
+<tr>
+<td style="text-align:center">从库</td>
+<td style="text-align:center">db02</td>
+<td style="text-align:center">192.168.1.61</td>
+</tr>
+</tbody>
+</table>
+<p><strong>检查数据库当前状态</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@db1 ~]# lsof -i:3306</span><br><span class="line">COMMAND  PID <span class="built_in"> USER </span>  FD  <span class="built_in"> TYPE </span>DEVICE SIZE/OFF NODE NAME</span><br><span class="line">mysqld  5355 mysql   12u <span class="built_in"> IPv6 </span> 59947      0t0  TCP *:mysql (LISTEN)</span><br><span class="line">COMMAND   PID <span class="built_in"> USER </span>  FD  <span class="built_in"> TYPE </span>DEVICE SIZE/OFF NODE NAME</span><br><span class="line">mysqld  26284 mysql   11u <span class="built_in"> IPv6 </span> 43456      0t0  TCP *:mysql (LISTEN)</span><br></pre></td></tr></table></figure>
+<h4><span id="在主库master上执行操作">在主库（Master）上执行操作</span></h4>
+<p><strong>1）设置server-id的值并开启binlog功能日志</strong></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@db1 ~]</span><span class="comment"># vim /etc/my.cnf    # 编辑主配置文件</span></span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">server_id</span> = <span class="number">1</span>     # 用于同步的每台实例server_id都不能相同</span><br><span class="line"><span class="attr">log_bin</span> = /application/mysql/data/mysql-bin</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>特别提示：在MySQL 5.6起，参数中改用&quot;_“替代”-&quot;了，但是常规情况下后面这种写法依然兼容；</p>
+</blockquote>
+<p><strong>2）检查配置参数之后的结果</strong></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@db1 ~]</span><span class="comment"># egrep "server_id|log_bin" /etc/my.cnf</span></span><br><span class="line"><span class="attr">log_bin</span> = /application/mysql/data/mysql-bin</span><br><span class="line"><span class="attr">server_id</span> = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p><strong>3）重启主库MySQL服务</strong></p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@db1 ~]# /etc/init.d/mysqld restart</span><br><span class="line"><span class="function"><span class="title">Shutting</span></span> down MySQL.. SUCCESS!</span><br><span class="line"><span class="function"><span class="title">Starting</span></span> MySQL... SUCCESS!</span><br></pre></td></tr></table></figure>
+<p><strong>4）登陆数据库检查参数的更改情况</strong></p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like <span class="emphasis">'log_bin'</span>;</span><br><span class="line"><span class="code">+---------------+</span>-------+</span><br><span class="line">| Variable<span class="emphasis">_name | Value |</span></span><br><span class="line"><span class="emphasis">+---------------+-------+</span></span><br><span class="line"><span class="emphasis">| log_</span>bin       | ON    |    # binlog已开启</span><br><span class="line"><span class="code">+---------------+</span>-------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; show variables like <span class="emphasis">'server_id'</span>;</span><br><span class="line"><span class="code">+---------------+</span>-------+</span><br><span class="line">| Variable<span class="emphasis">_name | Value |</span></span><br><span class="line"><span class="emphasis">+---------------+-------+</span></span><br><span class="line"><span class="emphasis">| server_</span>id     | 1     |     # server<span class="emphasis">_id为1</span></span><br><span class="line"><span class="emphasis">+---------------+-------+</span></span><br><span class="line"><span class="emphasis">1 row in set (0.00 sec)</span></span><br></pre></td></tr></table></figure>
+<h4><span id="在主库上建立用于主从同步的账号">在主库上建立用于主从同步的账号</span></h4>
+<p>根据主从复制的原理，从库要想与主库同步，必须要有一个可以连接主库的账号，并且这个账号是在主库上创建，权限是允许从库连接主库并同步数据；</p>
+<p><strong>1）登陆数据库创建账号</strong></p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; grant replication slave <span class="keyword">on</span> *.* <span class="keyword">to</span> <span class="string">'rep'</span>@<span class="string">'192.168.1.%'</span> identified <span class="keyword">by</span> <span class="string">'123456'</span>;</span><br><span class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; flush privileges;</span><br><span class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>replication slave为允许MySQL Slave同步的必须权限，此处不要授权all权限；</p>
+</blockquote>
+<p><strong>2）检查主库创建的rep复制账号</strong></p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select user,host from mysql.user;   # 检查账号命令</span><br><span class="line"><span class="code">+------+</span>-------------+</span><br><span class="line">| user | host        |</span><br><span class="line"><span class="code">+------+</span>-------------+</span><br><span class="line">| root | 127.0.0.1   |</span><br><span class="line">| rep  | 192.168.1.% |      # 出现这一行表示复制账号已经配置好了</span><br><span class="line">| root | ::1         |</span><br><span class="line">|      | db1         |</span><br><span class="line">| root | db1         |</span><br><span class="line">|      | localhost   |</span><br><span class="line">| root | localhost   |</span><br><span class="line"><span class="code">+------+</span>-------------+</span><br><span class="line">7 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; show grants for rep@<span class="emphasis">'192.168.1.%'</span>;     # 查看授权权限命令</span><br><span class="line"><span class="code">+---------------------------------------------------------------- ----------------------------------------------------------+</span></span><br><span class="line">| Grants for rep@192.168.1.%                                                                                               |</span><br><span class="line"><span class="code">+--------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| GRANT REPLICATION SLAVE ON <span class="strong">*.*</span> TO <span class="emphasis">'rep'</span>@<span class="emphasis">'192.168.1.%'</span> IDENTIFIED BY PASSWORD <span class="emphasis">'*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9'</span> |</span><br><span class="line"><span class="code">+--------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+<h3><span id="对主数据库锁表只读后进行备份">对主数据库锁表只读后进行备份</span></h3>
+<p><strong>1）对主数据库锁表只读（当前窗口不要关闭）</strong></p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; flush table with read lock;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 默认情况下，自动解锁的时长参数值设置如下；</span></span><br><span class="line">mysql&gt; show variables like '%timeout%';</span><br><span class="line">+-----------------------------+----------+</span><br><span class="line">|<span class="string"> Variable_name               </span>|<span class="string"> Value    </span>|</span><br><span class="line">+-----------------------------+----------+</span><br><span class="line">|<span class="string"> connect_timeout             </span>|<span class="string"> 10       </span>|</span><br><span class="line">|<span class="string"> delayed_insert_timeout      </span>|<span class="string"> 300      </span>|</span><br><span class="line">|<span class="string"> innodb_flush_log_at_timeout </span>|<span class="string"> 1        </span>|</span><br><span class="line">|<span class="string"> innodb_lock_wait_timeout    </span>|<span class="string"> 120      </span>|</span><br><span class="line">|<span class="string"> innodb_rollback_on_timeout  </span>|<span class="string"> OFF      </span>|</span><br><span class="line">|<span class="string"> interactive_timeout         </span>|<span class="string"> 28800    </span>|</span><br><span class="line">|<span class="string"> lock_wait_timeout           </span>|<span class="string"> 31536000 </span>|</span><br><span class="line">|<span class="string"> net_read_timeout            </span>|<span class="string"> 30       </span>|</span><br><span class="line">|<span class="string"> net_write_timeout           </span>|<span class="string"> 60       </span>|</span><br><span class="line">|<span class="string"> rpl_stop_slave_timeout      </span>|<span class="string"> 31536000 </span>|</span><br><span class="line">|<span class="string"> slave_net_timeout           </span>|<span class="string"> 3600     </span>|</span><br><span class="line">|<span class="string"> wait_timeout                </span>|<span class="string"> 28800    </span>|</span><br><span class="line">+-----------------------------+----------+</span><br><span class="line">12 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+<p><strong>2）锁表后查看主库的状态</strong></p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show master status;</span><br><span class="line"><span class="code">+------------------+</span>----------<span class="code">+--------------+</span>------------------<span class="code">+-------------------+</span></span><br><span class="line">| File             | Position | Binlog<span class="emphasis">_Do_</span>DB | Binlog<span class="emphasis">_Ignore_</span>DB | Executed<span class="emphasis">_Gtid_</span>Set |</span><br><span class="line"><span class="code">+------------------+</span>----------<span class="code">+--------------+</span>------------------<span class="code">+-------------------+</span></span><br><span class="line">| mysql-bin.000002 |      120 |              |                  |                   |</span><br><span class="line"><span class="code">+------------------+</span>----------<span class="code">+--------------+</span>------------------<span class="code">+-------------------+</span></span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+<h4><span id="导出主库数据">导出主库数据</span></h4>
+<p>锁表后，一定要单开一个新的SSH窗口(否则会锁表失败)，导出数据库中的所有数据，如果数据库很大（30GB以上），并且允许停机，则也可以停库直接打包数据文件进行迁移，那样做速度更快；</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@db1 data]# mysqldump -uroot -pbaishuchao -A -B |gzip &gt; /server/backup/bak<span class="emphasis">_$(date +%F).sql.gz</span></span><br><span class="line"><span class="emphasis">[root@db1 data]# ll /server/backup/bak*</span></span><br><span class="line"><span class="emphasis">-rw-r--r-- 1 root root 179913 Jun 27 17:38 /server/backup/bak_</span>2019-06-27.sql.gz</span><br><span class="line">-rw-r--r-- 1 root root 179913 Jun 27 17:38 /server/backup/bak<span class="emphasis">_.sql.gz</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis"># 确保导出数据期间，数据库没有数据插入，倒库完毕后可以再检查一下主库的状态吧</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">mysql&gt; show master status;</span></span><br><span class="line"><span class="emphasis">+------------------+----------+--------------+------------------+-------------------+</span></span><br><span class="line"><span class="emphasis">| File             | Position | Binlog_</span>Do<span class="emphasis">_DB | Binlog_</span>Ignore<span class="emphasis">_DB | Executed_</span>Gtid<span class="emphasis">_Set |</span></span><br><span class="line"><span class="emphasis">+------------------+----------+--------------+------------------+-------------------+</span></span><br><span class="line"><span class="emphasis">| mysql-bin.000002 |      120 |              |                  |                   |</span></span><br><span class="line"><span class="emphasis">+------------------+----------+--------------+------------------+-------------------+</span></span><br><span class="line"><span class="emphasis">1 row in set (0.00 sec)</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis"># 导出数据库完毕后，解锁主库</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">mysql&gt; unlock tables;</span></span><br><span class="line"><span class="emphasis">Query OK, 0 rows affected (0.01 sec)</span></span><br></pre></td></tr></table></figure>
+<h4><span id="把从主库导出的mysql数据迁移到从库">把从主库导出的MySQL数据迁移到从库</span></h4>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="title">@db1</span> ~]# scp -rp /server/backup/bak_$(date +<span class="symbol">%F</span>).sql.gz root<span class="title">@192</span>.<span class="number">168.1</span>.<span class="number">61</span>:/opt</span><br><span class="line">root<span class="title">@192</span>.<span class="number">168.1</span>.<span class="number">61</span>'s password:</span><br><span class="line">bak_<span class="number">2019</span><span class="number">-06</span><span class="number">-27</span>.sql.gz                                                                                              <span class="number">100</span>%  <span class="number">176</span>KB   <span class="number">6.9</span>MB/s   <span class="number">00</span>:<span class="number">00</span></span><br></pre></td></tr></table></figure>
+<h3><span id="在mysql从库上执行的操作过程">在MySQL从库上执行的操作过程</span></h3>
+<h4><span id="设置server_id的值并关闭binlog功能参数">设置server_id的值并关闭binlog功能参数</span></h4>
+<p><strong>1）修改配置文件，配置从库</strong></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编辑</span></span><br><span class="line"><span class="section">[root@db2 ~]</span><span class="comment"># vim /etc/my.cnf</span></span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="comment">#log_bin = /application/mysql/data/mysql-bin</span></span><br><span class="line"><span class="attr">server_id</span> = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p><strong>2）检查配置参数后的结果</strong></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@db2 ~]</span><span class="comment"># egrep "server_id|log_bin" /etc/my.cnf</span></span><br><span class="line"><span class="comment">#log_bin = /application/mysql/data/mysql-bin</span></span><br><span class="line"><span class="attr">server_id</span> = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p><strong>3）重启从库</strong></p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@db2 ~]# /etc/init.d/mysqld restart</span><br><span class="line"><span class="function"><span class="title">Shutting</span></span> down MySQL.. SUCCESS!</span><br><span class="line"><span class="function"><span class="title">Starting</span></span> MySQL.. SUCCESS!</span><br></pre></td></tr></table></figure>
+<h4><span id="将主库数据恢复到从库">将主库数据恢复到从库</span></h4>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@db2</span> ~]<span class="meta"># zcat /opt/bak_2019-06-27.sql.gz |mysql</span></span><br></pre></td></tr></table></figure>
+<h4><span id="登陆从库配置参数">登陆从库配置参数</span></h4>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; CHANGE MASTER <span class="keyword">TO</span> <span class="attribute">MASTER_HOST</span>=<span class="string">'192.168.1.36'</span>;</span><br><span class="line">Query OK, 0 rows affected (0.04 sec)</span><br><span class="line"><span class="comment">#这个是主库ip</span></span><br><span class="line"></span><br><span class="line">mysql&gt; CHANGE MASTER <span class="keyword">TO</span> <span class="attribute">MASTER_PORT</span>=3306;</span><br><span class="line">Query OK, 0 rows affected (0.01 sec)</span><br><span class="line"><span class="comment">#主库端口</span></span><br><span class="line"></span><br><span class="line">mysql&gt; CHANGE MASTER <span class="keyword">TO</span> <span class="attribute">MASTER_USER</span>=<span class="string">'rep'</span>;</span><br><span class="line">Query OK, 0 rows affected (0.01 sec)  #主库建立的rep用户</span><br><span class="line"></span><br><span class="line">mysql&gt; CHANGE MASTER <span class="keyword">TO</span> <span class="attribute">MASTER_PASSWORD</span>=<span class="string">'123456'</span>;</span><br><span class="line">Query OK, 0 rows affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; CHANGE MASTER <span class="keyword">TO</span> <span class="attribute">MASTER_LOG_FILE</span>=<span class="string">'mysql-bin.000003'</span>;</span><br><span class="line">Query OK, 0 rows affected (0.02 sec)</span><br><span class="line"><span class="comment">#这里是show master status时看到的查看到的二进制日志文件名称</span></span><br><span class="line"></span><br><span class="line">mysql&gt; CHANGE MASTER <span class="keyword">TO</span> <span class="attribute">MASTER_LOG_POS</span>=120;</span><br><span class="line">Query OK, 0 rows affected (0.01 sec)</span><br><span class="line"><span class="comment">#这里是show master status时看到的查看到的二进制日志偏移量</span></span><br></pre></td></tr></table></figure>
+<h3><span id="启动主从同步开关并测试">启动主从同步开关并测试</span></h3>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">mysql&gt;</span> <span class="string">start</span> <span class="string">slave;</span></span><br><span class="line"><span class="string">Query</span> <span class="string">OK,</span> <span class="number">0</span> <span class="string">rows</span> <span class="string">affected</span> <span class="string">(0.03</span> <span class="string">sec)</span></span><br><span class="line"></span><br><span class="line"><span class="string">mysql&gt;</span> <span class="string">show</span> <span class="string">slave</span> <span class="string">status\G;</span></span><br><span class="line"><span class="string">***************************</span> <span class="number">1.</span> <span class="string">row</span> <span class="string">***************************</span></span><br><span class="line"><span class="attr">               Slave_IO_State:</span> <span class="string">Waiting</span> <span class="string">for</span> <span class="string">master</span> <span class="string">to</span> <span class="string">send</span> <span class="string">event</span></span><br><span class="line"><span class="attr">                  Master_Host:</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.36</span></span><br><span class="line"><span class="attr">                  Master_User:</span> <span class="string">rep</span></span><br><span class="line"><span class="attr">                  Master_Port:</span> <span class="number">3306</span></span><br><span class="line"><span class="attr">                Connect_Retry:</span> <span class="number">60</span></span><br><span class="line"><span class="attr">              Master_Log_File:</span> <span class="string">mysql-bin.000003</span></span><br><span class="line"><span class="attr">          Read_Master_Log_Pos:</span> <span class="number">120</span></span><br><span class="line"><span class="attr">               Relay_Log_File:</span> <span class="string">mysql-relay-bin.000002</span></span><br><span class="line"><span class="attr">                Relay_Log_Pos:</span> <span class="number">283</span></span><br><span class="line"><span class="attr">        Relay_Master_Log_File:</span> <span class="string">mysql-bin.000003</span></span><br><span class="line"><span class="attr">             Slave_IO_Running:</span> <span class="literal">Yes</span></span><br><span class="line"><span class="attr">            Slave_SQL_Running:</span> <span class="literal">Yes</span></span><br><span class="line"><span class="attr">              Replicate_Do_DB:</span></span><br><span class="line"><span class="attr">          Replicate_Ignore_DB:</span> <span class="string">mysql</span></span><br><span class="line"><span class="attr">           Replicate_Do_Table:</span></span><br><span class="line"><span class="attr">       Replicate_Ignore_Table:</span></span><br><span class="line"><span class="attr">      Replicate_Wild_Do_Table:</span></span><br><span class="line"><span class="attr">  Replicate_Wild_Ignore_Table:</span></span><br><span class="line"><span class="attr">                   Last_Errno:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">                   Last_Error:</span></span><br><span class="line"><span class="attr">                 Skip_Counter:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">          Exec_Master_Log_Pos:</span> <span class="number">120</span></span><br><span class="line"><span class="attr">              Relay_Log_Space:</span> <span class="number">456</span></span><br><span class="line"><span class="attr">              Until_Condition:</span> <span class="string">None</span></span><br><span class="line"><span class="attr">               Until_Log_File:</span></span><br><span class="line"><span class="attr">                Until_Log_Pos:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">           Master_SSL_Allowed:</span> <span class="literal">No</span></span><br><span class="line"><span class="attr">           Master_SSL_CA_File:</span></span><br><span class="line"><span class="attr">           Master_SSL_CA_Path:</span></span><br><span class="line"><span class="attr">              Master_SSL_Cert:</span></span><br><span class="line"><span class="attr">            Master_SSL_Cipher:</span></span><br><span class="line"><span class="attr">               Master_SSL_Key:</span></span><br><span class="line"><span class="attr">        Seconds_Behind_Master:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">Master_SSL_Verify_Server_Cert:</span> <span class="literal">No</span></span><br><span class="line"><span class="attr">                Last_IO_Errno:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">                Last_IO_Error:</span></span><br><span class="line"><span class="attr">               Last_SQL_Errno:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">               Last_SQL_Error:</span></span><br><span class="line"><span class="attr">  Replicate_Ignore_Server_Ids:</span></span><br><span class="line"><span class="attr">             Master_Server_Id:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">                  Master_UUID:</span> <span class="string">d278c028-75c2-11e8-9d6c-000c29d7a9ba</span></span><br><span class="line"><span class="attr">             Master_Info_File:</span> <span class="string">/application/mysql/data/master.info</span></span><br><span class="line"><span class="attr">                    SQL_Delay:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">          SQL_Remaining_Delay:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="attr">      Slave_SQL_Running_State:</span> <span class="string">Slave</span> <span class="string">has</span> <span class="string">read</span> <span class="string">all</span> <span class="string">relay</span> <span class="string">log;</span> <span class="string">waiting</span> <span class="string">for</span> <span class="string">the</span> <span class="string">slave</span> <span class="string">I/O</span> <span class="string">thread</span> <span class="string">to</span> <span class="string">update</span> <span class="string">it</span></span><br><span class="line"><span class="attr">           Master_Retry_Count:</span> <span class="number">86400</span></span><br><span class="line"><span class="attr">                  Master_Bind:</span></span><br><span class="line"><span class="attr">      Last_IO_Error_Timestamp:</span></span><br><span class="line"><span class="attr">     Last_SQL_Error_Timestamp:</span></span><br><span class="line"><span class="attr">               Master_SSL_Crl:</span></span><br><span class="line"><span class="attr">           Master_SSL_Crlpath:</span></span><br><span class="line"><span class="attr">           Retrieved_Gtid_Set:</span></span><br><span class="line"><span class="attr">            Executed_Gtid_Set:</span></span><br><span class="line"><span class="attr">                Auto_Position:</span> <span class="number">0</span></span><br><span class="line"><span class="number">1</span> <span class="string">row</span> <span class="string">in</span> <span class="string">set</span> <span class="string">(0.00</span> <span class="string">sec)</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>主从同步是否配置成功，请看Slave_IO_Running和 Slave_SQL_Running是否为yes</p>
+</blockquote>
+<p><strong>测试</strong></p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 主库执行</span></span><br><span class="line">[root@db1 ~]<span class="comment"># mysql -uroot -pbaishuchao</span></span><br><span class="line">Warning: Using a password <span class="keyword">on</span> <span class="keyword">the</span> command line interface can be insecure.</span><br><span class="line">Welcome <span class="keyword">to</span> <span class="keyword">the</span> MySQL monitor.  Commands <span class="keyword">end</span> <span class="keyword">with</span> ; <span class="keyword">or</span> \g.</span><br><span class="line">Your MySQL connection <span class="built_in">id</span> <span class="keyword">is</span> <span class="number">7</span></span><br><span class="line">Server <span class="built_in">version</span>: <span class="number">5.6</span><span class="number">.42</span>-<span class="built_in">log</span> Source distribution</span><br><span class="line"></span><br><span class="line">Copyright (c) <span class="number">2000</span>, <span class="number">2018</span>, Oracle <span class="keyword">and</span>/<span class="keyword">or</span> <span class="keyword">its</span> affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle <span class="keyword">is</span> a registered trademark <span class="keyword">of</span> Oracle Corporation <span class="keyword">and</span>/<span class="keyword">or</span> <span class="keyword">its</span></span><br><span class="line">affiliates. Other names may be trademarks <span class="keyword">of</span> their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type 'help;' <span class="keyword">or</span> '\h' <span class="keyword">for</span> help. Type '\c' <span class="keyword">to</span> clear <span class="keyword">the</span> current input statement.</span><br><span class="line"></span><br><span class="line">mysql&gt; create database db2;</span><br><span class="line">Query OK, <span class="number">1</span> row affected (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 从库查看，如果有db2，则主从同步执行配置成功</span></span><br><span class="line">mysql&gt; show databases;</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| Database           |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| information_schema |</span><br><span class="line">| baishuchao         |</span><br><span class="line">| db2                |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| test               |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line"><span class="number">6</span> rows <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2019/06/26/MySQL数据库日志详解/" data-toggle="tooltip" data-placement="top" title="MySQL数据库日志详解">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">MySQL主从复制原理描述</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">开始部署主从复制</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">环境信息</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">在主库（Master）上执行操作</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">在主库上建立用于主从同步的账号</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">对主数据库锁表只读后进行备份</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">导出主库数据</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">把从主库导出的MySQL数据迁移到从库</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">在MySQL从库上执行的操作过程</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">设置server_id的值并关闭binlog功能参数</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">将主库数据恢复到从库</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">4.3.</span> <span class="toc-nav-text">登陆从库配置参数</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">启动主从同步开关并测试</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#db" title="db">db</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://www.cnblogs.com/baishuchao" target="_blank">baishuchao</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/weixin_40720226" target="_blank">summerxhs</a></li>
+                    
+                        <li><a href="https://runcc.github.io" target="_blank">devops for python </a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "your-disqus-ID";
+    var disqus_identifier = "https://baishuchao.github.io/2019/06/27/MySQL之主从复制实战/";
+    var disqus_url = "https://baishuchao.github.io/2019/06/27/MySQL之主从复制实战/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                <p class="copyright text-muted">
+                    Copyright &copy; Hi,I&#39;m John 2019 
+                    <br>
+                    Theme by <a href="http://www.baishuchao.com">john</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://www.baishuchao.com">john</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://baishuchao.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://baishuchao.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
