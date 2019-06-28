@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          企业基于kubeadm平滑更新kubernetes集群 - Docker | Kubernetes
+        
+    </title>
+
+    <link rel="canonical" href="https://baishuchao.github.io/2019/06/28/企业基于kubeadm平滑更新kubernetes集群/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('updatelog.jpg')
+            /*post*/
+        
+    }
+    
+    #signature{
+        background-image: url('/undefined');
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
+                            
+                        </div>
+                        <h1>企业基于kubeadm平滑更新kubernetes集群</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Hi,I'm John on
+                            2019-06-28
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Hi,I&#39;m John</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3><span id="环境介绍">环境介绍</span></h3>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@ks-master01 ~]# kubectl get nodes</span><br><span class="line">NAME          STATUS   ROLES    AGE   VERSION</span><br><span class="line">ks-master01   Ready    master   <span class="number">10</span>d   v1<span class="number">.14</span><span class="number">.3</span></span><br><span class="line">ks-master02   Ready    master   <span class="number">10</span>d   v1<span class="number">.14</span><span class="number">.3</span></span><br><span class="line">ks-master03   Ready    master   <span class="number">10</span>d   v1<span class="number">.14</span><span class="number">.3</span></span><br><span class="line">ks-node1      Ready    &lt;none&gt;   <span class="number">10</span>d   v1<span class="number">.14</span><span class="number">.3</span></span><br><span class="line">ks-node2      Ready    &lt;none&gt;   <span class="number">10</span>d   v1<span class="number">.14</span><span class="number">.3</span></span><br><span class="line">ks-node3      Ready    &lt;none&gt;   <span class="number">10</span>d   v1<span class="number">.14</span><span class="number">.3</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>三台ks-master与三台ks-node构建哒高可用环境，kubernetes版本为v1.14.3，更新到目前最新版本v1.15.0</li>
+</ul>
+<h3><span id="升级kubeadm-kubelet-kubectl">升级kubeadm kubelet kubectl</span></h3>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="title">@ks-master01</span> ~]# yum install -y kubelet kubeadm kubectl</span><br><span class="line">Loaded plugins: fastestmirror</span><br><span class="line">Determining fastest mirrors</span><br><span class="line">epel/<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>/metalink                                                                                                                                                    | <span class="number">8.1</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line"> * base: mirrors.aliyun.com</span><br><span class="line"> * epel: mirrors.aliyun.com</span><br><span class="line"> * extras: mirrors.aliyun.com</span><br><span class="line"> * updates: mirrors.aliyun.com</span><br><span class="line">base                                                                                                                                                                    | <span class="number">3.6</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">docker-ce-stable                                                                                                                                                        | <span class="number">3.5</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">epel                                                                                                                                                                    | <span class="number">5.3</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">extras                                                                                                                                                                  | <span class="number">3.4</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">kubernetes/signature                                                                                                                                                    |  <span class="number">454</span> B  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">kubernetes/signature                                                                                                                                                    | <span class="number">1.4</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> !!!</span><br><span class="line">updates                                                                                                                                                                 | <span class="number">3.4</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line">epel/<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>/updateinfo         FAILED</span><br><span class="line">http://mirrors.aliyun.com/epel/<span class="number">7</span>/<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>/repodata/<span class="number">9</span><span class="keyword">c</span><span class="number">8</span>b<span class="number">92e64</span>dd<span class="number">093</span>a<span class="number">693053e3</span><span class="keyword">c</span><span class="number">27</span>b<span class="number">24</span>a<span class="number">2</span>fd<span class="number">9</span>babe<span class="number">2</span>b<span class="number">4</span>f<span class="number">7</span>caaefd<span class="number">90096</span>db<span class="number">7</span>b<span class="number">54045</span>d-updateinfo.xml.bz<span class="number">2</span>: [Errno <span class="number">14</span>] curl<span class="symbol">#6</span> - <span class="string">"Could not resolve host: mirrors.aliyun.com; Unknown error"</span></span><br><span class="line">Trying other mirror.</span><br><span class="line">(<span class="number">1</span>/<span class="number">6</span>): extras/<span class="number">7</span>/<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>/primary_db                                                                                                                                       | <span class="number">205</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">05</span></span><br><span class="line">(<span class="number">2</span>/<span class="number">6</span>): kubernetes/primary                                                                                                                                               |  <span class="number">50</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">05</span></span><br><span class="line">(<span class="number">3</span>/<span class="number">6</span>): epel/<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>/primary_db                                                                                                                                           | <span class="number">6.8</span> MB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">06</span></span><br><span class="line">(<span class="number">4</span>/<span class="number">6</span>): updates/<span class="number">7</span>/<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>/primary_db                                                                                                                                      | <span class="number">6.4</span> MB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">07</span></span><br><span class="line">(<span class="number">5</span>/<span class="number">6</span>): docker-ce-stable/<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>/primary_db                                                                                                                               |  <span class="number">29</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">11</span></span><br><span class="line">(<span class="number">6</span>/<span class="number">6</span>): epel/<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>/updateinfo                                                                                                                                           | <span class="number">977</span> kB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">06</span></span><br><span class="line">kubernetes                                                                                                                                                                             <span class="number">363</span>/<span class="number">363</span></span><br><span class="line">Resolving Dependencies</span><br><span class="line">--&gt; Running transaction check</span><br><span class="line">---&gt; Package kubeadm.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span> <span class="number">0</span>:<span class="number">1.14</span>.<span class="number">3</span><span class="number">-0</span> will be updated</span><br><span class="line">---&gt; Package kubeadm.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span> <span class="number">0</span>:<span class="number">1.15</span>.<span class="number">0</span><span class="number">-0</span> will be an update</span><br><span class="line">---&gt; Package kubectl.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span> <span class="number">0</span>:<span class="number">1.14</span>.<span class="number">3</span><span class="number">-0</span> will be updated</span><br><span class="line">---&gt; Package kubectl.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span> <span class="number">0</span>:<span class="number">1.15</span>.<span class="number">0</span><span class="number">-0</span> will be an update</span><br><span class="line">---&gt; Package kubelet.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span> <span class="number">0</span>:<span class="number">1.14</span>.<span class="number">3</span><span class="number">-0</span> will be updated</span><br><span class="line"></span><br><span class="line">▽</span><br><span class="line">apiVersion: kubeproxy.config.k<span class="number">8</span>s.io/v<span class="number">1</span>alpha<span class="number">1</span></span><br><span class="line">---&gt; Package kubelet.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span> <span class="number">0</span>:<span class="number">1.15</span>.<span class="number">0</span><span class="number">-0</span> will be an update</span><br><span class="line">--&gt; Finished Dependency Resolution</span><br><span class="line"></span><br><span class="line">Dependencies Resolved</span><br><span class="line"></span><br><span class="line">===============================================================================================================================================================================================</span><br><span class="line"> Package                                      Arch                                        Version                                        Repository                                       Size</span><br><span class="line">===============================================================================================================================================================================================</span><br><span class="line">Updating:</span><br><span class="line"> kubeadm                                      <span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                      <span class="number">1.15</span>.<span class="number">0</span><span class="number">-0</span>                                       kubernetes                                      <span class="number">8.9</span> M</span><br><span class="line"> kubectl                                      <span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                      <span class="number">1.15</span>.<span class="number">0</span><span class="number">-0</span>                                       kubernetes                                      <span class="number">9.5</span> M</span><br><span class="line"> kubelet                                      <span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                      <span class="number">1.15</span>.<span class="number">0</span><span class="number">-0</span>                                       kubernetes                                       <span class="number">22</span> M</span><br><span class="line"></span><br><span class="line">Transaction Summary</span><br><span class="line">===============================================================================================================================================================================================</span><br><span class="line">Upgrade  <span class="number">3</span> Packages</span><br><span class="line"></span><br><span class="line">Total download size: <span class="number">40</span> M</span><br><span class="line">Downloading packages:</span><br><span class="line">Delta RPMs disabled because /usr/bin/applydeltarpm not installed.</span><br><span class="line">(<span class="number">1</span>/<span class="number">3</span>): <span class="number">3</span>d<span class="number">5</span>dd<span class="number">3e6</span>a<span class="number">783</span>afcd<span class="number">660</span>f<span class="number">9954</span>dec<span class="number">3999</span>efa<span class="number">7e498</span>cac<span class="number">2</span><span class="keyword">c</span><span class="number">14</span>d<span class="number">63725</span>fafa<span class="number">1</span>b<span class="number">264</span>f<span class="number">14</span>-kubectl<span class="number">-1.15</span>.<span class="number">0</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>.rpm                                                                     | <span class="number">9.5</span> MB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">10</span></span><br><span class="line">(<span class="number">2</span>/<span class="number">3</span>): <span class="number">7143</span>f<span class="number">62</span>ad<span class="number">72</span>a<span class="number">1</span>eb<span class="number">1849</span>d<span class="number">5</span><span class="keyword">c</span><span class="number">1e9490567</span>d<span class="number">405870</span>d<span class="number">2</span><span class="keyword">c</span><span class="number">00</span>ab<span class="number">2</span>b<span class="number">577</span>f<span class="number">1</span>f<span class="number">3</span>bdf<span class="number">9</span>f<span class="number">547</span>ba-kubeadm<span class="number">-1.15</span>.<span class="number">0</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>.rpm                                                                     | <span class="number">8.9</span> MB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">11</span></span><br><span class="line">(<span class="number">3</span>/<span class="number">3</span>): <span class="number">557</span><span class="keyword">c</span><span class="number">2</span>f<span class="number">4e11</span>a<span class="number">3</span>ab<span class="number">262</span><span class="keyword">c</span><span class="number">72</span>a<span class="number">52</span>d<span class="number">240</span>f<span class="number">2</span>f<span class="number">440</span><span class="keyword">c</span><span class="number">63</span>f<span class="number">539911</span>ff<span class="number">5e05237904893</span>fc<span class="number">36</span>bb-kubelet<span class="number">-1.15</span>.<span class="number">0</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>.rpm                                                                     |  <span class="number">22</span> MB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">06</span></span><br><span class="line">-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span><br><span class="line">Total                                                                                                                                                          <span class="number">2.4</span> MB/s |  <span class="number">40</span> MB  <span class="number">00</span>:<span class="number">00</span>:<span class="number">16</span></span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Updating   : kubectl<span class="number">-1.15</span>.<span class="number">0</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                                                                                                                                     <span class="number">1</span>/<span class="number">6</span></span><br><span class="line">  Updating   : kubelet<span class="number">-1.15</span>.<span class="number">0</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                                                                                                                                     <span class="number">2</span>/<span class="number">6</span></span><br><span class="line">  Updating   : kubeadm<span class="number">-1.15</span>.<span class="number">0</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                                                                                                                                     <span class="number">3</span>/<span class="number">6</span></span><br><span class="line">  Cleanup    : kubeadm<span class="number">-1.14</span>.<span class="number">3</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                                                                                                                                     <span class="number">4</span>/<span class="number">6</span></span><br><span class="line">  Cleanup    : kubectl<span class="number">-1.14</span>.<span class="number">3</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                                                                                                                                     <span class="number">5</span>/<span class="number">6</span></span><br><span class="line">  Cleanup    : kubelet<span class="number">-1.14</span>.<span class="number">3</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                                                                                                                                     <span class="number">6</span>/<span class="number">6</span></span><br><span class="line">  Verifying  : kubeadm<span class="number">-1.15</span>.<span class="number">0</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                                                                                                                                     <span class="number">1</span>/<span class="number">6</span></span><br><span class="line">  Verifying  : kubelet<span class="number">-1.15</span>.<span class="number">0</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                                                                                                                                     <span class="number">2</span>/<span class="number">6</span></span><br><span class="line">  Verifying  : kubectl<span class="number">-1.15</span>.<span class="number">0</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                                                                                                                                     <span class="number">3</span>/<span class="number">6</span></span><br><span class="line">  Verifying  : kubelet<span class="number">-1.14</span>.<span class="number">3</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                                                                                                                                     <span class="number">4</span>/<span class="number">6</span></span><br><span class="line">  Verifying  : kubeadm<span class="number">-1.14</span>.<span class="number">3</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                                                                                                                                     <span class="number">5</span>/<span class="number">6</span></span><br><span class="line">  Verifying  : kubectl<span class="number">-1.14</span>.<span class="number">3</span><span class="number">-0</span>.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span>                                                                                                                                                     <span class="number">6</span>/<span class="number">6</span></span><br><span class="line"></span><br><span class="line">Updated:</span><br><span class="line">  kubeadm.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span> <span class="number">0</span>:<span class="number">1.15</span>.<span class="number">0</span><span class="number">-0</span>                                      kubectl.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span> <span class="number">0</span>:<span class="number">1.15</span>.<span class="number">0</span><span class="number">-0</span>                                      kubelet.<span class="keyword">x</span><span class="number">86</span>_<span class="number">64</span> <span class="number">0</span>:<span class="number">1.15</span>.<span class="number">0</span><span class="number">-0</span></span><br><span class="line"></span><br><span class="line">Complete!</span><br></pre></td></tr></table></figure>
+<blockquote>
+<blockquote>
+<p>所有节点上面执行</p>
+</blockquote>
+</blockquote>
+<h3><span id="检视集群">检视集群</span></h3>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">[root@ks-master01 ~]<span class="comment"># kubeadm upgrade plan</span></span><br><span class="line">[upgrade/config] Making sure the configuration is correct:</span><br><span class="line">[upgrade/config] Reading configuration from the cluster...</span><br><span class="line">[upgrade/config] FYI: You can look at this config file <span class="keyword">with</span> <span class="string">'kubectl -n kube-system get cm kubeadm-config -oyaml'</span></span><br><span class="line">[preflight] Running pre-flight checks.</span><br><span class="line">[<span class="keyword">upgrade</span>] Making sure the cluster <span class="keyword">is</span> healthy:</span><br><span class="line">[<span class="keyword">upgrade</span>] Fetching available <span class="keyword">versions</span> <span class="keyword">to</span> <span class="keyword">upgrade</span> <span class="keyword">to</span></span><br><span class="line">[<span class="keyword">upgrade</span>/<span class="keyword">versions</span>] Cluster <span class="keyword">version</span>: v1<span class="number">.14</span><span class="number">.3</span></span><br><span class="line">[<span class="keyword">upgrade</span>/<span class="keyword">versions</span>] kubeadm <span class="keyword">version</span>: v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">W0628 <span class="number">14</span>:<span class="number">07</span>:<span class="number">50.685869</span>   <span class="number">59582</span> version.go:<span class="number">98</span>] could <span class="keyword">not</span> <span class="keyword">fetch</span> a Kubernetes <span class="keyword">version</span> <span class="keyword">from</span> the internet: unable <span class="keyword">to</span> <span class="keyword">get</span> <span class="keyword">URL</span> <span class="string">"https://dl.k8s.io/release/stable.txt"</span>: <span class="keyword">Get</span> https://dl.k8s.io/<span class="keyword">release</span>/stable.txt: net/<span class="keyword">http</span>: request canceled <span class="keyword">while</span> waiting <span class="keyword">for</span> <span class="keyword">connection</span> (Client.Timeout exceeded <span class="keyword">while</span> awaiting headers)</span><br><span class="line">W0628 <span class="number">14</span>:<span class="number">07</span>:<span class="number">50.685949</span>   <span class="number">59582</span> version.go:<span class="number">99</span>] falling back <span class="keyword">to</span> the <span class="keyword">local</span> <span class="keyword">client</span> <span class="keyword">version</span>: v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">[<span class="keyword">upgrade</span>/<span class="keyword">versions</span>] Latest stable <span class="keyword">version</span>: v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">W0628 <span class="number">14</span>:<span class="number">08</span>:<span class="number">00.752018</span>   <span class="number">59582</span> version.go:<span class="number">98</span>] could <span class="keyword">not</span> <span class="keyword">fetch</span> a Kubernetes <span class="keyword">version</span> <span class="keyword">from</span> the internet: unable <span class="keyword">to</span> <span class="keyword">get</span> <span class="keyword">URL</span> <span class="string">"https://dl.k8s.io/release/stable-1.14.txt"</span>: <span class="keyword">Get</span> https://dl.k8s.io/<span class="keyword">release</span>/stable<span class="number">-1.14</span>.txt: net/<span class="keyword">http</span>: request canceled <span class="keyword">while</span> waiting <span class="keyword">for</span> <span class="keyword">connection</span> (Client.Timeout exceeded <span class="keyword">while</span> awaiting headers)</span><br><span class="line">W0628 <span class="number">14</span>:<span class="number">08</span>:<span class="number">00.752052</span>   <span class="number">59582</span> version.go:<span class="number">99</span>] falling back <span class="keyword">to</span> the <span class="keyword">local</span> <span class="keyword">client</span> <span class="keyword">version</span>: v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">[<span class="keyword">upgrade</span>/<span class="keyword">versions</span>] Latest <span class="keyword">version</span> <span class="keyword">in</span> the v1<span class="number">.14</span> series: v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">External</span> components that should be upgraded manually <span class="keyword">before</span> you <span class="keyword">upgrade</span> the control plane <span class="keyword">with</span> <span class="string">'kubeadm upgrade apply'</span>:</span><br><span class="line">COMPONENT   <span class="keyword">CURRENT</span>   AVAILABLE</span><br><span class="line">Etcd        <span class="number">3.3</span><span class="number">.11</span>    <span class="number">3.3</span><span class="number">.10</span></span><br><span class="line"></span><br><span class="line">Components that must be upgraded manually <span class="keyword">after</span> you have upgraded the control plane <span class="keyword">with</span> <span class="string">'kubeadm upgrade apply'</span>:</span><br><span class="line">COMPONENT   <span class="keyword">CURRENT</span>       AVAILABLE</span><br><span class="line">Kubelet     <span class="number">6</span> x v1<span class="number">.14</span><span class="number">.3</span>   v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Upgrade</span> <span class="keyword">to</span> the latest <span class="keyword">version</span> <span class="keyword">in</span> the v1<span class="number">.14</span> series:</span><br><span class="line"></span><br><span class="line">COMPONENT            <span class="keyword">CURRENT</span>   AVAILABLE</span><br><span class="line">API <span class="keyword">Server</span>           v1<span class="number">.14</span><span class="number">.3</span>   v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">Controller Manager   v1<span class="number">.14</span><span class="number">.3</span>   v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">Scheduler            v1<span class="number">.14</span><span class="number">.3</span>   v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">Kube Proxy           v1<span class="number">.14</span><span class="number">.3</span>   v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">CoreDNS              <span class="number">1.3</span><span class="number">.1</span>     <span class="number">1.3</span><span class="number">.1</span></span><br><span class="line"></span><br><span class="line">You can <span class="keyword">now</span> <span class="keyword">apply</span> the <span class="keyword">upgrade</span> <span class="keyword">by</span> executing the <span class="keyword">following</span> command:</span><br><span class="line"></span><br><span class="line">	kubeadm <span class="keyword">upgrade</span> <span class="keyword">apply</span> v1<span class="number">.15</span><span class="number">.0</span>     <span class="comment"># 可以看到可以升级v1.15.0 </span></span><br><span class="line"></span><br><span class="line">_____________________________________________________________________</span><br></pre></td></tr></table></figure>
+<h3><span id="升级master节点">升级Master节点</span></h3>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">[root@ks-master01 ~]<span class="comment"># kubeadm upgrade apply v1.15.0</span></span><br><span class="line">[upgrade/config] Making sure the configuration is correct:</span><br><span class="line">[upgrade/config] Reading configuration from the cluster...</span><br><span class="line">[upgrade/config] FYI: You can look at this config file <span class="keyword">with</span> <span class="string">'kubectl -n kube-system get cm kubeadm-config -oyaml'</span></span><br><span class="line">[preflight] Running pre-flight checks.</span><br><span class="line">[<span class="keyword">upgrade</span>] Making sure the cluster <span class="keyword">is</span> healthy:</span><br><span class="line">[<span class="keyword">upgrade</span>/<span class="keyword">version</span>] You have chosen <span class="keyword">to</span> <span class="keyword">change</span> the cluster <span class="keyword">version</span> <span class="keyword">to</span> <span class="string">"v1.15.0"</span></span><br><span class="line">[<span class="keyword">upgrade</span>/<span class="keyword">versions</span>] Cluster <span class="keyword">version</span>: v1<span class="number">.14</span><span class="number">.3</span></span><br><span class="line">[<span class="keyword">upgrade</span>/<span class="keyword">versions</span>] kubeadm <span class="keyword">version</span>: v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">[<span class="keyword">upgrade</span>/<span class="keyword">confirm</span>] <span class="keyword">Are</span> you sure you want <span class="keyword">to</span> proceed <span class="keyword">with</span> the <span class="keyword">upgrade</span>? [y/N]: y</span><br><span class="line">[<span class="keyword">upgrade</span>/prepull] Will prepull images <span class="keyword">for</span> components [kube-apiserver kube-controller-manager kube-scheduler]</span><br><span class="line">[<span class="keyword">upgrade</span>/prepull] Prepulling image <span class="keyword">for</span> component kube-scheduler.</span><br><span class="line">[<span class="keyword">upgrade</span>/prepull] Prepulling image <span class="keyword">for</span> component kube-apiserver.</span><br><span class="line">[<span class="keyword">upgrade</span>/prepull] Prepulling image <span class="keyword">for</span> component kube-controller-manager.</span><br><span class="line">[apiclient] <span class="keyword">Found</span> <span class="number">3</span> Pods <span class="keyword">for</span> label selector k8s-app=<span class="keyword">upgrade</span>-prepull-kube-scheduler</span><br><span class="line">[apiclient] <span class="keyword">Found</span> <span class="number">3</span> Pods <span class="keyword">for</span> label selector k8s-app=<span class="keyword">upgrade</span>-prepull-kube-controller-manager</span><br><span class="line">[apiclient] <span class="keyword">Found</span> <span class="number">3</span> Pods <span class="keyword">for</span> label selector k8s-app=<span class="keyword">upgrade</span>-prepull-kube-apiserver</span><br><span class="line">[<span class="keyword">upgrade</span>/prepull] Prepulled image <span class="keyword">for</span> component kube-controller-manager.</span><br><span class="line">[<span class="keyword">upgrade</span>/prepull] Prepulled image <span class="keyword">for</span> component kube-apiserver.</span><br><span class="line">[<span class="keyword">upgrade</span>/prepull] Prepulled image <span class="keyword">for</span> component kube-scheduler.</span><br><span class="line">[<span class="keyword">upgrade</span>/prepull] Successfully prepulled the images <span class="keyword">for</span> all the control plane components</span><br><span class="line">[<span class="keyword">upgrade</span>/<span class="keyword">apply</span>] Upgrading your <span class="keyword">Static</span> Pod-hosted control plane <span class="keyword">to</span> <span class="keyword">version</span> <span class="string">"v1.15.0"</span>...</span><br><span class="line"><span class="keyword">Static</span> pod: kube-apiserver-ks-master01 <span class="keyword">hash</span>: <span class="number">6</span>d07128ddda660b9e650e562b9899bad</span><br><span class="line"><span class="keyword">Static</span> pod: kube-controller-manager-ks-master01 <span class="keyword">hash</span>: <span class="number">9499</span>b8c48a248e1f23e181803a640915</span><br><span class="line"><span class="keyword">Static</span> pod: kube-scheduler-ks-master01 <span class="keyword">hash</span>: <span class="number">529</span>fe92a2e33decd793da38bcb616cd3</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Writing <span class="keyword">new</span> <span class="keyword">Static</span> Pod manifests <span class="keyword">to</span> <span class="string">"/etc/kubernetes/tmp/kubeadm-upgraded-manifests476897848"</span></span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Preparing <span class="keyword">for</span> <span class="string">"kube-apiserver"</span> <span class="keyword">upgrade</span></span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Renewing apiserver certificate</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Renewing apiserver-kubelet-<span class="keyword">client</span> certificate</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Renewing front-proxy-<span class="keyword">client</span> certificate</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Moved <span class="keyword">new</span> manifest <span class="keyword">to</span> <span class="string">"/etc/kubernetes/manifests/kube-apiserver.yaml"</span> <span class="keyword">and</span> backed up <span class="keyword">old</span> manifest <span class="keyword">to</span> <span class="string">"/etc/kubernetes/tmp/kubeadm-backup-manifests-2019-06-28-14-11-26/kube-apiserver.yaml"</span></span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Waiting <span class="keyword">for</span> the kubelet <span class="keyword">to</span> restart the component</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] This might take a <span class="keyword">minute</span> <span class="keyword">or</span> longer depending <span class="keyword">on</span> the component/<span class="keyword">version</span> gap (<span class="keyword">timeout</span> <span class="number">5</span>m0s)</span><br><span class="line"><span class="keyword">Static</span> pod: kube-apiserver-ks-master01 <span class="keyword">hash</span>: <span class="number">6</span>d07128ddda660b9e650e562b9899bad</span><br><span class="line"><span class="keyword">Static</span> pod: kube-apiserver-ks-master01 <span class="keyword">hash</span>: <span class="number">6</span>d07128ddda660b9e650e562b9899bad</span><br><span class="line"><span class="keyword">Static</span> pod: kube-apiserver-ks-master01 <span class="keyword">hash</span>: <span class="number">6</span>d07128ddda660b9e650e562b9899bad</span><br><span class="line"><span class="keyword">Static</span> pod: kube-apiserver-ks-master01 <span class="keyword">hash</span>: cb7e96004ba8525646b52ba4148518fa</span><br><span class="line">[apiclient] <span class="keyword">Found</span> <span class="number">3</span> Pods <span class="keyword">for</span> label selector component=kube-apiserver</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Component <span class="string">"kube-apiserver"</span> upgraded successfully!</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Preparing <span class="keyword">for</span> <span class="string">"kube-controller-manager"</span> <span class="keyword">upgrade</span></span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Renewing controller-manager.conf certificate</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Moved <span class="keyword">new</span> manifest <span class="keyword">to</span> <span class="string">"/etc/kubernetes/manifests/kube-controller-manager.yaml"</span> <span class="keyword">and</span> backed up <span class="keyword">old</span> manifest <span class="keyword">to</span> <span class="string">"/etc/kubernetes/tmp/kubeadm-backup-manifests-2019-06-28-14-11-26/kube-controller-manager.yaml"</span></span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Waiting <span class="keyword">for</span> the kubelet <span class="keyword">to</span> restart the component</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] This might take a <span class="keyword">minute</span> <span class="keyword">or</span> longer depending <span class="keyword">on</span> the component/<span class="keyword">version</span> gap (<span class="keyword">timeout</span> <span class="number">5</span>m0s)</span><br><span class="line"><span class="keyword">Static</span> pod: kube-controller-manager-ks-master01 <span class="keyword">hash</span>: <span class="number">9499</span>b8c48a248e1f23e181803a640915</span><br><span class="line"><span class="keyword">Static</span> pod: kube-controller-manager-ks-master01 <span class="keyword">hash</span>: e06eb9a1863bbce5c97c78c7f88591de</span><br><span class="line">[apiclient] <span class="keyword">Found</span> <span class="number">3</span> Pods <span class="keyword">for</span> label selector component=kube-controller-manager</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Component <span class="string">"kube-controller-manager"</span> upgraded successfully!</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Preparing <span class="keyword">for</span> <span class="string">"kube-scheduler"</span> <span class="keyword">upgrade</span></span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Renewing scheduler.conf certificate</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Moved <span class="keyword">new</span> manifest <span class="keyword">to</span> <span class="string">"/etc/kubernetes/manifests/kube-scheduler.yaml"</span> <span class="keyword">and</span> backed up <span class="keyword">old</span> manifest <span class="keyword">to</span> <span class="string">"/etc/kubernetes/tmp/kubeadm-backup-manifests-2019-06-28-14-11-26/kube-scheduler.yaml"</span></span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Waiting <span class="keyword">for</span> the kubelet <span class="keyword">to</span> restart the component</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] This might take a <span class="keyword">minute</span> <span class="keyword">or</span> longer depending <span class="keyword">on</span> the component/<span class="keyword">version</span> gap (<span class="keyword">timeout</span> <span class="number">5</span>m0s)</span><br><span class="line"><span class="keyword">Static</span> pod: kube-scheduler-ks-master01 <span class="keyword">hash</span>: <span class="number">529</span>fe92a2e33decd793da38bcb616cd3</span><br><span class="line"><span class="keyword">Static</span> pod: kube-scheduler-ks-master01 <span class="keyword">hash</span>: <span class="number">3</span>f870b1ade82dfb7e434c2862adf7402</span><br><span class="line">[apiclient] <span class="keyword">Found</span> <span class="number">3</span> Pods <span class="keyword">for</span> label selector component=kube-scheduler</span><br><span class="line">[<span class="keyword">upgrade</span>/staticpods] Component <span class="string">"kube-scheduler"</span> upgraded successfully!</span><br><span class="line">[upload-config] Storing the configuration used <span class="keyword">in</span> ConfigMap <span class="string">"kubeadm-config"</span> <span class="keyword">in</span> the <span class="string">"kube-system"</span> Namespace</span><br><span class="line">[kubelet] Creating a ConfigMap <span class="string">"kubelet-config-1.15"</span> <span class="keyword">in</span> namespace kube-<span class="keyword">system</span> <span class="keyword">with</span> the configuration <span class="keyword">for</span> the kubelets <span class="keyword">in</span> the cluster</span><br><span class="line">[kubelet-<span class="keyword">start</span>] Downloading configuration <span class="keyword">for</span> the kubelet <span class="keyword">from</span> the <span class="string">"kubelet-config-1.15"</span> ConfigMap <span class="keyword">in</span> the kube-<span class="keyword">system</span> namespace</span><br><span class="line">[kubelet-<span class="keyword">start</span>] Writing kubelet configuration <span class="keyword">to</span> <span class="keyword">file</span> <span class="string">"/var/lib/kubelet/config.yaml"</span></span><br><span class="line">[bootstrap-token] configured RBAC <span class="keyword">rules</span> <span class="keyword">to</span> <span class="keyword">allow</span> Node Bootstrap tokens <span class="keyword">to</span> post CSRs <span class="keyword">in</span> <span class="keyword">order</span> <span class="keyword">for</span> nodes <span class="keyword">to</span> <span class="keyword">get</span> <span class="keyword">long</span> term certificate credentials</span><br><span class="line">[bootstrap-token] configured RBAC <span class="keyword">rules</span> <span class="keyword">to</span> <span class="keyword">allow</span> the csrapprover controller automatically approve CSRs <span class="keyword">from</span> a Node Bootstrap Token</span><br><span class="line">[bootstrap-token] configured RBAC <span class="keyword">rules</span> <span class="keyword">to</span> <span class="keyword">allow</span> certificate rotation <span class="keyword">for</span> all node <span class="keyword">client</span> certificates <span class="keyword">in</span> the cluster</span><br><span class="line">[addons] Applied essential addon: CoreDNS</span><br><span class="line">[addons] Applied essential addon: kube-proxy</span><br><span class="line"></span><br><span class="line">[<span class="keyword">upgrade</span>/successful] <span class="keyword">SUCCESS</span>! Your cluster was upgraded <span class="keyword">to</span> <span class="string">"v1.15.0"</span>. Enjoy!</span><br><span class="line"></span><br><span class="line">[<span class="keyword">upgrade</span>/kubelet] <span class="keyword">Now</span> that your control plane <span class="keyword">is</span> upgraded, please proceed <span class="keyword">with</span> upgrading your kubelets <span class="keyword">if</span> you haven<span class="string">'t already done so.</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>三台master执行</p>
+</blockquote>
+<h3><span id="升级node节点">升级node节点</span></h3>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@ks</span>-node2 ~]<span class="meta"># \mv /tmp/kubelet /etc/sysconfig/</span></span><br><span class="line">[root<span class="symbol">@ks</span>-node2 ~]<span class="meta"># systemctl daemon-reload</span></span><br><span class="line">[root<span class="symbol">@ks</span>-node2 ~]<span class="meta"># systemctl restart kubelet</span></span><br><span class="line">[root<span class="symbol">@ks</span>-node2 ~]<span class="meta"># systemctl status kubelet</span></span><br><span class="line">● kubelet.service - kubelet: The Kubernetes Node Agent</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/kubelet.service<span class="comment">; enabled; vendor preset: disabled)</span></span><br><span class="line">  Drop-<span class="keyword">In</span>: /usr/lib/systemd/system/kubelet.service.d</span><br><span class="line">           └─<span class="number">10</span>-kubeadm.conf</span><br><span class="line">   Active: active (running) since Fri <span class="number">2019</span><span class="number">-06</span><span class="number">-28</span> <span class="number">23</span>:<span class="number">15</span>:<span class="number">12</span> CST<span class="comment">; 421ms ago</span></span><br><span class="line">     Docs: https://kubernetes.io/docs/</span><br><span class="line"> Main PID: <span class="number">7483</span> (kubelet)</span><br><span class="line">   CGroup: /system.slice/kubelet.service</span><br><span class="line">           └─<span class="number">7483</span> /usr/bin/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --config=/var/lib/kubelet/config.yaml --cgroup-dr...</span><br><span class="line"></span><br><span class="line">Jun <span class="number">28</span> <span class="number">23</span>:<span class="number">15</span>:<span class="number">12</span> ks-node2 kubelet[<span class="number">7483</span>]: I0628 <span class="number">23</span>:<span class="number">15</span>:<span class="number">12.951329</span>    <span class="number">7483</span> remote_image.go:<span class="number">50</span>] parsed scheme: <span class="string">""</span></span><br><span class="line">Jun <span class="number">28</span> <span class="number">23</span>:<span class="number">15</span>:<span class="number">12</span> ks-node2 kubelet[<span class="number">7483</span>]: I0628 <span class="number">23</span>:<span class="number">15</span>:<span class="number">12.951339</span>    <span class="number">7483</span> remote_image.go:<span class="number">50</span>] scheme <span class="string">""</span> <span class="literal">not</span> registered, fallback <span class="keyword">to</span> <span class="keyword">default</span> scheme</span><br><span class="line">Jun <span class="number">28</span> <span class="number">23</span>:<span class="number">15</span>:<span class="number">12</span> ks-node2 kubelet[<span class="number">7483</span>]: I0628 <span class="number">23</span>:<span class="number">15</span>:<span class="number">12.951761</span>    <span class="number">7483</span> asm_amd64.s:<span class="number">1337</span>] ccResolverWrapper: sending new addresses <span class="keyword">to</span> cc: [&#123;/var/<span class="built_in">run</span>/dockershim.sock <span class="number">0</span>  &lt;nil&gt;&#125;]</span><br><span class="line">Jun <span class="number">28</span> <span class="number">23</span>:<span class="number">15</span>:<span class="number">12</span> ks-node2 kubelet[<span class="number">7483</span>]: I0628 <span class="number">23</span>:<span class="number">15</span>:<span class="number">12.951792</span>    <span class="number">7483</span> clientconn.go:<span class="number">796</span>] ClientConn switching balancer <span class="keyword">to</span> <span class="string">"pick_first"</span></span><br><span class="line">Jun <span class="number">28</span> <span class="number">23</span>:<span class="number">15</span>:<span class="number">12</span> ks-node2 kubelet[<span class="number">7483</span>]: I0628 <span class="number">23</span>:<span class="number">15</span>:<span class="number">12.951810</span>    <span class="number">7483</span> asm_amd64.s:<span class="number">1337</span>] ccResolverWrapper: sending new addresses <span class="keyword">to</span> cc: [&#123;/var/<span class="built_in">run</span>/dockershim.sock <span class="number">0</span>  &lt;nil&gt;&#125;]</span><br><span class="line">Jun <span class="number">28</span> <span class="number">23</span>:<span class="number">15</span>:<span class="number">12</span> ks-node2 kubelet[<span class="number">7483</span>]: I0628 <span class="number">23</span>:<span class="number">15</span>:<span class="number">12.951827</span>    <span class="number">7483</span> clientconn.go:<span class="number">796</span>] ClientConn switching balancer <span class="keyword">to</span> <span class="string">"pick_first"</span></span><br><span class="line">Jun <span class="number">28</span> <span class="number">23</span>:<span class="number">15</span>:<span class="number">12</span> ks-node2 kubelet[<span class="number">7483</span>]: I0628 <span class="number">23</span>:<span class="number">15</span>:<span class="number">12.951865</span>    <span class="number">7483</span> balancer_conn_wrappers.go:<span class="number">131</span>] pickfirstBalancer: HandleSubConnStateChange: <span class="number">0xc000298880</span>, CONNECTING</span><br><span class="line">Jun <span class="number">28</span> <span class="number">23</span>:<span class="number">15</span>:<span class="number">12</span> ks-node2 kubelet[<span class="number">7483</span>]: I0628 <span class="number">23</span>:<span class="number">15</span>:<span class="number">12.951873</span>    <span class="number">7483</span> balancer_conn_wrappers.go:<span class="number">131</span>] pickfirstBalancer: HandleSubConnStateChange: <span class="number">0xc00018cc40</span>, CONNECTING</span><br><span class="line">Jun <span class="number">28</span> <span class="number">23</span>:<span class="number">15</span>:<span class="number">12</span> ks-node2 kubelet[<span class="number">7483</span>]: I0628 <span class="number">23</span>:<span class="number">15</span>:<span class="number">12.952058</span>    <span class="number">7483</span> balancer_conn_wrappers.go:<span class="number">131</span>] pickfirstBalancer: HandleSubConnStateChange: <span class="number">0xc00018cc40</span>, READY</span><br><span class="line">Jun <span class="number">28</span> <span class="number">23</span>:<span class="number">15</span>:<span class="number">12</span> ks-node2 kubelet[<span class="number">7483</span>]: I0628 <span class="number">23</span>:<span class="number">15</span>:<span class="number">12.952058</span>    <span class="number">7483</span> balancer_conn_wrappers.go:<span class="number">131</span>] pickfirstBalancer: HandleSubConnStateChange: <span class="number">0xc000298880</span>, READY</span><br><span class="line">[root<span class="symbol">@ks</span>-node2 ~]<span class="meta">#</span></span><br><span class="line">[root<span class="symbol">@ks</span>-node2 ~]<span class="meta"># kubectl version</span></span><br><span class="line">Client Version: version.Info&#123;Major:<span class="string">"1"</span>, Minor:<span class="string">"15"</span>, GitVersion:<span class="string">"v1.15.0"</span>, GitCommit:<span class="string">"e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529"</span>, GitTreeState:<span class="string">"clean"</span>, BuildDate:<span class="string">"2019-06-19T16:40:16Z"</span>, GoVersion:<span class="string">"go1.12.5"</span>, Compiler:<span class="string">"gc"</span>, Platform:<span class="string">"linux/amd64"</span>&#125;</span><br><span class="line">The connection <span class="keyword">to</span> the server localhost:<span class="number">8080</span> was refused - did you specify the right host <span class="literal">or</span> port?</span><br></pre></td></tr></table></figure>
+<h3><span id="查看结果">查看结果</span></h3>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@ks-master01 ~]# kubectl get nodes</span><br><span class="line">NAME          STATUS   ROLES    AGE   VERSION</span><br><span class="line">ks-master01   Ready    master   <span class="number">10</span>d   v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">ks-master02   Ready    master   <span class="number">10</span>d   v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">ks-master03   Ready    master   <span class="number">10</span>d   v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">ks-node1      Ready    &lt;none&gt;   <span class="number">10</span>d   v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">ks-node2      Ready    &lt;none&gt;   <span class="number">10</span>d   v1<span class="number">.15</span><span class="number">.0</span></span><br><span class="line">ks-node3      Ready    &lt;none&gt;   <span class="number">10</span>d   v1<span class="number">.15</span><span class="number">.0</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>事已至此 kubernets更新完成</p>
+</blockquote>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2019/06/27/MySQL之主从复制实战/" data-toggle="tooltip" data-placement="top" title="MySQL之主从复制实战">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">环境介绍</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">升级kubeadm kubelet kubectl</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">检视集群</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">升级Master节点</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">升级node节点</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">查看结果</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://www.cnblogs.com/baishuchao" target="_blank">baishuchao</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/weixin_40720226" target="_blank">summerxhs</a></li>
+                    
+                        <li><a href="https://runcc.github.io" target="_blank">devops for python </a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "your-disqus-ID";
+    var disqus_identifier = "https://baishuchao.github.io/2019/06/28/企业基于kubeadm平滑更新kubernetes集群/";
+    var disqus_url = "https://baishuchao.github.io/2019/06/28/企业基于kubeadm平滑更新kubernetes集群/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/baishuchao">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+                <p class="copyright text-muted">
+                    Copyright &copy; Hi,I&#39;m John 2019 
+                    <br>
+                    Theme by <a href="http://www.baishuchao.com">john</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://www.baishuchao.com">john</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://baishuchao.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://baishuchao.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
