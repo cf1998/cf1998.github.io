@@ -213,6 +213,39 @@
 
 <div class="post-preview">
 
+    <a href="/2019/08/03/Kubernetes-namespace-处于Terminating状态的处理方法/">
+        <h2 class="post-title">
+            Kubernetes namespace 处于Terminating状态的处理方法
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            问题场景
+在使用kubernetes已经部署有nginx-ingress，但是想删除namespace，执行删除命令kubectl delete namespace nginx-ingress,然后导致nginx-ingress名称空间一直处于Terminating状态：
+问题分析
+命名空间无法删除通常是因为还有资源在使用这个命名空间，这个资源可能自己的状态也已经不正常了
+解决方法
+1234......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Hi,I'm John on
+            2019-08-03
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2019/06/28/企业基于kubeadm平滑更新kubernetes集群/">
         <h2 class="post-title">
             企业基于kubeadm平滑更新kubernetes集群
@@ -492,35 +525,6 @@ Xtrabackup 特点
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2019/06/22/Helm-Charts/">
-        <h2 class="post-title">
-            Helm Charts
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Charts是Helm 使用的Kubernetes程序包打包格式，一个Charts就是一个描述一组Kubernetes资源的文件的集合。事实上，一个单独的Charts既能用于部署简单应用，例如一个nginx pod，也能部署复杂的应用，如由HTTP服务器，DB服务器，Cache服务器和应用程序服务器等共同组成的Web应用栈。
-从物理的角度来描述，Charts是一个遵循特定规范的目录结构，它能......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Hi,I'm John on
-            2019-06-22
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -557,11 +561,11 @@ Xtrabackup 特点
     <div class="tags">
         
             
-            <a href="/tags/#Docker" title="Docker" rel="6">Docker</a>
+            <a href="/tags/#kubernetes" title="kubernetes" rel="9">kubernetes</a>
             
         
             
-            <a href="/tags/#kubernetes" title="kubernetes" rel="8">kubernetes</a>
+            <a href="/tags/#Docker" title="Docker" rel="6">Docker</a>
             
         
             
@@ -667,6 +671,10 @@ Xtrabackup 特点
     <ul>
       
         <li>
+          <a href="/2019/08/03/Kubernetes-namespace-处于Terminating状态的处理方法/">Kubernetes namespace 处于Terminating状态的处理方法</a>
+        </li>
+      
+        <li>
           <a href="/2019/06/28/企业基于kubeadm平滑更新kubernetes集群/">企业基于kubeadm平滑更新kubernetes集群</a>
         </li>
       
@@ -680,10 +688,6 @@ Xtrabackup 特点
       
         <li>
           <a href="/2019/06/26/Xtrabackup之分库分表备份/">Xtrabackup之分库分表备份</a>
-        </li>
-      
-        <li>
-          <a href="/2019/06/25/Xtrabackup之增量故障恢复/">Xtrabackup之增量故障恢复</a>
         </li>
       
     </ul>
@@ -710,7 +714,7 @@ Xtrabackup 特点
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>

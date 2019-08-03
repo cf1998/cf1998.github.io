@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>https://baishuchao.github.io/2019/08/03/Kubernetes-namespace-%E5%A4%84%E4%BA%8ETerminating%E7%8A%B6%E6%80%81%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E6%B3%95/</loc>
+        <lastmod>2019-08-03T03:41:29.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://baishuchao.github.io/2019/06/28/%E4%BC%81%E4%B8%9A%E5%9F%BA%E4%BA%8Ekubeadm%E5%B9%B3%E6%BB%91%E6%9B%B4%E6%96%B0kubernetes%E9%9B%86%E7%BE%A4/</loc>
         <lastmod>2019-06-28T07:25:02.000Z</lastmod>
         <changefreq>weekly</changefreq>
