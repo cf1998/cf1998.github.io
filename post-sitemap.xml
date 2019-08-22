@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>https://baishuchao.github.io/2019/08/22/Prometheus%E7%9B%91%E6%8E%A7MySQL%E5%AE%9E%E4%BE%8B/</loc>
+        <lastmod>2019-08-22T14:55:39.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://baishuchao.github.io/2019/08/03/Kubernetes-namespace-%E5%A4%84%E4%BA%8ETerminating%E7%8A%B6%E6%80%81%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E6%B3%95/</loc>
         <lastmod>2019-08-03T03:41:29.000Z</lastmod>
         <changefreq>weekly</changefreq>
