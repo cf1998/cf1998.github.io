@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>math on Hugo Zzo Theme</title>
-    <link>https://baishuchao.github.io/en/categories/math/</link>
+    <link>www.kubesre.com/en/categories/math/</link>
     <description>Recent content in math on Hugo Zzo Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -16,22 +16,22 @@
     <copyright>©2021, All Rights Reserved</copyright>
     <lastBuildDate>Sat, 16 Nov 2019 12:00:06 +0900</lastBuildDate>
     
-        <atom:link href="https://baishuchao.github.io/en/categories/math/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="www.kubesre.com/en/categories/math/index.xml" rel="self" type="application/rss+xml" />
     
 
       
       <item>
         <title>MathJax support</title>
-        <link>https://baishuchao.github.io/en/posts/test-mathjax/</link>
+        <link>www.kubesre.com/en/posts/test-mathjax/</link>
         <pubDate>Sat, 16 Nov 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Sat, 16 Nov 2019 12:00:06 +0900</atom:modified>
-        <guid>https://baishuchao.github.io/en/posts/test-mathjax/</guid>
+        <guid>www.kubesre.com/en/posts/test-mathjax/</guid>
         <description>When $a \ne 0$, there are two solutions to $(ax^2 + bx + c = 0)$ and they are
 $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</description>
         
         <dc:creator>Cloud Native</dc:creator>
-        <media:content url="https://baishuchao.github.io/images/feature1/infinity.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        <media:content url="www.kubesre.comimages/feature1/infinity.png" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         
@@ -55,11 +55,11 @@ $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</description>
       
       <item>
         <title>Katex support</title>
-        <link>https://baishuchao.github.io/en/posts/test-katex/</link>
+        <link>www.kubesre.com/en/posts/test-katex/</link>
         <pubDate>Fri, 15 Nov 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Fri, 15 Nov 2019 12:00:06 +0900</atom:modified>
-        <guid>https://baishuchao.github.io/en/posts/test-katex/</guid>
+        <guid>www.kubesre.com/en/posts/test-katex/</guid>
         <description>The following
 $$ \int_{a}^{b} x^2 dx $$
 Is an integral
@@ -70,7 +70,7 @@ Note: For inline math to render correctly, your content file extension must be .
 Inline math: $ \varphi = \dfrac{1+\sqrt5}{2}= 1.</description>
         
         <dc:creator>Cloud Native</dc:creator>
-        <media:content url="https://baishuchao.github.io/images/feature2/mathbook.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        <media:content url="www.kubesre.comimages/feature2/mathbook.png" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         

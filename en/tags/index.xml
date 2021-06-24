@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Tags on Hugo Zzo Theme</title>
-    <link>https://baishuchao.github.io/en/tags/</link>
+    <link>www.kubesre.com/en/tags/</link>
     <description>Recent content in Tags on Hugo Zzo Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -16,17 +16,17 @@
     <copyright>©2021, All Rights Reserved</copyright>
     <lastBuildDate>Sat, 25 Jan 2020 06:40:51 +0900</lastBuildDate>
     
-        <atom:link href="https://baishuchao.github.io/en/tags/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="www.kubesre.com/en/tags/index.xml" rel="self" type="application/rss+xml" />
     
 
       
       <item>
         <title>shortcode</title>
-        <link>https://baishuchao.github.io/en/tags/shortcode/</link>
+        <link>www.kubesre.com/en/tags/shortcode/</link>
         <pubDate>Sat, 25 Jan 2020 06:40:51 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/shortcode/</guid>
+        <guid>www.kubesre.com/en/tags/shortcode/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -40,11 +40,11 @@
       
       <item>
         <title>css</title>
-        <link>https://baishuchao.github.io/en/tags/css/</link>
+        <link>www.kubesre.com/en/tags/css/</link>
         <pubDate>Fri, 20 Dec 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/css/</guid>
+        <guid>www.kubesre.com/en/tags/css/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -58,11 +58,11 @@
       
       <item>
         <title>html</title>
-        <link>https://baishuchao.github.io/en/tags/html/</link>
+        <link>www.kubesre.com/en/tags/html/</link>
         <pubDate>Fri, 20 Dec 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/html/</guid>
+        <guid>www.kubesre.com/en/tags/html/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -76,11 +76,11 @@
       
       <item>
         <title>markdown</title>
-        <link>https://baishuchao.github.io/en/tags/markdown/</link>
+        <link>www.kubesre.com/en/tags/markdown/</link>
         <pubDate>Fri, 20 Dec 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/markdown/</guid>
+        <guid>www.kubesre.com/en/tags/markdown/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -94,11 +94,11 @@
       
       <item>
         <title>themes</title>
-        <link>https://baishuchao.github.io/en/tags/themes/</link>
+        <link>www.kubesre.com/en/tags/themes/</link>
         <pubDate>Fri, 20 Dec 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/themes/</guid>
+        <guid>www.kubesre.com/en/tags/themes/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -112,11 +112,11 @@
       
       <item>
         <title>hugo</title>
-        <link>https://baishuchao.github.io/en/tags/hugo/</link>
+        <link>www.kubesre.com/en/tags/hugo/</link>
         <pubDate>Wed, 18 Dec 2019 10:33:41 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/hugo/</guid>
+        <guid>www.kubesre.com/en/tags/hugo/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -130,11 +130,11 @@
       
       <item>
         <title>amoji</title>
-        <link>https://baishuchao.github.io/en/tags/amoji/</link>
+        <link>www.kubesre.com/en/tags/amoji/</link>
         <pubDate>Mon, 16 Dec 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/amoji/</guid>
+        <guid>www.kubesre.com/en/tags/amoji/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -148,11 +148,11 @@
       
       <item>
         <title>bamoji</title>
-        <link>https://baishuchao.github.io/en/tags/bamoji/</link>
+        <link>www.kubesre.com/en/tags/bamoji/</link>
         <pubDate>Mon, 16 Dec 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/bamoji/</guid>
+        <guid>www.kubesre.com/en/tags/bamoji/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -166,11 +166,11 @@
       
       <item>
         <title>emoji</title>
-        <link>https://baishuchao.github.io/en/tags/emoji/</link>
+        <link>www.kubesre.com/en/tags/emoji/</link>
         <pubDate>Mon, 16 Dec 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/emoji/</guid>
+        <guid>www.kubesre.com/en/tags/emoji/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -184,11 +184,11 @@
       
       <item>
         <title>gamoji</title>
-        <link>https://baishuchao.github.io/en/tags/gamoji/</link>
+        <link>www.kubesre.com/en/tags/gamoji/</link>
         <pubDate>Mon, 16 Dec 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/gamoji/</guid>
+        <guid>www.kubesre.com/en/tags/gamoji/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -202,11 +202,11 @@
       
       <item>
         <title>namoji</title>
-        <link>https://baishuchao.github.io/en/tags/namoji/</link>
+        <link>www.kubesre.com/en/tags/namoji/</link>
         <pubDate>Mon, 16 Dec 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/namoji/</guid>
+        <guid>www.kubesre.com/en/tags/namoji/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -220,11 +220,11 @@
       
       <item>
         <title>diagram</title>
-        <link>https://baishuchao.github.io/en/tags/diagram/</link>
+        <link>www.kubesre.com/en/tags/diagram/</link>
         <pubDate>Sun, 17 Nov 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/diagram/</guid>
+        <guid>www.kubesre.com/en/tags/diagram/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -238,11 +238,11 @@
       
       <item>
         <title>index</title>
-        <link>https://baishuchao.github.io/en/tags/index/</link>
+        <link>www.kubesre.com/en/tags/index/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/tags/index/</guid>
+        <guid>www.kubesre.com/en/tags/index/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>

@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>index on Hugo Zzo Theme</title>
-    <link>https://baishuchao.github.io/en/tags/index/</link>
+    <link>www.kubesre.com/en/tags/index/</link>
     <description>Recent content in index on Hugo Zzo Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -15,17 +15,17 @@
     <webMaster>kubesre@gmail.com (Cloud Native)</webMaster>
     <copyright>©2021, All Rights Reserved</copyright>
     
-        <atom:link href="https://baishuchao.github.io/en/tags/index/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="www.kubesre.com/en/tags/index/index.xml" rel="self" type="application/rss+xml" />
     
 
       
       <item>
         <title>Posts</title>
-        <link>https://baishuchao.github.io/en/posts/</link>
+        <link>www.kubesre.com/en/posts/</link>
         <pubDate>Sat, 25 Jan 2020 06:40:51 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/en/posts/</guid>
+        <guid>www.kubesre.com/en/posts/</guid>
         <description></description>
         
         <dc:creator>Hugo Authors</dc:creator>

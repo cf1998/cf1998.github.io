@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>hugo on Hugo Zzo Theme</title>
-    <link>https://baishuchao.github.io/en/categories/hugo/</link>
+    <link>www.kubesre.com/en/categories/hugo/</link>
     <description>Recent content in hugo on Hugo Zzo Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -16,21 +16,21 @@
     <copyright>©2021, All Rights Reserved</copyright>
     <lastBuildDate>Wed, 18 Dec 2019 10:33:41 +0900</lastBuildDate>
     
-        <atom:link href="https://baishuchao.github.io/en/categories/hugo/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="www.kubesre.com/en/categories/hugo/index.xml" rel="self" type="application/rss+xml" />
     
 
       
       <item>
         <title>Syntax highlighting</title>
-        <link>https://baishuchao.github.io/en/posts/syntax-highlight/</link>
+        <link>www.kubesre.com/en/posts/syntax-highlight/</link>
         <pubDate>Wed, 18 Dec 2019 10:33:41 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Wed, 18 Dec 2019 10:33:41 +0900</atom:modified>
-        <guid>https://baishuchao.github.io/en/posts/syntax-highlight/</guid>
+        <guid>www.kubesre.com/en/posts/syntax-highlight/</guid>
         <description>Code Syntax Highlighting Verify the following code blocks render as code blocks and highlight properly. More about tuning syntax highlighting is the Hugo documentation. Diff 1 2 3 4 5 6 7 8 9 10 *** /path/to/original &amp;#39;&amp;#39;timestamp&amp;#39;&amp;#39; --- /path/to/new &amp;#39;&amp;#39;timestamp&amp;#39;&amp;#39; *************** *** 1 **** ! This is a line. --- 1 --- ! This is a replacement line. It is important to spell -removed line +new line *** /path/to/original</description>
         
         <dc:creator>Jeus</dc:creator>
-        <media:content url="https://baishuchao.github.io/images/feature2/color-palette.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        <media:content url="www.kubesre.comimages/feature2/color-palette.png" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         

@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Tags on Kubesre</title>
-    <link>https://baishuchao.github.io/ko/tags/</link>
+    <link>www.kubesre.com/ko/tags/</link>
     <description>Recent content in Tags on Kubesre</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ko</language>
@@ -15,17 +15,17 @@
     <webMaster>kubesre@gmail.com (Cloud Native)</webMaster>
     <copyright>©2021, All Rights Reserved</copyright>
     
-        <atom:link href="https://baishuchao.github.io/ko/tags/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="www.kubesre.com/ko/tags/index.xml" rel="self" type="application/rss+xml" />
     
 
       
       <item>
         <title>index</title>
-        <link>https://baishuchao.github.io/ko/tags/index/</link>
+        <link>www.kubesre.com/ko/tags/index/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>https://baishuchao.github.io/ko/tags/index/</guid>
+        <guid>www.kubesre.com/ko/tags/index/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>

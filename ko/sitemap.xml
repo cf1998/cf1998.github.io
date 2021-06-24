@@ -2,84 +2,84 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://baishuchao.github.io/ko/ko/</loc>
+    <loc>www.kubesre.com/ko/ko/</loc>
     <lastmod>2019-10-19T11:44:14+09:00</lastmod>
   </url><url>
-    <loc>https://baishuchao.github.io/ko/ko/archive/</loc>
+    <loc>www.kubesre.com/ko/ko/archive/</loc>
     <lastmod>2019-10-19T11:44:14+09:00</lastmod>
   </url><url>
-    <loc>https://baishuchao.github.io/ko/</loc>
+    <loc>www.kubesre.com/ko/</loc>
     <lastmod>2019-10-19T11:44:14+09:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://baishuchao.github.io/en/"
+                href="www.kubesre.com/en/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="https://baishuchao.github.io/ko/"
+                href="www.kubesre.com/ko/"
                 />
   </url><url>
-    <loc>https://baishuchao.github.io/ko/ko/about/</loc>
+    <loc>www.kubesre.com/ko/ko/about/</loc>
     <lastmod>2019-10-09T11:44:14+09:00</lastmod>
   </url><url>
-    <loc>https://baishuchao.github.io/ko/ko/gallery/photo/</loc>
+    <loc>www.kubesre.com/ko/ko/gallery/photo/</loc>
     <lastmod>2018-10-12T10:20:16+09:00</lastmod>
   </url><url>
-    <loc>https://baishuchao.github.io/ko/ko/gallery/cartoon/</loc>
+    <loc>www.kubesre.com/ko/ko/gallery/cartoon/</loc>
     <lastmod>2018-10-11T10:20:16+09:00</lastmod>
   </url><url>
-    <loc>https://baishuchao.github.io/ko/en/</loc>
+    <loc>www.kubesre.com/ko/en/</loc>
   </url><url>
-    <loc>https://baishuchao.github.io/ko/categories/</loc>
+    <loc>www.kubesre.com/ko/categories/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://baishuchao.github.io/en/categories/"
+                href="www.kubesre.com/en/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="https://baishuchao.github.io/ko/categories/"
+                href="www.kubesre.com/ko/categories/"
                 />
   </url><url>
-    <loc>https://baishuchao.github.io/ko/tags/index/</loc>
+    <loc>www.kubesre.com/ko/tags/index/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://baishuchao.github.io/en/tags/index/"
+                href="www.kubesre.com/en/tags/index/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="https://baishuchao.github.io/ko/tags/index/"
+                href="www.kubesre.com/ko/tags/index/"
                 />
   </url><url>
-    <loc>https://baishuchao.github.io/ko/ko/posts/</loc>
+    <loc>www.kubesre.com/ko/ko/posts/</loc>
   </url><url>
-    <loc>https://baishuchao.github.io/ko/series/</loc>
+    <loc>www.kubesre.com/ko/series/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://baishuchao.github.io/en/series/"
+                href="www.kubesre.com/en/series/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="https://baishuchao.github.io/ko/series/"
+                href="www.kubesre.com/ko/series/"
                 />
   </url><url>
-    <loc>https://baishuchao.github.io/ko/tags/</loc>
+    <loc>www.kubesre.com/ko/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://baishuchao.github.io/en/tags/"
+                href="www.kubesre.com/en/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="https://baishuchao.github.io/ko/tags/"
+                href="www.kubesre.com/ko/tags/"
                 />
   </url>
 </urlset>
