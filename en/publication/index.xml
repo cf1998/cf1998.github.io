@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Publications on Hugo Zzo Theme</title>
-    <link>www.kubesre.com/en/publication/</link>
+    <link>http://baishuchao.github.io/en/publication/</link>
     <description>Recent content in Publications on Hugo Zzo Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -16,17 +16,17 @@
     <copyright>©2021, All Rights Reserved</copyright>
     <lastBuildDate>Thu, 05 Mar 2020 14:08:48 +0000</lastBuildDate>
     
-        <atom:link href="www.kubesre.com/en/publication/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="http://baishuchao.github.io/en/publication/index.xml" rel="self" type="application/rss+xml" />
     
 
       
       <item>
         <title>article</title>
-        <link>www.kubesre.com/en/publication/article/</link>
+        <link>http://baishuchao.github.io/en/publication/article/</link>
         <pubDate>Thu, 05 Mar 2020 14:08:48 +0000</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Thu, 05 Mar 2020 14:08:48 +0000</atom:modified>
-        <guid>www.kubesre.com/en/publication/article/</guid>
+        <guid>http://baishuchao.github.io/en/publication/article/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -40,11 +40,11 @@
       
       <item>
         <title>book</title>
-        <link>www.kubesre.com/en/publication/book/</link>
+        <link>http://baishuchao.github.io/en/publication/book/</link>
         <pubDate>Thu, 05 Mar 2020 14:08:48 +0000</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Thu, 05 Mar 2020 14:08:48 +0000</atom:modified>
-        <guid>www.kubesre.com/en/publication/book/</guid>
+        <guid>http://baishuchao.github.io/en/publication/book/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -58,11 +58,11 @@
       
       <item>
         <title>misc</title>
-        <link>www.kubesre.com/en/publication/misc/</link>
+        <link>http://baishuchao.github.io/en/publication/misc/</link>
         <pubDate>Thu, 05 Mar 2020 14:08:48 +0000</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Thu, 05 Mar 2020 14:08:48 +0000</atom:modified>
-        <guid>www.kubesre.com/en/publication/misc/</guid>
+        <guid>http://baishuchao.github.io/en/publication/misc/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>

@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Presentations on Hugo Zzo Theme</title>
-    <link>www.kubesre.com/en/presentation/</link>
+    <link>http://baishuchao.github.io/en/presentation/</link>
     <description>Recent content in Presentations on Hugo Zzo Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -16,21 +16,21 @@
     <copyright>©2021, All Rights Reserved</copyright>
     <lastBuildDate>Wed, 30 Oct 2019 20:48:10 +0900</lastBuildDate>
     
-        <atom:link href="www.kubesre.com/en/presentation/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="http://baishuchao.github.io/en/presentation/index.xml" rel="self" type="application/rss+xml" />
     
 
       
       <item>
         <title>Fourth</title>
-        <link>www.kubesre.com/en/presentation/dir/fourth/</link>
+        <link>http://baishuchao.github.io/en/presentation/dir/fourth/</link>
         <pubDate>Wed, 30 Oct 2019 20:48:10 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Wed, 30 Oct 2019 20:48:10 +0900</atom:modified>
-        <guid>www.kubesre.com/en/presentation/dir/fourth/</guid>
+        <guid>http://baishuchao.github.io/en/presentation/dir/fourth/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
-        <media:content url="www.kubesre.comimages/feature1/number-four.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        <media:content url="http://baishuchao.github.io/images/feature1/number-four.png" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         
@@ -52,15 +52,15 @@
       
       <item>
         <title>Third</title>
-        <link>www.kubesre.com/en/presentation/third/</link>
+        <link>http://baishuchao.github.io/en/presentation/third/</link>
         <pubDate>Wed, 30 Oct 2019 20:46:30 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Wed, 30 Oct 2019 20:46:30 +0900</atom:modified>
-        <guid>www.kubesre.com/en/presentation/third/</guid>
+        <guid>http://baishuchao.github.io/en/presentation/third/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
-        <media:content url="www.kubesre.comimages/feature1/number-three.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        <media:content url="http://baishuchao.github.io/images/feature1/number-three.png" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         
@@ -82,15 +82,15 @@
       
       <item>
         <title>Second</title>
-        <link>www.kubesre.com/en/presentation/second/</link>
+        <link>http://baishuchao.github.io/en/presentation/second/</link>
         <pubDate>Wed, 30 Oct 2019 20:45:24 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Wed, 30 Oct 2019 20:45:24 +0900</atom:modified>
-        <guid>www.kubesre.com/en/presentation/second/</guid>
+        <guid>http://baishuchao.github.io/en/presentation/second/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
-        <media:content url="www.kubesre.comimages/feature1/number-two.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        <media:content url="http://baishuchao.github.io/images/feature1/number-two.png" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         
@@ -112,15 +112,15 @@
       
       <item>
         <title>First</title>
-        <link>www.kubesre.com/en/presentation/first/</link>
+        <link>http://baishuchao.github.io/en/presentation/first/</link>
         <pubDate>Wed, 30 Oct 2019 19:45:20 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Wed, 30 Oct 2019 19:45:20 +0900</atom:modified>
-        <guid>www.kubesre.com/en/presentation/first/</guid>
+        <guid>http://baishuchao.github.io/en/presentation/first/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
-        <media:content url="www.kubesre.comimages/feature1/number-one.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        <media:content url="http://baishuchao.github.io/images/feature1/number-one.png" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         

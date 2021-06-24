@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Galleries on Hugo Zzo Theme</title>
-    <link>www.kubesre.com/en/gallery/</link>
+    <link>http://baishuchao.github.io/en/gallery/</link>
     <description>Recent content in Galleries on Hugo Zzo Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -16,21 +16,21 @@
     <copyright>©2021, All Rights Reserved</copyright>
     <lastBuildDate>Thu, 31 Oct 2019 10:20:16 +0900</lastBuildDate>
     
-        <atom:link href="www.kubesre.com/en/gallery/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="http://baishuchao.github.io/en/gallery/index.xml" rel="self" type="application/rss+xml" />
     
 
       
       <item>
         <title>Cartoon</title>
-        <link>www.kubesre.com/en/gallery/cartoon/</link>
+        <link>http://baishuchao.github.io/en/gallery/cartoon/</link>
         <pubDate>Thu, 31 Oct 2019 10:20:16 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Thu, 31 Oct 2019 10:20:16 +0900</atom:modified>
-        <guid>www.kubesre.com/en/gallery/cartoon/</guid>
+        <guid>http://baishuchao.github.io/en/gallery/cartoon/</guid>
         <description>Sample images from Pixabay</description>
         
         <dc:creator>Cloud Native</dc:creator>
-        <media:content url="www.kubesre.comimages/feature2/bam.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        <media:content url="http://baishuchao.github.io/images/feature2/bam.png" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         
@@ -40,15 +40,15 @@
       
       <item>
         <title>Photo</title>
-        <link>www.kubesre.com/en/gallery/photo/</link>
+        <link>http://baishuchao.github.io/en/gallery/photo/</link>
         <pubDate>Thu, 31 Oct 2019 10:20:16 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Thu, 31 Oct 2019 10:20:16 +0900</atom:modified>
-        <guid>www.kubesre.com/en/gallery/photo/</guid>
+        <guid>http://baishuchao.github.io/en/gallery/photo/</guid>
         <description>Sample images from Pixabay</description>
         
         <dc:creator>Cloud Native</dc:creator>
-        <media:content url="www.kubesre.comimages/feature2/gallery.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        <media:content url="http://baishuchao.github.io/images/feature2/gallery.png" medium="image"><media:title type="html">featured image</media:title></media:content>
         
         
         

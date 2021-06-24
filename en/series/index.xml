@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Series on Hugo Zzo Theme</title>
-    <link>www.kubesre.com/en/series/</link>
+    <link>http://baishuchao.github.io/en/series/</link>
     <description>Recent content in Series on Hugo Zzo Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -16,17 +16,17 @@
     <copyright>©2021, All Rights Reserved</copyright>
     <lastBuildDate>Fri, 20 Dec 2019 12:00:06 +0900</lastBuildDate>
     
-        <atom:link href="www.kubesre.com/en/series/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="http://baishuchao.github.io/en/series/index.xml" rel="self" type="application/rss+xml" />
     
 
       
       <item>
         <title>Themes Guide</title>
-        <link>www.kubesre.com/en/series/themes-guide/</link>
+        <link>http://baishuchao.github.io/en/series/themes-guide/</link>
         <pubDate>Fri, 20 Dec 2019 12:00:06 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>www.kubesre.com/en/series/themes-guide/</guid>
+        <guid>http://baishuchao.github.io/en/series/themes-guide/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>

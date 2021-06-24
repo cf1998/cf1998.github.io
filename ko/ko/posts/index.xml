@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Posts on Kubesre</title>
-    <link>www.kubesre.com/ko/ko/posts/</link>
+    <link>http://baishuchao.github.io/ko/ko/posts/</link>
     <description>Recent content in Posts on Kubesre</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ko</language>
@@ -15,7 +15,7 @@
     <webMaster>kubesre@gmail.com (Cloud Native)</webMaster>
     <copyright>©2021, All Rights Reserved</copyright>
     
-        <atom:link href="www.kubesre.com/ko/ko/posts/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="http://baishuchao.github.io/ko/ko/posts/index.xml" rel="self" type="application/rss+xml" />
     
 
       
