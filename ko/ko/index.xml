@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Kubesre</title>
-    <link>http://example.org/ko/ko/</link>
+    <link>https://baishuchao.github.io/ko/ko/</link>
     <description>Recent content on Kubesre</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ko</language>
@@ -16,17 +16,17 @@
     <copyright>©2021, All Rights Reserved</copyright>
     <lastBuildDate>Sat, 19 Oct 2019 11:44:14 +0900</lastBuildDate>
     
-        <atom:link href="http://example.org/ko/ko/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://baishuchao.github.io/ko/ko/index.xml" rel="self" type="application/rss+xml" />
     
 
       
       <item>
         <title>Archive</title>
-        <link>http://example.org/ko/ko/archive/</link>
+        <link>https://baishuchao.github.io/ko/ko/archive/</link>
         <pubDate>Sat, 19 Oct 2019 11:44:14 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Sat, 19 Oct 2019 11:44:14 +0900</atom:modified>
-        <guid>http://example.org/ko/ko/archive/</guid>
+        <guid>https://baishuchao.github.io/ko/ko/archive/</guid>
         <description>archive page</description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -40,11 +40,11 @@
       
       <item>
         <title>About</title>
-        <link>http://example.org/ko/ko/about/</link>
+        <link>https://baishuchao.github.io/ko/ko/about/</link>
         <pubDate>Wed, 09 Oct 2019 11:44:14 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Wed, 09 Oct 2019 11:44:14 +0900</atom:modified>
-        <guid>http://example.org/ko/ko/about/</guid>
+        <guid>https://baishuchao.github.io/ko/ko/about/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -58,11 +58,11 @@
       
       <item>
         <title>Photo</title>
-        <link>http://example.org/ko/ko/gallery/photo/</link>
+        <link>https://baishuchao.github.io/ko/ko/gallery/photo/</link>
         <pubDate>Fri, 12 Oct 2018 10:20:16 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Fri, 12 Oct 2018 10:20:16 +0900</atom:modified>
-        <guid>http://example.org/ko/ko/gallery/photo/</guid>
+        <guid>https://baishuchao.github.io/ko/ko/gallery/photo/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -76,11 +76,11 @@
       
       <item>
         <title>Cartoon</title>
-        <link>http://example.org/ko/ko/gallery/cartoon/</link>
+        <link>https://baishuchao.github.io/ko/ko/gallery/cartoon/</link>
         <pubDate>Thu, 11 Oct 2018 10:20:16 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Thu, 11 Oct 2018 10:20:16 +0900</atom:modified>
-        <guid>http://example.org/ko/ko/gallery/cartoon/</guid>
+        <guid>https://baishuchao.github.io/ko/ko/gallery/cartoon/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -94,11 +94,11 @@
       
       <item>
         <title>Posts</title>
-        <link>http://example.org/ko/ko/posts/</link>
+        <link>https://baishuchao.github.io/ko/ko/posts/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         
-        <guid>http://example.org/ko/ko/posts/</guid>
+        <guid>https://baishuchao.github.io/ko/ko/posts/</guid>
         <description></description>
         
         <dc:creator>Hugo Authors</dc:creator>

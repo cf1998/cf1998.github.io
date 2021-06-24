@@ -2,84 +2,84 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://example.org/ko/ko/</loc>
+    <loc>https://baishuchao.github.io/ko/ko/</loc>
     <lastmod>2019-10-19T11:44:14+09:00</lastmod>
   </url><url>
-    <loc>http://example.org/ko/ko/archive/</loc>
+    <loc>https://baishuchao.github.io/ko/ko/archive/</loc>
     <lastmod>2019-10-19T11:44:14+09:00</lastmod>
   </url><url>
-    <loc>http://example.org/ko/</loc>
+    <loc>https://baishuchao.github.io/ko/</loc>
     <lastmod>2019-10-19T11:44:14+09:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://example.org/en/"
+                href="https://baishuchao.github.io/en/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="http://example.org/ko/"
+                href="https://baishuchao.github.io/ko/"
                 />
   </url><url>
-    <loc>http://example.org/ko/ko/about/</loc>
+    <loc>https://baishuchao.github.io/ko/ko/about/</loc>
     <lastmod>2019-10-09T11:44:14+09:00</lastmod>
   </url><url>
-    <loc>http://example.org/ko/ko/gallery/photo/</loc>
+    <loc>https://baishuchao.github.io/ko/ko/gallery/photo/</loc>
     <lastmod>2018-10-12T10:20:16+09:00</lastmod>
   </url><url>
-    <loc>http://example.org/ko/ko/gallery/cartoon/</loc>
+    <loc>https://baishuchao.github.io/ko/ko/gallery/cartoon/</loc>
     <lastmod>2018-10-11T10:20:16+09:00</lastmod>
   </url><url>
-    <loc>http://example.org/ko/en/</loc>
+    <loc>https://baishuchao.github.io/ko/en/</loc>
   </url><url>
-    <loc>http://example.org/ko/categories/</loc>
+    <loc>https://baishuchao.github.io/ko/categories/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://example.org/en/categories/"
+                href="https://baishuchao.github.io/en/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="http://example.org/ko/categories/"
+                href="https://baishuchao.github.io/ko/categories/"
                 />
   </url><url>
-    <loc>http://example.org/ko/tags/index/</loc>
+    <loc>https://baishuchao.github.io/ko/tags/index/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://example.org/en/tags/index/"
+                href="https://baishuchao.github.io/en/tags/index/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="http://example.org/ko/tags/index/"
+                href="https://baishuchao.github.io/ko/tags/index/"
                 />
   </url><url>
-    <loc>http://example.org/ko/ko/posts/</loc>
+    <loc>https://baishuchao.github.io/ko/ko/posts/</loc>
   </url><url>
-    <loc>http://example.org/ko/series/</loc>
+    <loc>https://baishuchao.github.io/ko/series/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://example.org/en/series/"
+                href="https://baishuchao.github.io/en/series/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="http://example.org/ko/series/"
+                href="https://baishuchao.github.io/ko/series/"
                 />
   </url><url>
-    <loc>http://example.org/ko/tags/</loc>
+    <loc>https://baishuchao.github.io/ko/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://example.org/en/tags/"
+                href="https://baishuchao.github.io/en/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="http://example.org/ko/tags/"
+                href="https://baishuchao.github.io/ko/tags/"
                 />
   </url>
 </urlset>

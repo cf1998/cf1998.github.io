@@ -7,7 +7,7 @@
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Hugo on Hugo Zzo Theme</title>
-    <link>http://example.org/en/showcase/hugo/</link>
+    <link>https://baishuchao.github.io/en/showcase/hugo/</link>
     <description>Recent content in Hugo on Hugo Zzo Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -16,17 +16,17 @@
     <copyright>©2021, All Rights Reserved</copyright>
     <lastBuildDate>Sun, 19 Jan 2020 21:04:11 +0900</lastBuildDate>
     
-        <atom:link href="http://example.org/en/showcase/hugo/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://baishuchao.github.io/en/showcase/hugo/index.xml" rel="self" type="application/rss+xml" />
     
 
       
       <item>
         <title>Hugo Zzo Theme</title>
-        <link>http://example.org/en/showcase/hugo/hugo-theme-zzo/</link>
+        <link>https://baishuchao.github.io/en/showcase/hugo/hugo-theme-zzo/</link>
         <pubDate>Sun, 19 Jan 2020 21:13:42 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Sun, 19 Jan 2020 21:13:42 +0900</atom:modified>
-        <guid>http://example.org/en/showcase/hugo/hugo-theme-zzo/</guid>
+        <guid>https://baishuchao.github.io/en/showcase/hugo/hugo-theme-zzo/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
@@ -40,11 +40,11 @@
       
       <item>
         <title>Hugo zDoc Theme</title>
-        <link>http://example.org/en/showcase/hugo/hugo-theme-zdoc/</link>
+        <link>https://baishuchao.github.io/en/showcase/hugo/hugo-theme-zdoc/</link>
         <pubDate>Sun, 19 Jan 2020 21:13:42 +0900</pubDate>
         <author>kubesre@gmail.com (Cloud Native)</author>
         <atom:modified>Sun, 19 Jan 2020 21:13:42 +0900</atom:modified>
-        <guid>http://example.org/en/showcase/hugo/hugo-theme-zdoc/</guid>
+        <guid>https://baishuchao.github.io/en/showcase/hugo/hugo-theme-zdoc/</guid>
         <description></description>
         
         <dc:creator>Cloud Native</dc:creator>
