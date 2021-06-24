@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" 
+  xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+  xmlns:dc="http://purl.org/dc/elements/1.1/" 
+  xmlns:atom="http://www.w3.org/2005/Atom" 
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" 
+  xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>Tags on Hugo Zzo Theme</title>
+    <link>http://example.org/en/tags/</link>
+    <description>Recent content in Tags on Hugo Zzo Theme</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>kubesre@gmail.com (Cloud Native)</managingEditor>
+    <webMaster>kubesre@gmail.com (Cloud Native)</webMaster>
+    <copyright>©2021, All Rights Reserved</copyright>
+    <lastBuildDate>Sat, 25 Jan 2020 06:40:51 +0900</lastBuildDate>
+    
+        <atom:link href="http://example.org/en/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+
+      
+      <item>
+        <title>shortcode</title>
+        <link>http://example.org/en/tags/shortcode/</link>
+        <pubDate>Sat, 25 Jan 2020 06:40:51 +0900</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/shortcode/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>css</title>
+        <link>http://example.org/en/tags/css/</link>
+        <pubDate>Fri, 20 Dec 2019 12:00:06 +0900</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/css/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>html</title>
+        <link>http://example.org/en/tags/html/</link>
+        <pubDate>Fri, 20 Dec 2019 12:00:06 +0900</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/html/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>markdown</title>
+        <link>http://example.org/en/tags/markdown/</link>
+        <pubDate>Fri, 20 Dec 2019 12:00:06 +0900</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/markdown/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>themes</title>
+        <link>http://example.org/en/tags/themes/</link>
+        <pubDate>Fri, 20 Dec 2019 12:00:06 +0900</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/themes/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>hugo</title>
+        <link>http://example.org/en/tags/hugo/</link>
+        <pubDate>Wed, 18 Dec 2019 10:33:41 +0900</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/hugo/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>amoji</title>
+        <link>http://example.org/en/tags/amoji/</link>
+        <pubDate>Mon, 16 Dec 2019 12:00:06 +0900</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/amoji/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>bamoji</title>
+        <link>http://example.org/en/tags/bamoji/</link>
+        <pubDate>Mon, 16 Dec 2019 12:00:06 +0900</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/bamoji/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>emoji</title>
+        <link>http://example.org/en/tags/emoji/</link>
+        <pubDate>Mon, 16 Dec 2019 12:00:06 +0900</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/emoji/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>gamoji</title>
+        <link>http://example.org/en/tags/gamoji/</link>
+        <pubDate>Mon, 16 Dec 2019 12:00:06 +0900</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/gamoji/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>namoji</title>
+        <link>http://example.org/en/tags/namoji/</link>
+        <pubDate>Mon, 16 Dec 2019 12:00:06 +0900</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/namoji/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>diagram</title>
+        <link>http://example.org/en/tags/diagram/</link>
+        <pubDate>Sun, 17 Nov 2019 12:00:06 +0900</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/diagram/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>index</title>
+        <link>http://example.org/en/tags/index/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        <author>kubesre@gmail.com (Cloud Native)</author>
+        
+        <guid>http://example.org/en/tags/index/</guid>
+        <description></description>
+        
+        <dc:creator>Cloud Native</dc:creator>
+        
+        
+        
+        
+        
+        
+      </item>
+      
+
+    
+  </channel>
+</rss>
