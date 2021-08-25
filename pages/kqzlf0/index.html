@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Systemd 进程管理 | CloudNative Operations</title>
+    <meta name="generator" content="VuePress 1.8.0">
+    <link rel="icon" href="/img/favicon.ico">
+    <script data-ad-client="ca-pub-7828333725993554" async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <meta name="description" content="专注于云原生运维技术分享,Kubernetes,Prometheus，istio,envoy等技术文章">
+    <meta name="CloudNative Operations" content="专注于云原生运维技术分享,致敬每个爱学习的你">
+    <meta name="baidu-site-verification" content="7F55weZDDc">
+    <meta name="theme-color" content="#11a8cd">
+    <link rel="preload" href="/assets/css/0.styles.546f0649.css" as="style"><link rel="preload" href="/assets/js/app.7d88be19.js" as="script"><link rel="preload" href="/assets/js/2.f3cfc96e.js" as="script"><link rel="preload" href="/assets/js/13.5da5eba6.js" as="script"><link rel="prefetch" href="/assets/js/10.06715f1f.js"><link rel="prefetch" href="/assets/js/11.5d6bdecb.js"><link rel="prefetch" href="/assets/js/12.04bd1b9b.js"><link rel="prefetch" href="/assets/js/14.64dd5bce.js"><link rel="prefetch" href="/assets/js/15.a796be50.js"><link rel="prefetch" href="/assets/js/16.2bb6b35a.js"><link rel="prefetch" href="/assets/js/17.4343c228.js"><link rel="prefetch" href="/assets/js/3.fa3d0e77.js"><link rel="prefetch" href="/assets/js/4.523f8496.js"><link rel="prefetch" href="/assets/js/5.ab2f819c.js"><link rel="prefetch" href="/assets/js/6.40e3ffa9.js"><link rel="prefetch" href="/assets/js/7.5d877255.js"><link rel="prefetch" href="/assets/js/8.9dba24b8.js"><link rel="prefetch" href="/assets/js/9.31fbdf79.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.546f0649.css">
+  </head>
+  <body class="theme-mode-light">
+    <div id="app" data-server-rendered="true"><div class="theme-container sidebar-open have-rightmenu"><header class="navbar blur"><div title="目录" class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/img/EB-logo.png" alt="CloudNative Operations" class="logo"> <span class="site-name can-hide">CloudNative Operations</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">首页</a></div><div class="nav-item"><a href="/archives/" class="nav-link">归档</a></div><div class="nav-item"><a href="/books/" class="nav-link">书籍</a></div><div class="nav-item"><a href="/about/" class="nav-link">关于</a></div> <a href="https://github.com/cf1998/kubernetes" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar" style="display:none;"><div class="blogger"><img src="https://kubesre.com/img/EB-logo.png"> <div class="blogger-info"><h3>船长</h3> <span>CloudNative Operations</span></div></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">首页</a></div><div class="nav-item"><a href="/archives/" class="nav-link">归档</a></div><div class="nav-item"><a href="/books/" class="nav-link">书籍</a></div><div class="nav-item"><a href="/about/" class="nav-link">关于</a></div> <a href="https://github.com/cf1998/kubernetes" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Systemd 进程管理</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/pages/kqzlf0/#systemd-介绍" class="sidebar-link">systemd 介绍</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/kqzlf0/#systemd-特点" class="sidebar-link">systemd 特点</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/kqzlf0/#systemd-语法" class="sidebar-link">systemd 语法</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/kqzlf0/#systemd-配置文件说明" class="sidebar-link">systemd 配置文件说明</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/kqzlf0/#systemd-相关文件" class="sidebar-link">systemd 相关文件</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/pages/kqzlf0/#实战一" class="sidebar-link">实战一</a></li><li class="sidebar-sub-header"><a href="/pages/kqzlf0/#实战二" class="sidebar-link">实战二</a></li><li class="sidebar-sub-header"><a href="/pages/kqzlf0/#实战三" class="sidebar-link">实战三</a></li></ul></li></ul></section></li></ul> <div class="sidebar-slot sidebar-slot-bottom"><!-- 正方形 -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="3508773082"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div></aside> <div><main class="page"><div class="theme-vdoing-wrapper "><div class="articleInfo-wrap" data-v-1cd794fe><div class="articleInfo" data-v-1cd794fe><!----> <div class="info" data-v-1cd794fe><div title="作者" class="author iconfont icon-touxiang" data-v-1cd794fe><a href="javascript:;" data-v-1cd794fe>船长</a></div> <div title="创建时间" class="date iconfont icon-riqi" data-v-1cd794fe><a href="javascript:;" data-v-1cd794fe>2021-08-23</a></div> <div title="分类" class="date iconfont icon-wenjian" data-v-1cd794fe><a href="/categories/?category=Linux" data-v-1cd794fe>Linux </a></div></div></div></div> <!----> <div class="content-wrapper"><div class="right-menu-wrapper"><div class="right-menu-margin"><div class="right-menu-content"></div></div></div> <h1><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAABKFJREFUSA3tVl1oFVcQnrMbrak3QUgkya1akpJYcrUtIqW1JvFBE9LiQ5v6JmJpolbMg32rVrhgoYK0QiMY6i9Y6EMaW5D+xFJaTYItIuK2Kr3+BJNwkxBj05sQY3b3nM6cs2dv9t7NT/vQJw/sndk5M/PNzJkzewGerP+pAmy+ON8lLzUJgA8ZYxYIYZmGYRnctDaWvJJAmTtfP1pvXsBCCPP8QFcCaRkZYACgDZFO4stNIcBCajEOlmmC9XpJ9bAGCaPaPmzPl32dvLSVu3BWCTQs0XQQ6g0DYgwLIoAZbBCdW/i+781o1VVlm/410mw4h06Y7bIPHNyWDyL4FHkX03Q8SrzNhZTZriieckWt7cL6MM85YcLpsi/7O9/iXFT6MswI0DmmpkSaJ0qLxFIm3+i1THHB3zmBH3PYx9CcykcLOeQVVa7QtdxTgQgEleX2AjHYfwA+2ddV77ruGoJUbhGDI09YSNXyMpUt5ylOzxgbUmtOp7NmbNt8v3arjTBfYELmLUV+M+nSawNNAUqpT3ClJWg5I3BLT+cGW/DXNGCa6tx1aakCGEigArTn4TDIPdrXXYKCZNrHLMCOEPvHBlLQ99s9eHB7EB6NTki73CVPQ2F5MSx/uRQixfmq7rK0wYD8w8E905bnPDfwoWs/rfv93NWN/ZfvwsLIU7A09gxECyISeGJkHAau98L97tuw7NXnoPyNF8FcYGLGKsOs0mN3OEyec9esGW/ZEl945dTP34wlR2FZVQWU1q0Cw8Tr7p+hgLLNL0FPxx/Q35mA8aEUrH6nCgwEl0tn7wUiZYJnNRh6DK4UH/k0lfyrsBKdPVv/AriGIQcEDQZ65LBAGe2Rzui9Ybjz7XUppz1/uKBbyVPGkN3ZAeC6hr0x7Nr38N5+EqkoOm17xpoqR9ohQF55ERSvr4Dkr3chNfC3DMzGJlNBElW8w9nsGQvhNGIzDkXzCg8cLK951xHsFBlTJspJNi3ZFIMF2AeDV3q8DNOB+YHi6QTrChDIWDBRi5U5f+ZMfJLu3ccrqxtdxk4SKH336LFxSmkqefwU5T8fhdSdQf9IVKD6aNiwI/hnmcAZ91isYMJIaCUCx9W098+LgruikeTqzqqxKPUwqJyCPJiyemVVZBOijDGjD38Os0jOiSPL1z3SPjXNANbiNPXAdzTfukjjuknNBbyz3nwgTd3AVFqUJ5hpHlq9MveLnWwttUfoygBmvVjuikxND3znrhsELnZk7k+OjIGxeNEkomyLVta0xxn+HZhjBc4YZ/AFjHjz9u3xRZl2BN4aq9nFwWh16IrQ1aHHEd3j1+4/dB9OtH4e29A2H1DyHQRmOSfQZ1Fy7MHBTGB6J/Djq6p3OxyO2cB+4Car7v/o3GXgfAkj23+x9ID1Teoamo/SXcbvSf2PX7Vc8DdCmE1vN9di+32P9/5YR3vLnhCVGUWBjEkr3yh4H8v9CzmsbdhzOKzsJKM90iFdaTMjRPhGVsakRvOaRidljo6H6G7j+ctrJpsP+4COhDIl0La2+FS4+5mlocBaXY5QnGZysIBYoeSsl5qQzrSj/cgNrfuEzlWBfwA+EjrZyWUvpAAAAABJRU5ErkJggg==">
+          Systemd 进程管理
+        </h1> <div class="page-slot page-slot-top"><!-- 固定100% * 90px可显示，max-height:90px未见显示-->
+     <ins class="adsbygoogle"
+          style="display:inline-block;width:100%;max-height:90px"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="6625304284"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <div class="theme-vdoing-content content__default"><h2 id="systemd-介绍"><a href="#systemd-介绍" class="header-anchor">#</a> systemd 介绍</h2> <p>systemd是目前Linux系统上主要的系统守护进程管理工具，由于init一方面对于进程的管理是串行化的，容易出现阻塞情况，另一方面init也仅仅是执行启动脚本，并不能对服务本身进行更多的管理。所以从CentOS 7开始也由systemd取代了init作为默认的系统进程管理工具。
+
+systemd所管理的所有系统资源都称作Unit，通过systemd命令集可以方便的对这些Unit进行管理。比如systemctl、hostnamectl、timedatectl、localctl等命令，这些命令虽然改写了init时代用户的命令使用习惯（不再使用chkconfig、service等命令），但确实也提供了很大的便捷性。</p> <h2 id="systemd-特点"><a href="#systemd-特点" class="header-anchor">#</a> systemd 特点</h2> <ul><li>最新系统都采用systemd管理（RedHat7，CentOS7，Ubuntu15…）</li> <li>CentOS7 支持开机并行启动服务，显著提高开机启动效率</li> <li>CentOS7关机只关闭正在运行的服务，而CentOS6，全部都关闭一次。</li> <li>CentOS7服务的启动与停止不再使用脚本进行管理，也就是/etc/init.d下不在有脚本。</li> <li>CentOS7使用systemd解决原有模式缺陷，比如原有service不会关闭程序产生的子进程。</li></ul> <h2 id="systemd-语法"><a href="#systemd-语法" class="header-anchor">#</a> systemd 语法</h2> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code>systemctl <span class="token punctuation">[</span>command<span class="token punctuation">]</span>      <span class="token punctuation">[</span>unit<span class="token punctuation">]</span>（配置的应用名称）
+
+command可选项
+· start：启动指定的unit          systemctl start nginx
+· stop：关闭指定的unit           systemctl stop nginx
+· restart：重启指定unit          systemctl restart nginx
+· reload：重载指定unit           systemctl reload nginx
+· enable：系统开机时自动启动指定unit，前提是配置文件中有相关配置 systemctl <span class="token builtin class-name">enable</span> nginx
+· disable：开机时不自动运行指定unit   systemctl disable nginx
+· status：查看指定unit当前运行状态 systemctl status nginx
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><h2 id="systemd-配置文件说明"><a href="#systemd-配置文件说明" class="header-anchor">#</a> systemd 配置文件说明</h2> <ul><li>每一个 Unit 都需要有一个配置文件用于告知 systemd 对于服务的管理方式</li> <li>配置文件存放于 /usr/lib/systemd/system/，设置开机启动后会在 /etc/systemd/system 目录建立软链接文件</li> <li>每个Unit的配置文件配置默认后缀名为.service</li> <li>在 /usr/lib/systemd/system/ 目录中分为 system 和 user 两个目录，一般将开机不登陆就能运行的程序存在系统服务里，也就是 /usr/lib/systemd/system</li> <li>配置文件使用方括号分成了多个部分，并且区分大小写</li></ul> <h2 id="systemd-相关文件"><a href="#systemd-相关文件" class="header-anchor">#</a> systemd 相关文件</h2> <h3 id="实战一"><a href="#实战一" class="header-anchor">#</a> 实战一</h3> <p>源码编译安装nginx 实现systemd管理控制</p> <p>安装nginx编译环境</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code>
+yum  -y <span class="token function">install</span> gcc gcc-c++    openssl-devel pcre-devel gd-devel  iproute net-tools telnet <span class="token function">wget</span> <span class="token function">curl</span>
+<span class="token function">wget</span> http://nginx.org/download/nginx-1.15.5.tar.gz
+<span class="token function">tar</span> zxf nginx-1.15.5.tar.gz <span class="token operator">&amp;&amp;</span>
+<span class="token builtin class-name">cd</span> nginx-1.15.5
+./configure --prefix<span class="token operator">=</span>/usr/local/nginx <span class="token punctuation">\</span>
+    --with-http_ssl_module <span class="token punctuation">\</span>
+    --with-http_stub_status_module 
+<span class="token function">make</span> -j <span class="token number">4</span> <span class="token operator">&amp;&amp;</span> <span class="token function">make</span> <span class="token function">install</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><p>通用方式启动nginx</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code>/usr/local/nginx/sbin/nginx  <span class="token comment">#启动</span>
+/usr/local/nginx/sbin/nginx  -s reload  <span class="token comment">#重启</span>
+/usr/local/nginx/sbin/nginx -s   quit   <span class="token comment">#关闭nginx</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><p>systemd 管理控制启动模式</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token function">vim</span>      /usr/lib/systemd/system/nginx.service
+
+<span class="token punctuation">[</span>Unit<span class="token punctuation">]</span>
+<span class="token assign-left variable">Description</span><span class="token operator">=</span>nginx
+<span class="token assign-left variable">After</span><span class="token operator">=</span>network.target
+
+<span class="token punctuation">[</span>Service<span class="token punctuation">]</span>
+<span class="token assign-left variable">Type</span><span class="token operator">=</span>forking
+<span class="token assign-left variable">ExecStart</span><span class="token operator">=</span>/usr/local/nginx/sbin/nginx
+<span class="token assign-left variable">ExecReload</span><span class="token operator">=</span>/usr/local/nginx/sbin/nginx -s reload
+<span class="token assign-left variable">ExecStop</span><span class="token operator">=</span>/usr/local/nginx/sbin/nginx -s quit
+<span class="token assign-left variable">PrivateTmp</span><span class="token operator">=</span>true
+
+<span class="token punctuation">[</span>Install<span class="token punctuation">]</span>
+<span class="token assign-left variable">WantedBy</span><span class="token operator">=</span>multi-user.target
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br></div></div><p>参数详解</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code>systemctl restart nginx
+systemctl <span class="token builtin class-name">enable</span>  nginx
+systemctl stop  nginx
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><h3 id="实战二"><a href="#实战二" class="header-anchor">#</a> 实战二</h3> <p>二进制安装tomcat 实现systemd管理控制</p> <p>安装java环境，我已经将安装包打包到我得服务器上，也可以去官网下载</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token function">wget</span>  <span class="token number">120.78</span>.77.38/file/jdk-8u231-linux-x64.rpm
+<span class="token function">wget</span>  <span class="token number">120.78</span>.77.38/file/apache-tomcat-9.0.27.tar.gz
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token function">rpm</span> -ivh  jdk-8u231-linux-x64.rpm    <span class="token comment">#rpm直接安装jdk</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><p>配置环境变量</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token function">vim</span>    /etc/profile
+
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">JAVA_HOME</span><span class="token operator">=</span>/usr/java/jdk1.8.0_231-amd64
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">JRE_HOME</span><span class="token operator">=</span><span class="token variable">${JAVA_HOME}</span>/jre  
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">CLASSPATH</span><span class="token operator">=</span>.:<span class="token variable">${JAVA_HOME}</span>/lib:<span class="token variable">${JRE_HOME}</span>/lib  
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">JAVA_PATH</span><span class="token operator">=</span><span class="token variable">${JAVA_HOME}</span>/bin:<span class="token variable">${JRE_HOME}</span>/bin
+<span class="token builtin class-name">export</span>  <span class="token assign-left variable"><span class="token environment constant">PATH</span></span><span class="token operator">=</span><span class="token variable">${JAVA_HOME}</span>/bin:<span class="token environment constant">$PATH</span> 
+<span class="token builtin class-name">source</span>   /etc/profile
+java -version   <span class="token comment">#检测环境</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><p>安装tomcat</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token function">tar</span>  -xf  apache-tomcat-9.0.27  
+<span class="token function">mv</span>  apache-tomcat-9.0.27  /usr/local/tomcat
+启动tomcat
+<span class="token function">sh</span>    /usr/local/tomcat/bin/startup.sh   <span class="token comment">#启动</span>
+<span class="token function">sh</span>   /usr/local/tomcat/bin/shutdown.sh <span class="token comment">#关闭</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><p>systemd管理控制启动</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code>
+<span class="token function">vim</span>      /usr/lib/systemd/system/tomcat.service
+
+<span class="token punctuation">[</span>Unit<span class="token punctuation">]</span>
+<span class="token assign-left variable">Description</span><span class="token operator">=</span>tomcat server
+<span class="token assign-left variable">Wants</span><span class="token operator">=</span>network-online.target
+<span class="token assign-left variable">After</span><span class="token operator">=</span>network.target
+
+<span class="token punctuation">[</span>Service<span class="token punctuation">]</span>
+<span class="token assign-left variable">Type</span><span class="token operator">=</span>forking
+<span class="token assign-left variable">Environment</span><span class="token operator">=</span><span class="token string">&quot;JAVA_HOME=/usr/java/jdk1.8.0_231-amd64&quot;</span>
+<span class="token assign-left variable">Environment</span><span class="token operator">=</span><span class="token string">&quot;PATH=<span class="token variable">$JAVA_HOME</span>/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin&quot;</span>
+<span class="token assign-left variable">Environment</span><span class="token operator">=</span><span class="token string">&quot;CLASSPATH=.:<span class="token variable">$JAVA_HOME</span>/lib/dt.jar:<span class="token variable">$JAVA_HOME</span>/lib/tools.jar&quot;</span>
+<span class="token assign-left variable">ExecStart</span><span class="token operator">=</span>/usr/local/tomcat/bin/startup.sh
+<span class="token assign-left variable">ExecStop</span><span class="token operator">=</span>/usr/local/tomcat/bin/shutdown.sh
+<span class="token assign-left variable">Restart</span><span class="token operator">=</span>on-failure
+
+<span class="token punctuation">[</span>Install<span class="token punctuation">]</span>
+<span class="token assign-left variable">WantedBy</span><span class="token operator">=</span>multi-user.target
+systemctl restart tomcat  <span class="token comment">#启动</span>
+systemctl <span class="token builtin class-name">enable</span> tomcat   <span class="token comment">#配置自启</span>
+systemctl stop  tomcat   <span class="token comment">#停止服务</span>
+systemctl status  tomcat  <span class="token comment">#检测状态</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br></div></div><p>以上两个实战nginx和tomcat程序中自带了启动停止脚本，如果启动得程序没有自带脚本则需要自己编写一个类似得启动停止脚本</p> <h3 id="实战三"><a href="#实战三" class="header-anchor">#</a> 实战三</h3> <p>部署jar程序 实现systemd管理控制</p> <p>实际得项目中会有一些jar程序需要启动 如果手动启动则需要输入一大串命令 停止则需要杀掉进程来停止，很麻烦</p> <p>举一个实际启动得例子切换到jar目录下</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code>java -jar decode.jar -Dconfig<span class="token operator">=</span>/usr/local/abc/application.properties
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><p>编写一个启动脚本</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code>
+<span class="token function">vim</span>  demo.sh
+
+<span class="token comment">#!/bin/bash</span>
+<span class="token comment">#</span>
+
+<span class="token builtin class-name">source</span> /etc/profile
+<span class="token assign-left variable">jarName</span><span class="token operator">=</span><span class="token string">&quot;abc-web.jar&quot;</span>
+<span class="token assign-left variable">workDir</span><span class="token operator">=</span><span class="token string">&quot;/usr/local/abc&quot;</span>
+
+<span class="token function-name function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token builtin class-name">cd</span> <span class="token variable">${workDir}</span> <span class="token operator">&amp;&amp;</span> java -jar <span class="token variable">${jarName}</span> --spring.profiles.active<span class="token operator">=</span>prod --server.port<span class="token operator">=</span><span class="token number">9630</span> <span class="token operator">&gt;</span>uams.log <span class="token operator"><span class="token file-descriptor important">2</span>&gt;</span><span class="token file-descriptor important">&amp;1</span> <span class="token operator">&amp;</span>
+<span class="token punctuation">}</span>
+
+<span class="token function-name function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token function">ps</span> -ef <span class="token operator">|</span> <span class="token function">grep</span> -qP <span class="token string">&quot;(?&lt;=-jar)\s+<span class="token variable">${jarName}</span>&quot;</span> <span class="token operator">&amp;&amp;</span> <span class="token function">kill</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">ps</span> -ef <span class="token operator">|</span> <span class="token function">grep</span> -P <span class="token string">&quot;(?&lt;=-jar)\s+<span class="token variable">${jarName}</span>&quot;</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print $2}'</span><span class="token variable">)</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">case</span> <span class="token variable">$1</span> <span class="token keyword">in</span>
+    start<span class="token punctuation">)</span>
+        start
+        <span class="token punctuation">;</span><span class="token punctuation">;</span>
+    stop<span class="token punctuation">)</span>
+        stop
+        <span class="token punctuation">;</span><span class="token punctuation">;</span>
+    restart<span class="token punctuation">)</span>
+        stop
+        start
+        <span class="token punctuation">;</span><span class="token punctuation">;</span>
+<span class="token keyword">esac</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br></div></div><p>编写systemd配置文件</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token function">vim</span>  /usr/lib/systemd/system/abc.service
+
+<span class="token punctuation">[</span>Unit<span class="token punctuation">]</span>
+<span class="token assign-left variable">Description</span><span class="token operator">=</span>uams server
+<span class="token assign-left variable">Wants</span><span class="token operator">=</span>network-online.target
+<span class="token assign-left variable">After</span><span class="token operator">=</span>network.target
+
+<span class="token punctuation">[</span>Service<span class="token punctuation">]</span>
+<span class="token assign-left variable">Type</span><span class="token operator">=</span>forking
+<span class="token assign-left variable">WorkingDirectory</span><span class="token operator">=</span>/usr/local/abc/
+<span class="token assign-left variable">ExecStart</span><span class="token operator">=</span>/bin/bash uams.sh start
+<span class="token assign-left variable">ExecStop</span><span class="token operator">=</span>/bin/bash uams.sh stop
+<span class="token assign-left variable">ExecReload</span><span class="token operator">=</span>/bin/bash uams.sh restart
+<span class="token assign-left variable">Restart</span><span class="token operator">=</span>on-failure
+
+<span class="token punctuation">[</span>Install<span class="token punctuation">]</span>
+<span class="token assign-left variable">WantedBy</span><span class="token operator">=</span>multi-user.target
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br></div></div><p>启动abc服务</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code>
+systemctl restart abc  <span class="token comment">#启动</span>
+systemctl <span class="token builtin class-name">enable</span> abc   <span class="token comment">#配置自启</span>
+systemctl stop  abc   <span class="token comment">#停止服务</span>
+systemctl status  abc  <span class="token comment">#检测状态</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div></div></div> <div class="page-slot page-slot-bottom"><!-- 横向自适应 -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="6620245489"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <div class="page-edit"><div class="edit-link"><a href="https://github.com/cf1998/kubernetes/edit/master/docs/_posts/Linux/Systemd 进程管理.md" target="_blank" rel="noopener noreferrer">编辑</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <div class="tags"><a href="/tags/?tag=Docker" title="标签">#Docker</a></div> <!----></div> <div class="page-nav-wapper"><!----> <!----></div></div> <div class="article-list"><div class="article-title"><a href="/archives/" class="iconfont icon-bi">最近更新</a></div> <div class="article-wrapper"><dl><dd>01</dd> <dt><a href="/pages/uvrvk2/"><div>Kubernetes控制器-Job</div></a> <span>08-25</span></dt></dl><dl><dd>02</dd> <dt><a href="/pages/3tx6xl/"><div>Pod优先权和抢占</div></a> <span>08-24</span></dt></dl><dl><dd>03</dd> <dt><a href="/pages/bs3rS5/"><div>Trivy-容器镜像漏洞扫描神器</div></a> <span>08-16</span></dt></dl> <dl><dd></dd> <dt><a href="/archives/" class="more">更多文章&gt;</a></dt></dl></div></div></main></div> <div class="footer"><div class="icons"><a href="mailto:995345781@qq.com" title="发邮件" target="_blank" class="iconfont icon-youjian"></a><a href="https://github.com/cf1998" title="GitHub" target="_blank" class="iconfont icon-github"></a><a href="https://music.163.com/#" title="听音乐" target="_blank" class="iconfont icon-erji"></a></div> 
+  Theme by
+  <a href="https://github.com/xugaoyi/vuepress-theme-vdoing" target="_blank" title="本站主题">Vdoing</a> 
+    | Copyright © 2021-2021
+    <span>CloudNative Operations</span></div> <div class="buttons"><div title="返回顶部" class="button blur go-to-top iconfont icon-fanhuidingbu" style="display:none;"></div> <div title="去评论" class="button blur go-to-comment iconfont icon-pinglun" style="display:none;"></div> <div title="主题模式" class="button blur theme-mode-but iconfont icon-zhuti"><ul class="select-box" style="display:none;"><li class="iconfont icon-zidong">
+          跟随系统
+        </li><li class="iconfont icon-rijianmoshi">
+          浅色模式
+        </li><li class="iconfont icon-yejianmoshi">
+          深色模式
+        </li><li class="iconfont icon-yuedu">
+          阅读模式
+        </li></ul></div></div> <!----> <!----> <div class="custom-html-window custom-html-window-rb" style="display:;"><div class="custom-wrapper"><i class="close-but">×</i> <div><!-- 固定160*160px -->
+      <ins class="adsbygoogle"
+          style="display:inline-block;max-width:160px;max-height:160px"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="8377369658"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </div></div></div></div><div class="global-ui"><div></div></div></div>
+    <script src="/assets/js/app.7d88be19.js" defer></script><script src="/assets/js/2.f3cfc96e.js" defer></script><script src="/assets/js/13.5da5eba6.js" defer></script>
+  </body>
+</html>
