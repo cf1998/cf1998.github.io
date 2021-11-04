@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Kubernetes 高可用集群 | CloudNative Operations</title>
+    <meta name="generator" content="VuePress 1.8.0">
+    <link rel="icon" href="/img/favicon.ico">
+    <script data-ad-client="ca-pub-7828333725993554" async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <meta name="description" content="专注于云原生运维技术分享,Kubernetes,Prometheus，istio,envoy等技术文章">
+    <meta name="CloudNative Operations" content="专注于云原生运维技术分享,致敬每个爱学习的你">
+    <meta name="baidu-site-verification" content="7F55weZDDc">
+    <meta name="theme-color" content="#11a8cd">
+    <link rel="preload" href="/assets/css/0.styles.546f0649.css" as="style"><link rel="preload" href="/assets/js/app.70551524.js" as="script"><link rel="preload" href="/assets/js/2.f3cfc96e.js" as="script"><link rel="preload" href="/assets/js/11.855792c4.js" as="script"><link rel="prefetch" href="/assets/js/10.00e44624.js"><link rel="prefetch" href="/assets/js/12.1332e0e5.js"><link rel="prefetch" href="/assets/js/13.53e66033.js"><link rel="prefetch" href="/assets/js/14.45be923d.js"><link rel="prefetch" href="/assets/js/15.b456ad0f.js"><link rel="prefetch" href="/assets/js/16.0d7eda3f.js"><link rel="prefetch" href="/assets/js/17.3dc53bc5.js"><link rel="prefetch" href="/assets/js/18.8664f441.js"><link rel="prefetch" href="/assets/js/19.d30caa6e.js"><link rel="prefetch" href="/assets/js/20.dd4b0fdb.js"><link rel="prefetch" href="/assets/js/21.d171502a.js"><link rel="prefetch" href="/assets/js/22.686cbdf1.js"><link rel="prefetch" href="/assets/js/23.89b187db.js"><link rel="prefetch" href="/assets/js/24.07be067d.js"><link rel="prefetch" href="/assets/js/25.14156c9b.js"><link rel="prefetch" href="/assets/js/26.1fe272b8.js"><link rel="prefetch" href="/assets/js/27.c216fa46.js"><link rel="prefetch" href="/assets/js/28.b46ab188.js"><link rel="prefetch" href="/assets/js/3.69fd59f3.js"><link rel="prefetch" href="/assets/js/4.523f8496.js"><link rel="prefetch" href="/assets/js/5.ab2f819c.js"><link rel="prefetch" href="/assets/js/6.40e3ffa9.js"><link rel="prefetch" href="/assets/js/7.5d877255.js"><link rel="prefetch" href="/assets/js/8.9a9c60e3.js"><link rel="prefetch" href="/assets/js/9.65c68f02.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.546f0649.css">
+  </head>
+  <body class="theme-mode-light">
+    <div id="app" data-server-rendered="true"><div class="theme-container sidebar-open have-rightmenu"><header class="navbar blur"><div title="目录" class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/img/EB-logo.png" alt="CloudNative Operations" class="logo"> <span class="site-name can-hide">CloudNative Operations</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">首页</a></div><div class="nav-item"><a href="/archives/" class="nav-link">归档</a></div><div class="nav-item"><a href="/books/" class="nav-link">书籍</a></div><div class="nav-item"><a href="/about/" class="nav-link">关于</a></div> <a href="https://github.com/cf1998/kubernetes" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar" style="display:none;"><div class="blogger"><img src="https://kubesre.com/img/EB-logo.png"> <div class="blogger-info"><h3>船长</h3> <span>CloudNative Operations</span></div></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">首页</a></div><div class="nav-item"><a href="/archives/" class="nav-link">归档</a></div><div class="nav-item"><a href="/books/" class="nav-link">书籍</a></div><div class="nav-item"><a href="/about/" class="nav-link">关于</a></div> <a href="https://github.com/cf1998/kubernetes" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Kubernetes 高可用集群</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/pages/kubes1/#集群环境介绍" class="sidebar-link">集群环境介绍</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/kubes1/#服务器初始化配置" class="sidebar-link">服务器初始化配置</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/kubes1/#所有节点部署docker-kubeadm-kubelet" class="sidebar-link">所有节点部署Docker/kubeadm/kubelet</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/kubes1/#部署etcd外部集群" class="sidebar-link">部署ETCD外部集群</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/kubes1/#kube-vip初始化配置" class="sidebar-link">kube-vip初始化配置</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/kubes1/#kubeadm-初始化集群" class="sidebar-link">kubeadm 初始化集群</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/kubes1/#kube-vip集群配置" class="sidebar-link">kube-vip集群配置</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/kubes1/#验证集群高可用" class="sidebar-link">验证集群高可用</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> <div class="sidebar-slot sidebar-slot-bottom"><!-- 正方形 -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="3508773082"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div></aside> <div><main class="page"><div class="theme-vdoing-wrapper "><div class="articleInfo-wrap" data-v-1cd794fe><div class="articleInfo" data-v-1cd794fe><!----> <div class="info" data-v-1cd794fe><div title="作者" class="author iconfont icon-touxiang" data-v-1cd794fe><a href="javascript:;" data-v-1cd794fe>船长</a></div> <div title="创建时间" class="date iconfont icon-riqi" data-v-1cd794fe><a href="javascript:;" data-v-1cd794fe>2021-11-24</a></div> <div title="分类" class="date iconfont icon-wenjian" data-v-1cd794fe><a href="/categories/?category=Kubernetes" data-v-1cd794fe>Kubernetes </a></div></div></div></div> <!----> <div class="content-wrapper"><div class="right-menu-wrapper"><div class="right-menu-margin"><div class="right-menu-content"></div></div></div> <h1><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAABGpJREFUSA3tVVtoXFUU3fvOI53UlmCaKIFmwEhsE7QK0ipFEdHEKpXaZGrp15SINsXUWvBDpBgQRKi0+KKoFeJHfZA+ED9KKoIU2gYD9UejTW4rVIzm0VSTziPzuNu1z507dibTTjL4U/DAzLn3nL3X2o91ziX6f9wMFdh6Jvbm9nNSV0msViVO6tN1Rm7NMu2OpeJ9lWBUTDxrJbYTS0hInuwciu9eLHlFxCLCZEk3MegsJmZ5K/JD6t7FkFdEvGUo1g7qJoG3MHImqRIn8/nzY1K9UPKKiJmtnUqHVE3Gbuay6vJE/N2FEmuxFjW2nUuE0yQXRRxLiTUAzs36zhZvOXJPdX850EVnnLZkB8prodQoM5JGj7Xk2mvC7JB8tG04Ef5PiXtG0UtxupRQSfTnBoCy554x18yJHI6I+G5Eru4LHmPJZEQsrvPUbMiA8G/WgMK7w7I+ez7++o2ANfbrjvaOl1tFMs+htG3IrZH9/hDX1Pr8Tc0UvH8tcX29KzAgIGcEkINyW5BF9x891hw6VYqgJHEk0huccS7vh3C6gTiODL+26huuBtbct8eZnqLML8PkxGYpuPZBqtqwkSjgc4mB5gbgig5i+y0UDK35LMxXisn9xQtK+nd26gTIHsHe/oblK/b29fUmN/8Y+9jAQrnBp56m1LcDlDp9irKTExSKduXJVWSqdBMA08pEJnEIOB3FPPMybu/oeV8zFeYN3xx576Q6RH+VmplE4ncQV5v+5rzSoyOU7PuEAg8g803PwBJ0CExno/jcMbN8tONYeOmHiuUNryvm3fRUy4tMPVLdAGkUhNWuggGrJcXPv+ouCjz0MKUHz1J2/E8IC9nqTabcxgaBYM0hPhD5Y65FsbxRQKxCQrDjDctW7PUM3HuZunFyifSAqEfuzCp48Il24luWUWZoyJCaPR82jE0+kFA643wRFVni4RYSq3ohJO2pZ7B5dO4xkDWbEpossJPLSrPjYID8rS2UHTlvyNxqIGsg674XJJ7vnh5L7PNwC4hh2sjCI96mzszOTpxLF0T7l88Yz7lAuK6OnL8gXLOnTvpzSb22YG8W7us3jSebFHeeqnXRG1vt+MoUM84LQIBmMsCTAcOauTh0T0l0neQK7m2bLMt2mGxU3HYssS0J2cdv5wljlPsrIuZLAG/2DOZIXgCYT8uMGZN+e2kSirfxZOPCsC0f24nTZzspnVn9VePS1Z5vubmAGGXG8ZFno9Hel0yfA5ZPhF7Dh972BQJ2qCpgH67lmWtBYbvk6sz02wjky2vXyz0XErP/kFB619js1BtwfOV4OPRqOQBjy3Qbk18vigUPPSD5ceHnwck7W9bhAqZdd7SuG7w4/P2F/GaJh8c7e9qgow+Q7cGBo+98WsLkuktFqiZabtXuQTu/Y5ETbR0v7tNSFnvrmu6pjdoan2KjMu8q/Hmj1EfCO2ZGfEIbIXKUlw8qaX9/b2oeSJmFksSeT/Fn0V3nSypChh4Gjh74ybO9aeZ/AN2dwciu2/MhAAAAAElFTkSuQmCC">
+          Kubernetes 高可用集群
+        </h1> <div class="page-slot page-slot-top"><!-- 固定100% * 90px可显示，max-height:90px未见显示-->
+     <ins class="adsbygoogle"
+          style="display:inline-block;width:100%;max-height:90px"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="6625304284"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <div class="theme-vdoing-content content__default"><h2 id="集群环境介绍"><a href="#集群环境介绍" class="header-anchor">#</a> 集群环境介绍</h2> <p>Kubernetes集群是单Master的集群，对于生产环境风险太大了，非常有必要做一个高可用集群，这里的高可用主要针对控制面板来说的，比如 kube-apiserver、etcd、kube-controller-manager、kube-scheduler 这几个组件，其中 kube-controller-manager 于 kube-scheduler 组件是 Kubernetes 集群自己去实现的高可用，当有多个组件存在的时候，会自动选择一个作为 Leader 提供服务，所以不需要我们手动去实现高可用，apiserver 和 etcd 就需要手动去搭建高可用的集群的。
+</p> <p><img src="https://kubesre.com/img/kubernetes%E9%AB%98%E5%8F%AF%E7%94%A8.jpg" alt=""></p> <table><thead><tr><th>hostname</th> <th>IP</th> <th>OS</th> <th>software</th></tr></thead> <tbody><tr><td>kubernetes-master-100-1</td> <td>192.168.1.101</td> <td>CentOS Linux release 7.5</td> <td>kube-vip、etcd、apiserver、scheduler、-controller-manager</td></tr> <tr><td>kubernetes-master-100-2</td> <td>192.168.1.102</td> <td>CentOS Linux release 7.5</td> <td>kube-vip、etcd、apiserver、scheduler、-controller-manager</td></tr> <tr><td>kubernetes-master-100-3</td> <td>192.168.1.103</td> <td>CentOS Linux release 7.5</td> <td>kube-vip、etcd、apiserver、scheduler、-controller-manager</td></tr> <tr><td>kubernetes-node-100-4</td> <td>192.168.1.104</td> <td>CentOS Linux release 7.5</td> <td>kube-proxy、kubelet</td></tr> <tr><td>kubernetes-node-100-5</td> <td>192.168.1.105</td> <td>CentOS Linux release 7.5</td> <td>kube-proxy、kubelet</td></tr> <tr><td>kubernetes-node-100-6</td> <td>192.168.1.106</td> <td>CentOS Linux release 7.5</td> <td>kube-proxy、kubelet</td></tr> <tr><td>kubernetes-node-100-7</td> <td>192.168.1.107</td> <td>CentOS Linux release 7.5</td> <td>kube-proxy、kubelet</td></tr> <tr><td>kubernetes-node-100-8</td> <td>192.168.1.108</td> <td>CentOS Linux release 7.5</td> <td>kube-proxy、kubelet</td></tr> <tr><td>kubernetes-node-100-9</td> <td>192.168.1.109</td> <td>CentOS Linux release 7.5</td> <td>kube-proxy、kubelet</td></tr></tbody></table> <h2 id="服务器初始化配置"><a href="#服务器初始化配置" class="header-anchor">#</a> <strong>服务器初始化配置</strong></h2> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code>关闭防火墙：
+$ systemctl stop firewalld
+$ systemctl disable firewalld
+ 
+关闭selinux：
+$ <span class="token function">sed</span> -i <span class="token string">'s/enforcing/disabled/'</span> /etc/selinux/config
+$ setenforce <span class="token number">0</span>
+ 
+关闭swap：
+$ swapoff -a  <span class="token comment"># 临时</span>
+$ <span class="token function">sed</span> -ri <span class="token string">'s/.*swap.*/#&amp;/'</span> /etc/fstab <span class="token comment"># 永久</span>
+ 
+根据规划设置主机名：
+hostnamectl set-hostname <span class="token operator">&lt;</span>hostname<span class="token operator">&gt;</span>
+ 
+在Master添加Hosts：
+$ <span class="token function">cat</span> /etc/hosts
+<span class="token number">192.168</span>.1.101 kubernetes-master-100-1 
+<span class="token number">192.168</span>.1.102 kubernetes-master-100-2 
+<span class="token number">192.168</span>.1.103 kubernetes-master-100-3 
+<span class="token number">192.168</span>.1.104 kubernetes-node-100-4 
+<span class="token number">192.168</span>.1.105 kubernetes-node-100-5 
+<span class="token number">192.168</span>.1.106 kubernetes-node-100-6 
+<span class="token number">192.168</span>.1.107 kubernetes-node-100-7 
+<span class="token number">192.168</span>.1.108 kubernetes-node-100-8 
+<span class="token number">192.168</span>.1.109 kubernetes-node-100-9 
+ 
+将桥接的IPv4流量传递到iptables的链：
+$ <span class="token function">cat</span> <span class="token operator">&gt;</span> /etc/sysctl.d/k8s.conf <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF</span>
+$ sysctl --system
+
+
+<span class="token function">cp</span> -rf /etc/security/limits.conf /etc/security/limits.conf.back
+ 
+<span class="token function">cat</span> <span class="token operator">&gt;</span> /etc/security/limits.conf <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+* soft nofile 655350
+* hard nofile 655350
+* soft nproc unlimited
+* hard nproc unlimited
+* soft core unlimited
+* hard core unlimited
+root soft nofile 655350
+root hard nofile 655350
+root soft nproc unlimited
+root hard nproc unlimited
+root soft core unlimited
+root hard core unlimited
+EOF</span>
+ 
+<span class="token builtin class-name">echo</span> <span class="token string">'/etc/sysctl.conf 文件调优'</span>
+ 
+<span class="token function">cp</span> -rf /etc/sysctl.conf /etc/sysctl.conf.back
+<span class="token function">cat</span> <span class="token operator">&gt;</span> /etc/sysctl.conf <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+ 
+vm.swappiness = 0
+net.ipv4.neigh.default.gc_stale_time = 120
+ 
+# see details in https://help.aliyun.com/knowledge_detail/39428.html
+net.ipv4.conf.all.rp_filter = 0
+net.ipv4.conf.default.rp_filter = 0
+net.ipv4.conf.default.arp_announce = 2
+net.ipv4.conf.lo.arp_announce = 2
+net.ipv4.conf.all.arp_announce = 2
+ 
+# see details in https://help.aliyun.com/knowledge_detail/41334.html
+net.ipv4.tcp_max_tw_buckets = 5000
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_max_syn_backlog = 1024
+net.ipv4.tcp_synack_retries = 2
+ 
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+ 
+kernel.sysrq = 1
+kernel.pid_max=1000000
+EOF</span>
+sysctl -p
+ 
+ 
+<span class="token comment"># 加载ipvs模块</span>
+<span class="token function">cat</span> <span class="token operator">&gt;</span> /etc/sysconfig/modules/ipvs.modules <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+#!/bin/bash
+modprobe -- ip_vs
+modprobe -- ip_vs_rr
+modprobe -- ip_vs_wrr
+modprobe -- ip_vs_sh
+modprobe -- nf_conntrack_ipv4
+EOF</span>
+<span class="token function">chmod</span> <span class="token number">755</span> /etc/sysconfig/modules/ipvs.modules
+<span class="token function">bash</span> /etc/sysconfig/modules/ipvs.modules
+ 
+<span class="token comment"># 查看ipvs模块加载情况</span>
+ lsmod <span class="token operator">|</span> <span class="token function">grep</span> -e ip_vs -e nf_conntrack_ipv4
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br></div></div><h2 id="所有节点部署docker-kubeadm-kubelet"><a href="#所有节点部署docker-kubeadm-kubelet" class="header-anchor">#</a> <strong>所有节点部署Docker/kubeadm/kubelet</strong></h2> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token comment"># 安装Docker</span>
+$ <span class="token function">wget</span> https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo -O /etc/yum.repos.d/docker-ce.repo
+$ yum -y <span class="token function">install</span> docker-ce-18.06.1.ce-3.el7
+$ systemctl <span class="token builtin class-name">enable</span> docker <span class="token operator">&amp;&amp;</span> systemctl start docker
+$ docker --version
+Docker version <span class="token number">18.06</span>.1-ce, build e68fc7a
+
+<span class="token comment"># 添加阿里云YUM软件源</span>
+$ <span class="token function">cat</span> <span class="token operator">&gt;</span> /etc/yum.repos.d/kubernetes.repo <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+[kubernetes]
+name=Kubernetes
+baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=1
+gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+EOF</span>
+
+<span class="token comment"># 安装kubeadm，kubelet和kubectl</span>
+
+
+$ yum <span class="token function">install</span> -y kubelet-1.20.2 kubeadm-1.20.2 kubectl-1.20.2
+$ systemctl <span class="token builtin class-name">enable</span> kubelet
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br></div></div><h2 id="部署etcd外部集群"><a href="#部署etcd外部集群" class="header-anchor">#</a> 部署ETCD外部集群</h2> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token comment"># 由于使用kubeadm部署的集群，默认只有一个etc节点，所以只能二进制安装好etcd集群加入。</span>
+ 
+cfssl 二进制包
+下载 cfssl 二进制包用于签发证书，官网地址：https://pkg.cfssl.org/，下载如下文件：
+ 
+<span class="token function">wget</span> https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+<span class="token function">wget</span> https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+<span class="token function">wget</span> https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
+ 
+将 cfssl 的几个二进制包添加到 <span class="token environment constant">PATH</span> 包含的目录下：
+$ <span class="token function">ls</span> cfssl*
+cfssl-certinfo_linux-amd64  cfssljson_linux-amd64  cfssl_linux-amd64
+$ <span class="token function">chmod</span> +x cfssl*
+$ <span class="token function">cp</span> cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
+$ <span class="token function">cp</span> cfssljson_linux-amd64 /usr/local/bin/cfssl-json
+$ <span class="token function">cp</span> cfssl_linux-amd64 /usr/local/bin/cfssl
+
+ETCD 二进制包
+下载 ETCD 的二进制包，官方 Github 地址：https://github.com/etcd-io/etcd/releases，下载如下文件：
+<span class="token function">wget</span> https://github.com/etcd-io/etcd/releases/download/v3.4.13/etcd-v3.4.13-linux-amd64.tar.gz
+ 
+ 
+签发证书 ETCD 证书 准备文件
+$ <span class="token builtin class-name">pwd</span>
+/opt
+<span class="token function">mkdir</span> -p etcd/<span class="token punctuation">{</span>bin,conf,data,json_file,ssl<span class="token punctuation">}</span>
+<span class="token function">touch</span> etcd/json_file/<span class="token punctuation">{</span>ca-config.json,ca-csr.json,server-csr.jso
+
+
+$ tree
+<span class="token builtin class-name">.</span>
+etcd
+├── bin
+├── conf
+├── data
+├── json_file
+<span class="token operator">|</span>    ├── ca-config.json
+<span class="token operator">|</span>    ├── ca-csr.json
+<span class="token operator">|</span>    └── server-csr.json
+└── ssl
+ 
+<span class="token comment"># 上述几个文件的内容分别如下（标 '*' 的文件名表示该文件内容你要根据你的环境进行修改）：</span>
+
+$ <span class="token builtin class-name">cd</span> /opt/etcd/
+$ <span class="token function">cat</span> json_file/ca-config.json：
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;signing&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;default&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;expiry&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;87600h&quot;</span>
+    <span class="token punctuation">}</span>,
+    <span class="token string">&quot;profiles&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;www&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+         <span class="token string">&quot;expiry&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;87600h&quot;</span>,
+         <span class="token string">&quot;usages&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+            <span class="token string">&quot;signing&quot;</span>,
+            <span class="token string">&quot;key encipherment&quot;</span>,
+            <span class="token string">&quot;server auth&quot;</span>,
+            <span class="token string">&quot;client auth&quot;</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+ 
+$ json_file/ca-csr.json：
+<span class="token punctuation">{</span>
+    <span class="token string">&quot;CN&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;etcd CA&quot;</span>,
+    <span class="token string">&quot;key&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+        <span class="token string">&quot;algo&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;rsa&quot;</span>,
+        <span class="token string">&quot;size&quot;</span><span class="token builtin class-name">:</span> <span class="token number">2048</span>
+    <span class="token punctuation">}</span>,
+    <span class="token string">&quot;names&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+            <span class="token string">&quot;C&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;CN&quot;</span>,
+            <span class="token string">&quot;L&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;Shanghai&quot;</span>,
+            <span class="token string">&quot;ST&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;Shanghai&quot;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+ 
+$  json_file/server-csr.json*：
+<span class="token punctuation">{</span>
+    <span class="token string">&quot;CN&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;etcd&quot;</span>,
+    <span class="token string">&quot;hosts&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&quot;192.168.1.101&quot;</span>,
+                <span class="token string">&quot;192.168.1.102&quot;</span>,
+                <span class="token string">&quot;192.168.1.103&quot;</span>
+    <span class="token punctuation">]</span>,
+    <span class="token string">&quot;key&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+        <span class="token string">&quot;algo&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;rsa&quot;</span>,
+        <span class="token string">&quot;size&quot;</span><span class="token builtin class-name">:</span> <span class="token number">2048</span>
+    <span class="token punctuation">}</span>,
+    <span class="token string">&quot;names&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+            <span class="token string">&quot;C&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;CN&quot;</span>,
+            <span class="token string">&quot;L&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;Shanghai&quot;</span>,
+            <span class="token string">&quot;ST&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;Shanghai&quot;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+<span class="token comment"># 此处 hosts 列表要添加上所有 etcd 节点的 IP。</span>
+
+
+<span class="token comment"># kubernetes-master-100-1上执行生成密钥</span>
+cfssl gencert -initca json_file/ca-csr.json <span class="token operator">|</span> cfssl-json -bare ca -
+cfssl gencert -ca<span class="token operator">=</span>ca.pem -ca-key<span class="token operator">=</span>ca-key.pem -config<span class="token operator">=</span>json_file/ca-config.json -profile<span class="token operator">=</span>www json_file/server-csr.json <span class="token operator">|</span> cfssl-json -bare server
+ 
+ 
+ 
+ 
+颁发证书
+这里直接执行一下 generate_cert.sh 即可，该文件会在当前目录自签一套 CA 证书并基于这个 CA 为 ETCD 签发一套证书，如下：
+ 
+$ cfssl gencert -initca json_file/ca-csr.json <span class="token operator">|</span> cfssl-json -bare ca -
+$ cfssl gencert -ca<span class="token operator">=</span>ca.pem -ca-key<span class="token operator">=</span>ca-key.pem -config<span class="token operator">=</span>json_file/ca-config.json -profile<span class="token operator">=</span>www json_file/server-csr.json <span class="token operator">|</span> cfssl-json -bare server
+ 
+ 
+生成文件如下：
+$ <span class="token function">ls</span> ca* server* <span class="token operator">|</span> <span class="token function">xargs</span> -n1
+ca.csr <span class="token comment"># CA 证书请求</span>
+ca-key.pem <span class="token comment"># CA 私钥</span>
+ca.pem <span class="token comment"># CA 证书</span>
+server.csr <span class="token comment"># etcd 证书请求</span>
+server-key.pem <span class="token comment"># etcd 私钥</span>
+server.pem <span class="token comment"># etcd 证书</span>
+ 
+将私钥与证书移动到 ETCD 的证书目录：
+$ <span class="token function">cp</span> *.pem /opt/etcd/ssl/
+$ <span class="token function">ls</span> /opt/etcd/ssl/
+ca-key.pem  ca.pem  server-key.pem  server.pem
+ 
+ 
+ETCD 部署
+下面操作在三台master机器中进行：
+将下载好的 ETCD 二进制包分发到这几个主机并解压：
+ 
+$ <span class="token function">tar</span> xf etcd-v3.4.13-linux-amd64.tar.gz
+$ <span class="token function">ls</span> etcd-v3.4.13-linux-amd64/
+Documentation  etcd  etcdctl  README-etcdctl.md  README.md  READMEv2-etcdctl.md
+
+<span class="token comment">#将二进制包移动到 bin 目录下：</span>
+ 
+$ <span class="token function">mkdir</span> -p /opt/etcd/bin/
+$ <span class="token function">mv</span> etcd-v3.4.13-linux-amd64/<span class="token punctuation">{</span>etcd,etcdctl<span class="token punctuation">}</span> /opt/etcd/bin/
+
+<span class="token comment"># 创建 ETCD 的配置文件，</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># cat /opt/etcd/conf/etcd.conf</span>
+<span class="token comment">#[Member]</span>
+<span class="token comment"># 节点名称，唯一</span>
+<span class="token assign-left variable">ETCD_NAME</span><span class="token operator">=</span><span class="token string">&quot;etcd-1&quot;</span>
+<span class="token comment"># 数据目录</span>
+<span class="token assign-left variable">ETCD_DATA_DIR</span><span class="token operator">=</span><span class="token string">&quot;/opt/etcd/data/default.etcd&quot;</span>
+<span class="token comment"># 集群内部通信监听的地址</span>
+<span class="token assign-left variable">ETCD_LISTEN_PEER_URLS</span><span class="token operator">=</span><span class="token string">&quot;https://192.168.1.101:2380&quot;</span>
+<span class="token comment"># 与客户端通信监听的地址</span>
+<span class="token assign-left variable">ETCD_LISTEN_CLIENT_URLS</span><span class="token operator">=</span><span class="token string">&quot;https://192.168.1.101:2379&quot;</span>
+ 
+<span class="token comment">#[Clustering]</span>
+<span class="token comment"># 对外公告的该节点集群内监听地址</span>
+<span class="token assign-left variable">ETCD_INITIAL_ADVERTISE_PEER_URLS</span><span class="token operator">=</span><span class="token string">&quot;https://192.168.1.101:2380&quot;</span>
+<span class="token comment"># 对外公告的该节点客户端监听地址</span>
+<span class="token assign-left variable">ETCD_ADVERTISE_CLIENT_URLS</span><span class="token operator">=</span><span class="token string">&quot;https://192.168.1.101:2379&quot;</span>
+<span class="token comment"># 集群所有成员</span>
+<span class="token assign-left variable">ETCD_INITIAL_CLUSTER</span><span class="token operator">=</span><span class="token string">&quot;etcd-1=https://192.168.1.101:2380,etcd-2=https://192.168.1.102:2380,etcd-3=https://192.168.1.103:2380&quot;</span>
+<span class="token comment"># 通信 Token（密钥），可自行修改</span>
+<span class="token assign-left variable">ETCD_INITIAL_CLUSTER_TOKEN</span><span class="token operator">=</span><span class="token string">&quot;etcd-cluster&quot;</span>
+<span class="token comment"># 标识是创建新的集群，加入已有的集群设为 exist</span>
+<span class="token assign-left variable">ETCD_INITIAL_CLUSTER_STATE</span><span class="token operator">=</span><span class="token string">&quot;new&quot;</span>
+
+
+<span class="token punctuation">[</span>root@kubernetes-master-100-2 ~<span class="token punctuation">]</span><span class="token comment"># cat /opt/etcd/conf/etcd.conf</span>
+<span class="token comment">#[Member]</span>
+<span class="token comment"># 节点名称，唯一</span>
+<span class="token assign-left variable">ETCD_NAME</span><span class="token operator">=</span><span class="token string">&quot;etcd-2&quot;</span>
+<span class="token comment"># 数据目录</span>
+<span class="token assign-left variable">ETCD_DATA_DIR</span><span class="token operator">=</span><span class="token string">&quot;/opt/etcd/data/default.etcd&quot;</span>
+<span class="token comment"># 集群内部通信监听的地址</span>
+<span class="token assign-left variable">ETCD_LISTEN_PEER_URLS</span><span class="token operator">=</span><span class="token string">&quot;https://192.168.1.102:2380&quot;</span>
+<span class="token comment"># 与客户端通信监听的地址</span>
+<span class="token assign-left variable">ETCD_LISTEN_CLIENT_URLS</span><span class="token operator">=</span><span class="token string">&quot;https://192.168.1.102:2379&quot;</span>
+ 
+<span class="token comment">#[Clustering]</span>
+<span class="token comment"># 对外公告的该节点集群内监听地址</span>
+<span class="token assign-left variable">ETCD_INITIAL_ADVERTISE_PEER_URLS</span><span class="token operator">=</span><span class="token string">&quot;https://192.168.1.102:2380&quot;</span>
+<span class="token comment"># 对外公告的该节点客户端监听地址</span>
+<span class="token assign-left variable">ETCD_ADVERTISE_CLIENT_URLS</span><span class="token operator">=</span><span class="token string">&quot;https://192.168.1.102:2379&quot;</span>
+<span class="token comment"># 集群所有成员</span>
+<span class="token assign-left variable">ETCD_INITIAL_CLUSTER</span><span class="token operator">=</span><span class="token string">&quot;etcd-1=https://192.168.1.101:2380,etcd-2=https://192.168.1.102:2380,etcd-3=https://192.168.1.103:2380&quot;</span>
+<span class="token comment"># 通信 Token（密钥），可自行修改</span>
+<span class="token assign-left variable">ETCD_INITIAL_CLUSTER_TOKEN</span><span class="token operator">=</span><span class="token string">&quot;etcd-cluster&quot;</span>
+<span class="token comment"># 标识是创建新的集群，加入已有的集群设为 exist</span>
+<span class="token assign-left variable">ETCD_INITIAL_CLUSTER_STATE</span><span class="token operator">=</span><span class="token string">&quot;new&quot;</span>
+
+<span class="token punctuation">[</span>root@kubernetes-master-100-3 ~<span class="token punctuation">]</span><span class="token comment"># cat /opt/etcd/conf/etcd.conf</span>
+<span class="token comment">#[Member]</span>
+<span class="token comment"># 节点名称，唯一</span>
+<span class="token assign-left variable">ETCD_NAME</span><span class="token operator">=</span><span class="token string">&quot;etcd-3&quot;</span>
+<span class="token comment"># 数据目录</span>
+<span class="token assign-left variable">ETCD_DATA_DIR</span><span class="token operator">=</span><span class="token string">&quot;/opt/etcd/data/default.etcd&quot;</span>
+<span class="token comment"># 集群内部通信监听的地址</span>
+<span class="token assign-left variable">ETCD_LISTEN_PEER_URLS</span><span class="token operator">=</span><span class="token string">&quot;https://192.168.1.103:2380&quot;</span>
+<span class="token comment"># 与客户端通信监听的地址</span>
+<span class="token assign-left variable">ETCD_LISTEN_CLIENT_URLS</span><span class="token operator">=</span><span class="token string">&quot;https://192.168.1.103:2379&quot;</span>
+ 
+<span class="token comment">#[Clustering]</span>
+<span class="token comment"># 对外公告的该节点集群内监听地址</span>
+<span class="token assign-left variable">ETCD_INITIAL_ADVERTISE_PEER_URLS</span><span class="token operator">=</span><span class="token string">&quot;https://192.168.1.103:2380&quot;</span>
+<span class="token comment"># 对外公告的该节点客户端监听地址</span>
+<span class="token assign-left variable">ETCD_ADVERTISE_CLIENT_URLS</span><span class="token operator">=</span><span class="token string">&quot;https://192.168.1.103:2379&quot;</span>
+<span class="token comment"># 集群所有成员</span>
+<span class="token assign-left variable">ETCD_INITIAL_CLUSTER</span><span class="token operator">=</span><span class="token string">&quot;etcd-1=https://192.168.1.101:2380,etcd-2=https://192.168.1.102:2380,etcd-3=https://192.168.1.103:2380&quot;</span>
+<span class="token comment"># 通信 Token（密钥），可自行修改</span>
+<span class="token assign-left variable">ETCD_INITIAL_CLUSTER_TOKEN</span><span class="token operator">=</span><span class="token string">&quot;etcd-cluster&quot;</span>
+<span class="token comment"># 标识是创建新的集群，加入已有的集群设为 exist</span>
+<span class="token assign-left variable">ETCD_INITIAL_CLUSTER_STATE</span><span class="token operator">=</span><span class="token string">&quot;new&quot;</span>
+
+<span class="token comment"># Systemd 管理</span>
+<span class="token comment"># 创建 ETCD 的 Systemd service 文件：</span>
+<span class="token punctuation">[</span>root@k8s-suzaku-master1 ~<span class="token punctuation">]</span><span class="token comment"># vim /usr/lib/systemd/system/etcd.service</span>
+<span class="token punctuation">[</span>Unit<span class="token punctuation">]</span>
+<span class="token assign-left variable">Description</span><span class="token operator">=</span>Etcd Server
+<span class="token assign-left variable">After</span><span class="token operator">=</span>network.target
+<span class="token assign-left variable">After</span><span class="token operator">=</span>network-online.target
+<span class="token assign-left variable">Wants</span><span class="token operator">=</span>network-online.target
+ 
+<span class="token punctuation">[</span>Service<span class="token punctuation">]</span>
+<span class="token assign-left variable">Type</span><span class="token operator">=</span>notify
+<span class="token assign-left variable">EnvironmentFile</span><span class="token operator">=</span>/opt/etcd/conf/etcd.conf
+<span class="token assign-left variable">ExecStart</span><span class="token operator">=</span>/opt/etcd/bin/etcd <span class="token punctuation">\</span>
+        --cert-file<span class="token operator">=</span>/opt/etcd/ssl/server.pem <span class="token punctuation">\</span>
+        --key-file<span class="token operator">=</span>/opt/etcd/ssl/server-key.pem <span class="token punctuation">\</span>
+        --peer-cert-file<span class="token operator">=</span>/opt/etcd/ssl/server.pem <span class="token punctuation">\</span>
+        --peer-key-file<span class="token operator">=</span>/opt/etcd/ssl/server-key.pem <span class="token punctuation">\</span>
+        --trusted-ca-file<span class="token operator">=</span>/opt/etcd/ssl/ca.pem <span class="token punctuation">\</span>
+        --peer-trusted-ca-file<span class="token operator">=</span>/opt/etcd/ssl/ca.pem
+<span class="token assign-left variable">Restart</span><span class="token operator">=</span>on-failure
+<span class="token assign-left variable">LimitNOFILE</span><span class="token operator">=</span><span class="token number">65535</span>
+ 
+<span class="token punctuation">[</span>Install<span class="token punctuation">]</span>
+<span class="token assign-left variable">WantedBy</span><span class="token operator">=</span>multi-user.target
+
+<span class="token comment"># 拷贝证书、配置文件至其他两个etc节点</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># scp /usr/lib/systemd/system/etcd.service 192.168.1.101:/usr/lib/systemd/system/</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># scp /usr/lib/systemd/system/etcd.service 192.168.1.102:/usr/lib/systemd/system/</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># scp -r /opt/etcd 192.168.1.101:/opt/</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># scp -r /opt/etcd 192.168.1.102:/opt/</span>
+
+<span class="token comment"># 启动检查</span>
+分别在 三台master这几个节点启动 ETCD 服务并加入开机自启：
+ 
+$ systemctl daemon-reload
+$ systemctl start etcd
+$ systemctl <span class="token builtin class-name">enable</span> etcd
+检查 ETCD 集群健康状态，输出内容如下则说明 ETCD 集群正常：
+
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># /opt/etcd/bin/etcdctl --endpoints=&quot;https://192.168.1.101:2379,https://192.168.1.102:2379,https://192.168.1.103:2379&quot; --cacert=/opt/etcd/ssl/ca.pem --key=/opt/etcd/ssl/server-key.pem  --cert=/opt/etcd/ssl/server.pem  endpoint health</span>
+https://192.168.1.101:2379 is healthy: successfully committed proposal: took <span class="token operator">=</span> <span class="token number">22</span>.904006ms
+https://192.168.1.103:2379 is healthy: successfully committed proposal: took <span class="token operator">=</span> <span class="token number">22</span>.253018ms
+https://192.168.1.102:2379 is healthy: successfully committed proposal: took <span class="token operator">=</span> <span class="token number">22</span>.998862ms
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br><span class="line-number">166</span><br><span class="line-number">167</span><br><span class="line-number">168</span><br><span class="line-number">169</span><br><span class="line-number">170</span><br><span class="line-number">171</span><br><span class="line-number">172</span><br><span class="line-number">173</span><br><span class="line-number">174</span><br><span class="line-number">175</span><br><span class="line-number">176</span><br><span class="line-number">177</span><br><span class="line-number">178</span><br><span class="line-number">179</span><br><span class="line-number">180</span><br><span class="line-number">181</span><br><span class="line-number">182</span><br><span class="line-number">183</span><br><span class="line-number">184</span><br><span class="line-number">185</span><br><span class="line-number">186</span><br><span class="line-number">187</span><br><span class="line-number">188</span><br><span class="line-number">189</span><br><span class="line-number">190</span><br><span class="line-number">191</span><br><span class="line-number">192</span><br><span class="line-number">193</span><br><span class="line-number">194</span><br><span class="line-number">195</span><br><span class="line-number">196</span><br><span class="line-number">197</span><br><span class="line-number">198</span><br><span class="line-number">199</span><br><span class="line-number">200</span><br><span class="line-number">201</span><br><span class="line-number">202</span><br><span class="line-number">203</span><br><span class="line-number">204</span><br><span class="line-number">205</span><br><span class="line-number">206</span><br><span class="line-number">207</span><br><span class="line-number">208</span><br><span class="line-number">209</span><br><span class="line-number">210</span><br><span class="line-number">211</span><br><span class="line-number">212</span><br><span class="line-number">213</span><br><span class="line-number">214</span><br><span class="line-number">215</span><br><span class="line-number">216</span><br><span class="line-number">217</span><br><span class="line-number">218</span><br><span class="line-number">219</span><br><span class="line-number">220</span><br><span class="line-number">221</span><br><span class="line-number">222</span><br><span class="line-number">223</span><br><span class="line-number">224</span><br><span class="line-number">225</span><br><span class="line-number">226</span><br><span class="line-number">227</span><br><span class="line-number">228</span><br><span class="line-number">229</span><br><span class="line-number">230</span><br><span class="line-number">231</span><br><span class="line-number">232</span><br><span class="line-number">233</span><br><span class="line-number">234</span><br><span class="line-number">235</span><br><span class="line-number">236</span><br><span class="line-number">237</span><br><span class="line-number">238</span><br><span class="line-number">239</span><br><span class="line-number">240</span><br><span class="line-number">241</span><br><span class="line-number">242</span><br><span class="line-number">243</span><br><span class="line-number">244</span><br><span class="line-number">245</span><br><span class="line-number">246</span><br><span class="line-number">247</span><br><span class="line-number">248</span><br><span class="line-number">249</span><br><span class="line-number">250</span><br><span class="line-number">251</span><br><span class="line-number">252</span><br><span class="line-number">253</span><br><span class="line-number">254</span><br><span class="line-number">255</span><br><span class="line-number">256</span><br><span class="line-number">257</span><br><span class="line-number">258</span><br><span class="line-number">259</span><br></div></div><h2 id="kube-vip初始化配置"><a href="#kube-vip初始化配置" class="header-anchor">#</a> kube-vip初始化配置</h2> <p>首先 获取 kube-vip 的 docker 镜像，并在 <code>/etc/kuberentes/manifests</code> 中设置静态 pod 的 yaml 资源清单文件，这样 Kubernetes 就会自动在每个控制平面节点上部署 kube-vip 的 pod 了。 (先在master配置启动，等集群初始化完毕后在其他Master启动kube-vip即可)</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token comment"># 设置VIP地址</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">VIP</span><span class="token operator">=</span><span class="token number">192.168</span>.1.100
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">INTERFACE</span><span class="token operator">=</span>ens32
+ctr image pull docker.io/plndr/kube-vip:0.3.1
+ctr run --rm --net-host docker.io/plndr/kube-vip:0.3.1 vip <span class="token punctuation">\</span>
+/kube-vip manifest pod <span class="token punctuation">\</span>
+--interface <span class="token variable">$INTERFACE</span> <span class="token punctuation">\</span>
+--vip <span class="token variable">$VIP</span> <span class="token punctuation">\</span>
+--controlplane <span class="token punctuation">\</span>
+--services <span class="token punctuation">\</span>
+--arp <span class="token punctuation">\</span>
+--leaderElection <span class="token operator">|</span> <span class="token function">tee</span>  /etc/kubernetes/manifests/kube-vip.yaml
+
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># cat /etc/kubernetes/manifests/kube-vip.yaml </span>
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  name: kube-vip
+  namespace: kube-system
+spec:
+  containers:
+  - args:
+    - manager
+    env:
+    - name: vip_arp
+      value: <span class="token string">&quot;true&quot;</span>
+    - name: vip_interface
+      value: ens32
+    - name: port
+      value: <span class="token string">&quot;6443&quot;</span>
+    - name: vip_cidr
+      value: <span class="token string">&quot;32&quot;</span>
+    - name: cp_enable
+      value: <span class="token string">&quot;true&quot;</span>
+    - name: cp_namespace
+      value: kube-system
+    - name: svc_enable
+      value: <span class="token string">&quot;true&quot;</span>
+    - name: vip_leaderelection
+      value: <span class="token string">&quot;true&quot;</span>
+    - name: vip_leaseduration
+      value: <span class="token string">&quot;5&quot;</span>
+    - name: vip_renewdeadline
+      value: <span class="token string">&quot;3&quot;</span>
+    - name: vip_retryperiod
+      value: <span class="token string">&quot;1&quot;</span>
+    - name: vip_address
+      value: <span class="token number">192.168</span>.1.100
+    image: plndr/kube-vip:0.3.1
+    imagePullPolicy: Always
+    name: kube-vip
+    resources: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    securityContext:
+      capabilities:
+        add:
+        - NET_ADMIN
+        - NET_RAW
+        - SYS_TIME
+    volumeMounts:
+    - mountPath: /etc/kubernetes/admin.conf
+      name: kubeconfig
+  hostNetwork: <span class="token boolean">true</span>
+  volumes:
+  - hostPath:
+      path: /etc/kubernetes/admin.conf
+    name: kubeconfig
+status: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br></div></div><h2 id="kubeadm-初始化集群"><a href="#kubeadm-初始化集群" class="header-anchor">#</a> kubeadm 初始化集群</h2> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token comment"># 编辑config.yaml文件</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># cat config.yaml </span>
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+kind: KubeProxyConfiguration
+mode: <span class="token string">&quot;ipvs&quot;</span>  <span class="token comment">#使用IPVS模式，非iptables</span>
+---
+apiVersion: kubeadm.k8s.io/v1beta1  <span class="token comment">#v1beta1版本,非v1alpha版本，语法会有变化</span>
+certificatesDir: /etc/kubernetes/pki  
+clusterName: kubernetes
+controlPlaneEndpoint: <span class="token number">192.168</span>.1.100:6443  <span class="token comment">#api server IP (VIP)地址</span>
+controllerManager: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+dns:
+  type: CoreDNS  <span class="token comment">#默认DNS：CoreDNS</span>
+imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers  <span class="token comment">#国内阿里镜像</span>
+kind: ClusterConfiguration
+kubernetesVersion: v1.20.2   <span class="token comment">#K8S版本</span>
+networking:
+  dnsDomain: cluster.local
+  serviceSubnet: <span class="token number">172.201</span>.0.0/16  <span class="token comment">#SVC网络段</span>
+  podSubnet: <span class="token number">172.200</span>.0.0/16     <span class="token comment">#POD网络段</span>
+apiServer:
+        certSANs: 
+        - <span class="token number">192.168</span>.1.101
+        - <span class="token number">192.168</span>.1.102
+        - <span class="token number">192.168</span>.1.103
+        extraArgs:
+           etcd-cafile: /opt/etcd/ssl/ca.pem
+           etcd-certfile: /opt/etcd/ssl/server.pem
+           etcd-keyfile: /opt/etcd/ssl/server-key.pem
+etcd:  <span class="token comment">#使用外接etcd高可用</span>
+    external:
+        caFile: /opt/etcd/ssl/ca.pem
+        certFile: /opt/etcd/ssl/server.pem
+        keyFile: /opt/etcd/ssl/server-key.pem
+        endpoints:
+        - https://192.168.1.101:2379
+        - https://192.168.1.102:2379
+        - https://192.168.1.103:2379
+        
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># kubeadm init --config config.yaml</span>
+Your Kubernetes control-plane has initialized successfully<span class="token operator">!</span>
+ 
+To start using your cluster, you need to run the following as a regular user:
+ 
+  <span class="token function">mkdir</span> -p <span class="token environment constant">$HOME</span>/.kube
+  <span class="token function">sudo</span> <span class="token function">cp</span> -i /etc/kubernetes/admin.conf <span class="token environment constant">$HOME</span>/.kube/config
+  <span class="token function">sudo</span> <span class="token function">chown</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">id</span> -u<span class="token variable">)</span></span><span class="token builtin class-name">:</span><span class="token variable"><span class="token variable">$(</span><span class="token function">id</span> -g<span class="token variable">)</span></span> <span class="token environment constant">$HOME</span>/.kube/config
+ 
+Alternatively, <span class="token keyword">if</span> you are the root user, you can run:
+ 
+  <span class="token builtin class-name">export</span> <span class="token assign-left variable">KUBECONFIG</span><span class="token operator">=</span>/etc/kubernetes/admin.conf
+ 
+You should now deploy a pod network to the cluster.
+Run <span class="token string">&quot;kubectl apply -f [podnetwork].yaml&quot;</span> with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+ 
+You can now <span class="token function">join</span> any number of control-plane nodes by copying certificate authorities
+and <span class="token function">service</span> account keys on each node and <span class="token keyword">then</span> running the following as root:
+ 
+  kubeadm <span class="token function">join</span> <span class="token number">192.168</span>.1.100:6443--token ryqarh.y3o0vhhvgy61opxz <span class="token punctuation">\</span>
+    --discovery-token-ca-cert-hash sha256:41db7216c10221a59d80c2b06f4756e8125caca58d29e0c16001b54dba5a9987 <span class="token punctuation">\</span>
+    --control-plane
+ 
+Then you can <span class="token function">join</span> any number of worker nodes by running the following on each as root:
+ 
+kubeadm <span class="token function">join</span> <span class="token number">192.168</span>.1.100:6443 --token ryqarh.y3o0vhhvgy61opxz <span class="token punctuation">\</span>
+    --discovery-token-ca-cert-hash sha256:41db7216c10221a59d80c2b06f4756e8125caca58d29e0c16001b54dba5a9987
+    
+<span class="token comment"># 拷贝证书文件到其他master节点</span>
+<span class="token function">scp</span> /etc/kubernetes/pki/ca.* <span class="token number">192.168</span>.1.101:/etc/kubernetes/pki/
+<span class="token function">scp</span> /etc/kubernetes/pki/sa.* <span class="token number">192.168</span>.1.101:/etc/kubernetes/pki/
+<span class="token function">scp</span> /etc/kubernetes/pki/front-proxy-ca.* <span class="token number">192.168</span>.1.101:/etc/kubernetes/pki/
+<span class="token function">scp</span> /etc/kubernetes/admin.conf <span class="token number">192.168</span>.1.101:/etc/kubernetes/
+ 
+<span class="token function">scp</span> /etc/kubernetes/pki/ca.* <span class="token number">192.168</span>.1.102:/etc/kubernetes/pki/
+<span class="token function">scp</span> /etc/kubernetes/pki/sa.* <span class="token number">192.168</span>.1.102:/etc/kubernetes/pki/
+<span class="token function">scp</span> /etc/kubernetes/pki/front-proxy-ca.* <span class="token number">192.168</span>.1.102:/etc/kubernetes/pki/
+<span class="token function">scp</span> /etc/kubernetes/admin.conf <span class="token number">192.168</span>.1.102:/etc/kubernetes/
+
+<span class="token comment"># master节点加入：</span>
+kubeadm <span class="token function">join</span> <span class="token number">192.168</span>.1.100:6443 --token ryqarh.y3o0vhhvgy61opxz <span class="token punctuation">\</span>
+    --discovery-token-ca-cert-hash sha256:41db7216c10221a59d80c2b06f4756e8125caca58d29e0c16001b54dba5a9987 --control-plane
+     
+<span class="token comment"># node 节点加入：</span>
+kubeadm <span class="token function">join</span> <span class="token number">192.168</span>.1.100:6443 --token ryqarh.y3o0vhhvgy61opxz <span class="token punctuation">\</span>
+    --discovery-token-ca-cert-hash sha256:41db7216c10221a59d80c2b06f4756e8125caca58d29e0c16001b54dba5a9987
+ 
+<span class="token comment"># 如果忘记了master节点init之后的join命令怎么办？</span>
+kubeadm token create --print-join-command
+
+
+<span class="token comment"># 安装网络插件：</span>
+<span class="token function">wget</span> https://docs.projectcalico.org/manifests/calico.yaml
+kubectl apply -f calico.yaml
+
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># kubectl get nodes</span>
+NAME                      STATUS   ROLES                  AGE   VERSION
+kubernetes-master-100-1   Ready    control-plane,master   66m   v1.20.2
+kubernetes-master-100-2   Ready    control-plane,master   61m   v1.20.2
+kubernetes-master-100-3   Ready    control-plane,master   55m   v1.20.2
+kubernetes-node-100-4     Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>                 50m   v1.20.2
+kubernetes-node-100-5     Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>                 50m   v1.20.2
+kubernetes-node-100-6     Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>                 50m   v1.20.2
+kubernetes-node-100-7     Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>                 50m   v1.20.2
+kubernetes-node-100-8     Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>                 50m   v1.20.2
+kubernetes-node-100-9     Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>                 50m   v1.20.2
+
+
+
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># kubectl get cs </span>
+Warning: v1 ComponentStatus is deprecated <span class="token keyword">in</span> v1.19+
+NAME                 STATUS    MESSAGE             ERROR
+scheduler            Healthy   ok                 
+controller-manager   Healthy   ok                 
+etcd-1               Healthy   <span class="token punctuation">{</span><span class="token string">&quot;health&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;true&quot;</span><span class="token punctuation">}</span>  
+etcd-0               Healthy   <span class="token punctuation">{</span><span class="token string">&quot;health&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;true&quot;</span><span class="token punctuation">}</span>  
+etcd-2               Healthy   <span class="token punctuation">{</span><span class="token string">&quot;health&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;true&quot;</span><span class="token punctuation">}</span>  
+  
+PS：这里注意，如果kubectl get cs 
+scheduler 和 controller-manager 异常的话，检查三台master的 yaml文件，使用kubeadm安装的集群就会出现这种问题：
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># cd /etc/kubernetes/manifests/</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 manifests<span class="token punctuation">]</span><span class="token comment"># ll</span>
+total <span class="token number">12</span>
+-rw------- <span class="token number">1</span> root root <span class="token number">3507</span> Feb <span class="token number">25</span> <span class="token number">18</span>:55 kube-apiserver.yaml
+-rw------- <span class="token number">1</span> root root <span class="token number">2827</span> Feb <span class="token number">25</span> <span class="token number">18</span>:58 kube-controller-manager.yaml
+-rw------- <span class="token number">1</span> root root <span class="token number">1410</span> Feb <span class="token number">25</span> <span class="token number">19</span>:00 kube-scheduler.yaml
+ 
+ 
+其中删除 kube-controller-manager.yaml 和 kube-scheduler.yaml 配置文件中的 ---port<span class="token operator">=</span><span class="token number">0</span> 参数
+
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -A</span>
+NAMESPACE     NAME                                              READY   STATUS    RESTARTS   AGE
+kube-system   calico-kube-controllers-659bd7879c-pqv4b          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          52m
+kube-system   calico-node-2vm7t                                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          52m
+kube-system   calico-node-7fqjv                                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          52m
+kube-system   calico-node-88jzz                                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          52m
+kube-system   calico-node-9zq87                                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          52m
+kube-system   calico-node-jw9d8                                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          52m
+kube-system   calico-node-qr4jk                                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          52m
+kube-system   calico-node-vcdmj                                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          52m
+kube-system   calico-node-wfgxg                                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          52m
+kube-system   calico-node-xprj5                                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          52m
+kube-system   coredns-54d67798b7-rktxc                          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          71m
+kube-system   coredns-54d67798b7-x428g                          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          71m
+kube-system   kube-apiserver-kubernetes-master-100-1            <span class="token number">1</span>/1     Running   <span class="token number">0</span>          71m
+kube-system   kube-apiserver-kubernetes-master-100-2            <span class="token number">1</span>/1     Running   <span class="token number">0</span>          65m
+kube-system   kube-apiserver-kubernetes-master-100-3            <span class="token number">1</span>/1     Running   <span class="token number">0</span>          60m
+kube-system   kube-controller-manager-kubernetes-master-100-1   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          2m17s
+kube-system   kube-controller-manager-kubernetes-master-100-2   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          108s
+kube-system   kube-controller-manager-kubernetes-master-100-3   <span class="token number">0</span>/1     Running   <span class="token number">0</span>          86s
+kube-system   kube-proxy-69dxh                                  <span class="token number">1</span>/1     Running   <span class="token number">0</span>          55m
+kube-system   kube-proxy-7kkv6                                  <span class="token number">1</span>/1     Running   <span class="token number">0</span>          71m
+kube-system   kube-proxy-9vs2b                                  <span class="token number">1</span>/1     Running   <span class="token number">0</span>          65m
+kube-system   kube-proxy-c9nxz                                  <span class="token number">1</span>/1     Running   <span class="token number">0</span>          60m
+kube-system   kube-proxy-jsppb                                  <span class="token number">1</span>/1     Running   <span class="token number">0</span>          55m
+kube-system   kube-proxy-k94f4                                  <span class="token number">1</span>/1     Running   <span class="token number">0</span>          55m
+kube-system   kube-proxy-mx9nc                                  <span class="token number">1</span>/1     Running   <span class="token number">0</span>          55m
+kube-system   kube-proxy-q4nsq                                  <span class="token number">1</span>/1     Running   <span class="token number">0</span>          55m
+kube-system   kube-proxy-spw8l                                  <span class="token number">1</span>/1     Running   <span class="token number">0</span>          55m
+kube-system   kube-scheduler-kubernetes-master-100-1            <span class="token number">1</span>/1     Running   <span class="token number">0</span>          2m27s
+kube-system   kube-scheduler-kubernetes-master-100-2            <span class="token number">1</span>/1     Running   <span class="token number">0</span>          115s
+kube-system   kube-scheduler-kubernetes-master-100-3            <span class="token number">0</span>/1     Running   <span class="token number">0</span>          95s
+kube-system   kube-vip-kubernetes-master-100-1                  <span class="token number">1</span>/1     Running   <span class="token number">0</span>          71m
+kube-system   kube-vip-kubernetes-master-100-2                  <span class="token number">1</span>/1     Running   <span class="token number">0</span>          64m
+kube-system   kube-vip-kubernetes-master-100-3                  <span class="token number">1</span>/1     Running   <span class="token number">0</span>          59m
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br></div></div><h2 id="kube-vip集群配置"><a href="#kube-vip集群配置" class="header-anchor">#</a> kube-vip集群配置</h2> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token comment"># copy配置文件</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># scp /etc/kubernetes/manifests/kube-vip.yaml 192.168.1.102:/etc/kubernetes/manifests/</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># scp /etc/kubernetes/manifests/kube-vip.yaml 192.168.1.103:/etc/kubernetes/manifests/</span>
+
+<span class="token comment"># 登录另外的Master查看</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-2 manifests<span class="token punctuation">]</span><span class="token comment"># docker ps | grep vip</span>
+c9d50e0a260f        plndr/kube-vip                                                  <span class="token string">&quot;/kube-vip manager&quot;</span>      About an hour ago   Up About an hour                        k8s_kube-vip_kube-vip-kubernetes-master-100-2_kube-system_434ab069a53e2baf875e3d827f1788d9_0
+46646c0c47ba        registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.2   <span class="token string">&quot;/pause&quot;</span>                 About an hour ago   Up About an hour                        k8s_POD_kube-vip-kubernetes-master-100-2_kube-system_434ab069a53e2baf875e3d827f1788d9_0
+
+
+<span class="token punctuation">[</span>root@kubernetes-master-100-3 manifests<span class="token punctuation">]</span><span class="token comment"># docker ps | grep vip</span>
+5f213491d320        plndr/kube-vip                                                  <span class="token string">&quot;/kube-vip manager&quot;</span>      About an hour ago   Up About an hour                        k8s_kube-vip_kube-vip-kubernetes-master-100-3_kube-system_434ab069a53e2baf875e3d827f1788d9_0
+04b7c38ae306        registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.2   <span class="token string">&quot;/pause&quot;</span>                 About an hour ago   Up About an hour                        k8s_POD_kube-vip-kubernetes-master-100-3_kube-system_434ab069a53e2baf875e3d827f1788d9_0
+
+<span class="token comment"># 检查VIP是否正常</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># ip addr | grep -A5 1.100</span>
+    inet <span class="token number">192.168</span>.1.100/32 scope global ens32
+       valid_lft forever preferred_lft forever
+    inet6 fe80::410a:6f16:e8df:380a/64 scope <span class="token function">link</span> noprefixroute 
+       valid_lft forever preferred_lft forever
+<span class="token number">3</span>: docker0: <span class="token operator">&lt;</span>NO-CARRIER,BROADCAST,MULTICAST,UP<span class="token operator">&gt;</span> mtu <span class="token number">1500</span> qdisc noqueue state DOWN group default 
+    link/ether 02:42:60:77:19:d5 brd ff:ff:ff:ff:ff:ff
+    
+<span class="token punctuation">[</span>root@kubernetes-master-100-2 manifests<span class="token punctuation">]</span><span class="token comment"># ip addr | grep -A5 1.100</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-3 manifests<span class="token punctuation">]</span><span class="token comment"># ip addr | grep -A5 1.100</span>
+
+<span class="token comment"># 确保VIP只出现在一个节点上说明一切正常</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br></div></div><h2 id="验证集群高可用"><a href="#验证集群高可用" class="header-anchor">#</a> 验证集群高可用</h2> <p>如果把kubernetes-master-100-1关闭，看下VIP是否会漂移到可用Master节点上，如果能正常漂移并且集群能正常访问，则集群高可用没问题！</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token comment"># 关机</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-1 ~<span class="token punctuation">]</span><span class="token comment"># init 0</span>
+PolicyKit daemon disconnected from the bus.
+We are no longer a registered authentication agent.
+
+<span class="token comment"># 查看VIP已漂移到kubernetes-master-100-2</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-2 ~<span class="token punctuation">]</span><span class="token comment"># ip addr | grep -A5 1.100</span>
+    inet <span class="token number">192.168</span>.1.100/32 scope global ens32
+       valid_lft forever preferred_lft forever
+    inet6 fe80::b359:2c72:baaf:f06/64 scope <span class="token function">link</span> noprefixroute 
+       valid_lft forever preferred_lft forever
+<span class="token number">3</span>: docker0: <span class="token operator">&lt;</span>NO-CARRIER,BROADCAST,MULTICAST,UP<span class="token operator">&gt;</span> mtu <span class="token number">1500</span> qdisc noqueue state DOWN group default 
+    link/ether 02:42:87:85:e0:f9 brd ff:ff:ff:ff:ff:ff
+    
+ <span class="token comment"># 验证集群是否可以正常访问</span>
+<span class="token punctuation">[</span>root@kubernetes-master-100-2 ~<span class="token punctuation">]</span><span class="token comment"># kubectl get nodes</span>
+NAME                      STATUS   ROLES                  AGE   VERSION
+kubernetes-master-100-1   Ready    control-plane,master   81m   v1.20.2
+kubernetes-master-100-2   Ready    control-plane,master   75m   v1.20.2
+kubernetes-master-100-3   Ready    control-plane,master   70m   v1.20.2
+kubernetes-node-100-4     Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>                 65m   v1.20.2
+kubernetes-node-100-5     Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>                 65m   v1.20.2
+kubernetes-node-100-6     Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>                 65m   v1.20.2
+kubernetes-node-100-7     Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>                 65m   v1.20.2
+kubernetes-node-100-8     Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>                 65m   v1.20.2
+kubernetes-node-100-9     Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>                 65m   v1.20.2
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br></div></div></div></div> <div class="page-slot page-slot-bottom"><!-- 横向自适应 -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="6620245489"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <div class="page-edit"><div class="edit-link"><a href="https://github.com/cf1998/kubernetes/edit/master/docs/_posts/Kubernetes/Kubernetes高可用集群.md" target="_blank" rel="noopener noreferrer">编辑</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <div class="tags"><a href="/tags/?tag=Kubernetes" title="标签">#Kubernetes</a></div> <!----></div> <div class="page-nav-wapper"><!----> <!----></div></div> <div class="article-list"><div class="article-title"><a href="/archives/" class="iconfont icon-bi">最近更新</a></div> <div class="article-wrapper"><dl><dd>01</dd> <dt><a href="/pages/click8/"><div>ClickHouse 集群监控</div></a> <span>10-27</span></dt></dl><dl><dd>02</dd> <dt><a href="/pages/click7/"><div>ClickHouse 备份与恢复</div></a> <span>10-27</span></dt></dl><dl><dd>03</dd> <dt><a href="/pages/click9/"><div>ClickHouse 分片集群实战</div></a> <span>10-27</span></dt></dl> <dl><dd></dd> <dt><a href="/archives/" class="more">更多文章&gt;</a></dt></dl></div></div></main></div> <div class="footer"><div class="icons"><a href="mailto:995345781@qq.com" title="发邮件" target="_blank" class="iconfont icon-youjian"></a><a href="https://github.com/cf1998" title="GitHub" target="_blank" class="iconfont icon-github"></a><a href="https://music.163.com/#" title="听音乐" target="_blank" class="iconfont icon-erji"></a></div> 
+  Theme by
+  <a href="https://github.com/xugaoyi/vuepress-theme-vdoing" target="_blank" title="本站主题">Vdoing</a> 
+    | Copyright © 2021-2021
+    <span>CloudNative Operations</span></div> <div class="buttons"><div title="返回顶部" class="button blur go-to-top iconfont icon-fanhuidingbu" style="display:none;"></div> <div title="去评论" class="button blur go-to-comment iconfont icon-pinglun" style="display:none;"></div> <div title="主题模式" class="button blur theme-mode-but iconfont icon-zhuti"><ul class="select-box" style="display:none;"><li class="iconfont icon-zidong">
+          跟随系统
+        </li><li class="iconfont icon-rijianmoshi">
+          浅色模式
+        </li><li class="iconfont icon-yejianmoshi">
+          深色模式
+        </li><li class="iconfont icon-yuedu">
+          阅读模式
+        </li></ul></div></div> <!----> <!----> <div class="custom-html-window custom-html-window-rb" style="display:;"><div class="custom-wrapper"><i class="close-but">×</i> <div><!-- 固定160*160px -->
+      <ins class="adsbygoogle"
+          style="display:inline-block;max-width:160px;max-height:160px"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="8377369658"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </div></div></div></div><div class="global-ui"><div></div></div></div>
+    <script src="/assets/js/app.70551524.js" defer></script><script src="/assets/js/2.f3cfc96e.js" defer></script><script src="/assets/js/11.855792c4.js" defer></script>
+  </body>
+</html>
