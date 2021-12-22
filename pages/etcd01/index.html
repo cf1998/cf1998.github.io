@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>初识 etcd | CloudNative Operations</title>
+    <meta name="generator" content="VuePress 1.8.0">
+    <link rel="icon" href="/img/favicon.ico">
+    <script data-ad-client="ca-pub-9354336437522810" async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <meta name="description" content="专注于云原生运维技术分享,Kubernetes,Prometheus，istio,envoy等技术文章">
+    <meta name="CloudNative Operations" content="专注于云原生运维技术分享,致敬每个爱学习的你">
+    <meta name="baidu-site-verification" content="code-UYHaqAD5D2">
+    <meta name="theme-color" content="#11a8cd">
+    <link rel="preload" href="/assets/css/0.styles.546f0649.css" as="style"><link rel="preload" href="/assets/js/app.9c7e6653.js" as="script"><link rel="preload" href="/assets/js/2.f3cfc96e.js" as="script"><link rel="preload" href="/assets/js/19.1895e47c.js" as="script"><link rel="prefetch" href="/assets/js/10.bff041c2.js"><link rel="prefetch" href="/assets/js/11.dfededc1.js"><link rel="prefetch" href="/assets/js/12.dea116c0.js"><link rel="prefetch" href="/assets/js/13.5d65f72d.js"><link rel="prefetch" href="/assets/js/14.dce59f9d.js"><link rel="prefetch" href="/assets/js/15.b3e52fd6.js"><link rel="prefetch" href="/assets/js/16.c9aee217.js"><link rel="prefetch" href="/assets/js/17.89b4cf36.js"><link rel="prefetch" href="/assets/js/18.4f89c418.js"><link rel="prefetch" href="/assets/js/20.c6606df1.js"><link rel="prefetch" href="/assets/js/21.eb4b1e70.js"><link rel="prefetch" href="/assets/js/22.5f903f0d.js"><link rel="prefetch" href="/assets/js/23.1d669521.js"><link rel="prefetch" href="/assets/js/24.a8db78e4.js"><link rel="prefetch" href="/assets/js/25.8abaf4e5.js"><link rel="prefetch" href="/assets/js/26.8c7be06c.js"><link rel="prefetch" href="/assets/js/27.6c2725bd.js"><link rel="prefetch" href="/assets/js/28.1a734df1.js"><link rel="prefetch" href="/assets/js/29.9ffb8cb4.js"><link rel="prefetch" href="/assets/js/3.896e306d.js"><link rel="prefetch" href="/assets/js/30.ab7838de.js"><link rel="prefetch" href="/assets/js/31.e77081c2.js"><link rel="prefetch" href="/assets/js/32.204d4050.js"><link rel="prefetch" href="/assets/js/33.2286116d.js"><link rel="prefetch" href="/assets/js/34.2fd71580.js"><link rel="prefetch" href="/assets/js/35.0636dbb8.js"><link rel="prefetch" href="/assets/js/36.918e6265.js"><link rel="prefetch" href="/assets/js/37.c8e03e68.js"><link rel="prefetch" href="/assets/js/4.523f8496.js"><link rel="prefetch" href="/assets/js/5.ab2f819c.js"><link rel="prefetch" href="/assets/js/6.027987a4.js"><link rel="prefetch" href="/assets/js/7.5d877255.js"><link rel="prefetch" href="/assets/js/8.b6ccc37a.js"><link rel="prefetch" href="/assets/js/9.42fab877.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.546f0649.css">
+  </head>
+  <body class="theme-mode-light">
+    <div id="app" data-server-rendered="true"><div class="theme-container sidebar-open have-rightmenu"><header class="navbar blur"><div title="目录" class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/img/EB-logo.png" alt="CloudNative Operations" class="logo"> <span class="site-name can-hide">CloudNative Operations</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">首页</a></div><div class="nav-item"><a href="/archives/" class="nav-link">归档</a></div><div class="nav-item"><a href="/books/" class="nav-link">书籍</a></div><div class="nav-item"><a href="/about/" class="nav-link">关于</a></div><div class="nav-item"><a href="/friends/" class="nav-link">友链</a></div> <a href="https://github.com/cf1998/kubernetes" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar" style="display:none;"><div class="blogger"><img src="https://kubesre.com/img/EB-logo.png"> <div class="blogger-info"><h3>船长</h3> <span>CloudNative Operations</span></div></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">首页</a></div><div class="nav-item"><a href="/archives/" class="nav-link">归档</a></div><div class="nav-item"><a href="/books/" class="nav-link">书籍</a></div><div class="nav-item"><a href="/about/" class="nav-link">关于</a></div><div class="nav-item"><a href="/friends/" class="nav-link">友链</a></div> <a href="https://github.com/cf1998/kubernetes" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav> <div class="sidebar-slot sidebar-slot-top"><!--  固定100% * 150px可显示，max-height:150px 未见显示-->
+    <ins class="adsbygoogle"
+          style="display:inline-block;width:100%;max-height:150px"
+          data-ad-client="ca-pub-9354336437522810"
+          data-ad-slot="8897973395"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>初识 etcd</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/pages/etcd01/#概述" class="sidebar-link">概述</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/etcd01/#主要功能" class="sidebar-link">主要功能</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/etcd01/#使用场景" class="sidebar-link">使用场景</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/pages/etcd01/#键值对存储" class="sidebar-link">键值对存储</a></li><li class="sidebar-sub-header"><a href="/pages/etcd01/#服务注册与发现" class="sidebar-link">服务注册与发现</a></li><li class="sidebar-sub-header"><a href="/pages/etcd01/#消息发布与订阅" class="sidebar-link">消息发布与订阅</a></li></ul></li><li><a href="/pages/etcd01/#etcd-部署" class="sidebar-link">ETCD 部署</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/etcd01/#etcd-日常命令" class="sidebar-link">Etcd 日常命令</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> <div class="sidebar-slot sidebar-slot-bottom"><!-- 正方形 -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-9354336437522810"
+          data-ad-slot="8897973395"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div></aside> <div><main class="page"><div class="theme-vdoing-wrapper "><div class="articleInfo-wrap" data-v-1cd794fe><div class="articleInfo" data-v-1cd794fe><!----> <div class="info" data-v-1cd794fe><div title="作者" class="author iconfont icon-touxiang" data-v-1cd794fe><a href="javascript:;" data-v-1cd794fe>船长</a></div> <div title="创建时间" class="date iconfont icon-riqi" data-v-1cd794fe><a href="javascript:;" data-v-1cd794fe>2021-12-22</a></div> <div title="分类" class="date iconfont icon-wenjian" data-v-1cd794fe><a href="/categories/?category=Kubernetes" data-v-1cd794fe>Kubernetes </a></div></div></div></div> <!----> <div class="content-wrapper"><div class="right-menu-wrapper"><div class="right-menu-margin"><div class="right-menu-content"></div></div></div> <h1><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAABGpJREFUSA3tVVtoXFUU3fvOI53UlmCaKIFmwEhsE7QK0ipFEdHEKpXaZGrp15SINsXUWvBDpBgQRKi0+KKoFeJHfZA+ED9KKoIU2gYD9UejTW4rVIzm0VSTziPzuNu1z507dibTTjL4U/DAzLn3nL3X2o91ziX6f9wMFdh6Jvbm9nNSV0msViVO6tN1Rm7NMu2OpeJ9lWBUTDxrJbYTS0hInuwciu9eLHlFxCLCZEk3MegsJmZ5K/JD6t7FkFdEvGUo1g7qJoG3MHImqRIn8/nzY1K9UPKKiJmtnUqHVE3Gbuay6vJE/N2FEmuxFjW2nUuE0yQXRRxLiTUAzs36zhZvOXJPdX850EVnnLZkB8prodQoM5JGj7Xk2mvC7JB8tG04Ef5PiXtG0UtxupRQSfTnBoCy554x18yJHI6I+G5Eru4LHmPJZEQsrvPUbMiA8G/WgMK7w7I+ez7++o2ANfbrjvaOl1tFMs+htG3IrZH9/hDX1Pr8Tc0UvH8tcX29KzAgIGcEkINyW5BF9x891hw6VYqgJHEk0huccS7vh3C6gTiODL+26huuBtbct8eZnqLML8PkxGYpuPZBqtqwkSjgc4mB5gbgig5i+y0UDK35LMxXisn9xQtK+nd26gTIHsHe/oblK/b29fUmN/8Y+9jAQrnBp56m1LcDlDp9irKTExSKduXJVWSqdBMA08pEJnEIOB3FPPMybu/oeV8zFeYN3xx576Q6RH+VmplE4ncQV5v+5rzSoyOU7PuEAg8g803PwBJ0CExno/jcMbN8tONYeOmHiuUNryvm3fRUy4tMPVLdAGkUhNWuggGrJcXPv+ouCjz0MKUHz1J2/E8IC9nqTabcxgaBYM0hPhD5Y65FsbxRQKxCQrDjDctW7PUM3HuZunFyifSAqEfuzCp48Il24luWUWZoyJCaPR82jE0+kFA643wRFVni4RYSq3ohJO2pZ7B5dO4xkDWbEpossJPLSrPjYID8rS2UHTlvyNxqIGsg674XJJ7vnh5L7PNwC4hh2sjCI96mzszOTpxLF0T7l88Yz7lAuK6OnL8gXLOnTvpzSb22YG8W7us3jSebFHeeqnXRG1vt+MoUM84LQIBmMsCTAcOauTh0T0l0neQK7m2bLMt2mGxU3HYssS0J2cdv5wljlPsrIuZLAG/2DOZIXgCYT8uMGZN+e2kSirfxZOPCsC0f24nTZzspnVn9VePS1Z5vubmAGGXG8ZFno9Hel0yfA5ZPhF7Dh972BQJ2qCpgH67lmWtBYbvk6sz02wjky2vXyz0XErP/kFB619js1BtwfOV4OPRqOQBjy3Qbk18vigUPPSD5ceHnwck7W9bhAqZdd7SuG7w4/P2F/GaJh8c7e9qgow+Q7cGBo+98WsLkuktFqiZabtXuQTu/Y5ETbR0v7tNSFnvrmu6pjdoan2KjMu8q/Hmj1EfCO2ZGfEIbIXKUlw8qaX9/b2oeSJmFksSeT/Fn0V3nSypChh4Gjh74ybO9aeZ/AN2dwciu2/MhAAAAAElFTkSuQmCC">
+          初识 etcd
+        </h1> <div class="page-slot page-slot-top"><!-- 固定100% * 90px可显示，max-height:90px未见显示-->
+     <ins class="adsbygoogle"
+          style="display:inline-block;width:100%;max-height:90px"
+          data-ad-client="ca-pub-9354336437522810"
+          data-ad-slot="8897973395"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <div class="theme-vdoing-content content__default"><h2 id="概述"><a href="#概述" class="header-anchor">#</a> 概述</h2> <p>Etcd是CoreOS基于Raft开发的分布式key-value存储，可用于服务发现、共享配置以及一致性 保障（如数据库选主、分布式锁等）。 在分布式系统中，如何管理节点间的状态一直是一个难题，etcd像是专门为集群环境的服务发现 和注册而设计，它提供了数据TTL失效、数据改变监视、多值、目录监听、分布式锁原子操作等 功能，可以方便的跟踪并管理集群节点的状态。</p> <ul><li><p>键值对存储：将数据存储在分层组织的目录中，如同在标准文件系统中</p></li> <li><p>监测变更：监测特定的键或目录以进行更改，并对值的更改做出反应</p></li> <li><p>简单: curl可访问的用户的API（HTTP+JSON）</p></li> <li><p>安全: 可选的SSL客户端证书认证</p></li> <li><p>快速: 单实例每秒1000次写操作，2000+次读操作</p></li> <li><p>可靠: 使用Raft算法保证一致性</p></li></ul> <h2 id="主要功能"><a href="#主要功能" class="header-anchor">#</a> 主要功能</h2> <ul><li><p>基本的key-value存储</p></li> <li><p>监听机制</p></li> <li><p>key的过期及续约机制，用于监控和服务发现</p></li> <li><p>原子Compare And Swap和Compare And Delete，用于分布式锁和leader选举</p></li></ul> <InArticleAdsense data-ad-client="ca-pub-9354336437522810" data-ad-slot="8897973395"></InArticleAdsense> <h2 id="使用场景"><a href="#使用场景" class="header-anchor">#</a> 使用场景</h2> <h3 id="键值对存储"><a href="#键值对存储" class="header-anchor">#</a> 键值对存储</h3> <p>etcd 是一个<strong>键值存储</strong>的组件，其他的应用都是基于其键值存储的功能展开。</p> <ul><li><p>采用kv型数据存储，一般情况下比关系型数据库快。</p></li> <li><p>支持动态存储(内存)以及静态存储(磁盘)。</p></li> <li><p>分布式存储，可集成为多节点集群。</p></li> <li><p>存储方式，采用类似目录结构。（B+tree）</p> <p>• 只有叶子节点才能真正存储数据，相当于文件。</p> <p>• 叶子节点的父节点一定是目录，目录不能存储数据。</p></li></ul> <h3 id="服务注册与发现"><a href="#服务注册与发现" class="header-anchor">#</a> 服务注册与发现</h3> <ul><li><p>强一致性、高可用的服务存储目录</p> <p>基于 Raft 算法的 etcd 天生就是这样一个强一致性、高可用的服务存储目录。</p></li> <li><p>一种注册服务和服务健康状况的机制</p> <p>用户可以在 etcd 中注册服务，并且对注册的服务配置 key TTL，定时保持服务的心跳以达</p> <p>到监控健康状态的效果</p></li></ul> <p><img src="https://kubesre.com/img/etcd/etcd1.jpg" alt=""></p> <h3 id="消息发布与订阅"><a href="#消息发布与订阅" class="header-anchor">#</a> <strong>消息发布与订阅</strong></h3> <ul><li><p>在分布式系统中，最适用的一种组件间通信方式就是消息发布与订阅。</p></li> <li><p>即构建一个配置共享中心，数据提供者在这个配置中心发布消息，而消息使用者则订阅他们 关心的主题，一旦主题有消息发布，就会实时通知订阅者。</p></li> <li><p>通过这种方式可以做到分布式系统配置的集中式管理与动态更新。</p></li> <li><p>应用中用到的一些配置信息放到etcd上进行集中管理。</p></li> <li><p>应用在启动的时候主动从etcd获取一次配置信息，同时，在etcd节点上注册一个Watcher并 等待，以后每次配置有更新的时候，etcd都会实时通知订阅者，以此达到获取最新配置信息 的目的。</p></li></ul> <p><img src="https://kubesre.com/img/etcd/etcd2.jpg" alt=""></p> <h2 id="etcd-部署"><a href="#etcd-部署" class="header-anchor">#</a> ETCD 部署</h2> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token comment"># 下载 ETCD 的二进制包，官方 Github 地址：https://github.com/etcd-io/etcd/releases，下载如下文件：</span>
+<span class="token function">wget</span> https://github.com/etcd-io/etcd/releases/download/v3.4.13/etcd-v3.4.13-linux-amd64.tar.gz
+
+$ <span class="token function">tar</span> xf etcd-v3.4.13-linux-amd64.tar.gz
+$ <span class="token function">ls</span> etcd-v3.4.13-linux-amd64/
+Documentation  etcd  etcdctl  README-etcdctl.md  README.md  READMEv2-etcdctl.md
+
+<span class="token comment">#将二进制包移动到 bin 目录下：</span>
+ 
+$ <span class="token function">mkdir</span> -p /opt/etcd/bin/
+$ <span class="token function">mv</span> etcd-v3.4.13-linux-amd64/<span class="token punctuation">{</span>etcd,etcdctl<span class="token punctuation">}</span> /opt/etcd/bin/
+
+<span class="token comment"># Systemd 管理</span>
+<span class="token comment"># 创建 ETCD 的 Systemd service 文件：</span>
+$ <span class="token function">cat</span> /usr/lib/systemd/system/etcd.service
+<span class="token punctuation">[</span>Unit<span class="token punctuation">]</span>
+<span class="token assign-left variable">Description</span><span class="token operator">=</span>Etcd Server
+<span class="token assign-left variable">After</span><span class="token operator">=</span>network.target
+<span class="token assign-left variable">After</span><span class="token operator">=</span>network-online.target
+<span class="token assign-left variable">Wants</span><span class="token operator">=</span>network-online.target
+ 
+<span class="token punctuation">[</span>Service<span class="token punctuation">]</span>
+<span class="token assign-left variable">Type</span><span class="token operator">=</span>notify
+<span class="token assign-left variable">ExecStart</span><span class="token operator">=</span>/opt/etcd/bin/etcd 
+<span class="token assign-left variable">Restart</span><span class="token operator">=</span>on-failure
+<span class="token assign-left variable">LimitNOFILE</span><span class="token operator">=</span><span class="token number">65535</span>
+ 
+<span class="token punctuation">[</span>Install<span class="token punctuation">]</span>
+<span class="token assign-left variable">WantedBy</span><span class="token operator">=</span>multi-user.target
+
+<span class="token comment"># 启动Etcd</span>
+$ systemctl daemon-reload
+$ systemctl start etcd
+$ systemctl <span class="token builtin class-name">enable</span> etcd
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br></div></div><h2 id="etcd-日常命令"><a href="#etcd-日常命令" class="header-anchor">#</a> Etcd 日常命令</h2> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token comment"># 查看集群成员状态</span>
+$ etcdctl member list --write-out<span class="token operator">=</span>table   
++------------------+---------+---------+-----------------------+-----------------------+------------+
+<span class="token operator">|</span>        ID        <span class="token operator">|</span> STATUS  <span class="token operator">|</span>  NAME   <span class="token operator">|</span>      PEER ADDRS       <span class="token operator">|</span>     CLIENT ADDRS      <span class="token operator">|</span> IS LEARNER <span class="token operator">|</span>
++------------------+---------+---------+-----------------------+-----------------------+------------+
+<span class="token operator">|</span> 8e9e05c52164694d <span class="token operator">|</span> started <span class="token operator">|</span> default <span class="token operator">|</span> http://localhost:2380 <span class="token operator">|</span> http://localhost:2379 <span class="token operator">|</span>      <span class="token boolean">false</span> <span class="token operator">|</span>
++------------------+---------+---------+-----------------------+-----------------------+------------+
+
+<span class="token comment"># 写入数据</span>
+$ etcdctl --endpoints<span class="token operator">=</span>localhost:2379 put /kubesre <span class="token number">123</span> 
+OK
+
+<span class="token comment"># 读取数据</span>
+$ etcdctl --endpoints<span class="token operator">=</span>localhost:2379 get  /kubesre 
+/kubesre
+<span class="token number">123</span>
+
+<span class="token comment"># 按key的前缀查询数据</span>
+$ etcdctl --endpoints<span class="token operator">=</span>localhost:2379 get --prefix / 
+/kubesre
+<span class="token number">123</span>
+
+<span class="token comment"># 只显示键值</span>
+etcdctl --endpoints<span class="token operator">=</span>localhost:2379 get --prefix / --keys-only --debug 
+<span class="token assign-left variable">ETCDCTL_CACERT</span><span class="token operator">=</span>
+<span class="token assign-left variable">ETCDCTL_CERT</span><span class="token operator">=</span>
+<span class="token assign-left variable">ETCDCTL_COMMAND_TIMEOUT</span><span class="token operator">=</span>5s
+<span class="token assign-left variable">ETCDCTL_DEBUG</span><span class="token operator">=</span>true
+<span class="token assign-left variable">ETCDCTL_DIAL_TIMEOUT</span><span class="token operator">=</span>2s
+<span class="token assign-left variable">ETCDCTL_DISCOVERY_SRV</span><span class="token operator">=</span>
+<span class="token assign-left variable">ETCDCTL_DISCOVERY_SRV_NAME</span><span class="token operator">=</span>
+<span class="token assign-left variable">ETCDCTL_ENDPOINTS</span><span class="token operator">=</span><span class="token punctuation">[</span>localhost:2379<span class="token punctuation">]</span>
+<span class="token assign-left variable">ETCDCTL_HEX</span><span class="token operator">=</span>false
+<span class="token assign-left variable">ETCDCTL_INSECURE_DISCOVERY</span><span class="token operator">=</span>true
+<span class="token assign-left variable">ETCDCTL_INSECURE_SKIP_TLS_VERIFY</span><span class="token operator">=</span>false
+<span class="token assign-left variable">ETCDCTL_INSECURE_TRANSPORT</span><span class="token operator">=</span>true
+<span class="token assign-left variable">ETCDCTL_KEEPALIVE_TIME</span><span class="token operator">=</span>2s
+<span class="token assign-left variable">ETCDCTL_KEEPALIVE_TIMEOUT</span><span class="token operator">=</span>6s
+<span class="token assign-left variable">ETCDCTL_KEY</span><span class="token operator">=</span>
+<span class="token assign-left variable">ETCDCTL_PASSWORD</span><span class="token operator">=</span>
+<span class="token assign-left variable">ETCDCTL_USER</span><span class="token operator">=</span>
+<span class="token assign-left variable">ETCDCTL_WRITE_OUT</span><span class="token operator">=</span>simple
+WARNING: <span class="token number">2021</span>/12/22 <span class="token number">20</span>:32:52 Adjusting keepalive <span class="token function">ping</span> interval to minimum period of 10s
+WARNING: <span class="token number">2021</span>/12/22 <span class="token number">20</span>:32:52 Adjusting keepalive <span class="token function">ping</span> interval to minimum period of 10s
+INFO: <span class="token number">2021</span>/12/22 <span class="token number">20</span>:32:52 parsed scheme: <span class="token string">&quot;endpoint&quot;</span>
+INFO: <span class="token number">2021</span>/12/22 <span class="token number">20</span>:32:52 ccResolverWrapper: sending new addresses to cc: <span class="token punctuation">[</span><span class="token punctuation">{</span>localhost:2379  <span class="token operator">&lt;</span>nil<span class="token operator">&gt;</span> <span class="token number">0</span> <span class="token operator">&lt;</span>nil<span class="token operator">&gt;</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
+/kubesre
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br></div></div></div></div> <div class="page-slot page-slot-bottom"><!-- 横向自适应 -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-9354336437522810"
+          data-ad-slot="8897973395"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <div class="page-edit"><div class="edit-link"><a href="https://github.com/cf1998/kubernetes/edit/master/docs/_posts/Kubernetes/初识etcd.md" target="_blank" rel="noopener noreferrer">编辑</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <div class="tags"><a href="/tags/?tag=etcd" title="标签">#etcd</a></div> <!----></div> <div class="page-nav-wapper"><!----> <!----></div></div> <div class="article-list"><div class="article-title"><a href="/archives/" class="iconfont icon-bi">最近更新</a></div> <div class="article-wrapper"><dl><dd>01</dd> <dt><a href="/pages/opens1/"><div>OpenSSL 自签证书详解</div></a> <span>12-21</span></dt></dl><dl><dd>02</dd> <dt><a href="/pages/acme01/"><div>acme.sh免费签发SSL证书</div></a> <span>12-20</span></dt></dl><dl><dd>03</dd> <dt><a href="/pages/k8s002/"><div>平滑升级Kubernetes集群(二进制)</div></a> <span>11-28</span></dt></dl> <dl><dd></dd> <dt><a href="/archives/" class="more">更多文章&gt;</a></dt></dl></div></div></main></div> <div class="footer"><div class="icons"><a href="mailto:995345781@qq.com" title="发邮件" target="_blank" class="iconfont icon-youjian"></a><a href="https://github.com/cf1998" title="GitHub" target="_blank" class="iconfont icon-github"></a><a href="https://music.163.com/#" title="听音乐" target="_blank" class="iconfont icon-erji"></a></div> 
+  Theme by
+  <a href="https://github.com/xugaoyi/vuepress-theme-vdoing" target="_blank" title="本站主题">Vdoing</a> 
+    | Copyright © 2021-2021
+    <span>CloudNative Operations</span></div> <div class="buttons"><div title="返回顶部" class="button blur go-to-top iconfont icon-fanhuidingbu" style="display:none;"></div> <div title="去评论" class="button blur go-to-comment iconfont icon-pinglun" style="display:none;"></div> <div title="主题模式" class="button blur theme-mode-but iconfont icon-zhuti"><ul class="select-box" style="display:none;"><li class="iconfont icon-zidong">
+          跟随系统
+        </li><li class="iconfont icon-rijianmoshi">
+          浅色模式
+        </li><li class="iconfont icon-yejianmoshi">
+          深色模式
+        </li><li class="iconfont icon-yuedu">
+          阅读模式
+        </li></ul></div></div> <!----> <div class="custom-html-window custom-html-window-lb" style="display:;"><div class="custom-wrapper"><i class="close-but">×</i> <div><!-- 固定200*200px -->
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle"
+          style="display:inline-block;width:200px;height:200px"
+          data-ad-client="ca-pub-9354336437522810"
+          data-ad-slot="8897973395"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div></div></div> <div class="custom-html-window custom-html-window-rb" style="display:;"><div class="custom-wrapper"><i class="close-but">×</i> <div><!-- 固定160*160px -->
+      <ins class="adsbygoogle"
+          style="display:inline-block;max-width:160px;max-height:160px"
+          data-ad-client="ca-pub-9354336437522810"
+          data-ad-slot="8897973395"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </div></div></div></div><div class="global-ui"><div></div></div></div>
+    <script src="/assets/js/app.9c7e6653.js" defer></script><script src="/assets/js/2.f3cfc96e.js" defer></script><script src="/assets/js/19.1895e47c.js" defer></script>
+  </body>
+</html>
