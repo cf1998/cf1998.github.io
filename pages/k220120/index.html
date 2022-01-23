@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Istio Sidecar 自动注入详解 | CloudNative Operations</title>
+    <meta name="generator" content="VuePress 1.8.0">
+    <link rel="icon" href="/img/favicon.ico">
+    <script data-ad-client="ca-pub-9354336437522810" async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script charset="utf-8" src="https://img.kubesre.com/readmore.js"></script>
+    <meta name="description" content="专注于云原生运维技术分享,Kubernetes,Prometheus，istio,envoy等技术文章">
+    <meta name="CloudNative Operations" content="专注于云原生运维技术分享,致敬每个爱学习的你">
+    <meta name="baidu-site-verification" content="code-UYHaqAD5D2">
+    <meta name="theme-color" content="#11a8cd">
+    <link rel="preload" href="/assets/css/0.styles.546f0649.css" as="style"><link rel="preload" href="/assets/js/app.c70c28d9.js" as="script"><link rel="preload" href="/assets/js/2.f3cfc96e.js" as="script"><link rel="preload" href="/assets/js/17.421f8e8f.js" as="script"><link rel="prefetch" href="/assets/js/10.12cc18a0.js"><link rel="prefetch" href="/assets/js/11.dfededc1.js"><link rel="prefetch" href="/assets/js/12.dea116c0.js"><link rel="prefetch" href="/assets/js/13.5d65f72d.js"><link rel="prefetch" href="/assets/js/14.f18597fc.js"><link rel="prefetch" href="/assets/js/15.b3e52fd6.js"><link rel="prefetch" href="/assets/js/16.c9aee217.js"><link rel="prefetch" href="/assets/js/18.c1681997.js"><link rel="prefetch" href="/assets/js/19.596c9c70.js"><link rel="prefetch" href="/assets/js/20.f23e46a4.js"><link rel="prefetch" href="/assets/js/21.f3cd54f5.js"><link rel="prefetch" href="/assets/js/22.09a30aed.js"><link rel="prefetch" href="/assets/js/23.8fb40a51.js"><link rel="prefetch" href="/assets/js/24.94e84a93.js"><link rel="prefetch" href="/assets/js/25.36965e84.js"><link rel="prefetch" href="/assets/js/26.e99bc17e.js"><link rel="prefetch" href="/assets/js/27.cd803491.js"><link rel="prefetch" href="/assets/js/28.2a84c5b2.js"><link rel="prefetch" href="/assets/js/29.63b30760.js"><link rel="prefetch" href="/assets/js/3.bdc70802.js"><link rel="prefetch" href="/assets/js/30.04f24b94.js"><link rel="prefetch" href="/assets/js/31.55cc8f73.js"><link rel="prefetch" href="/assets/js/32.5245af89.js"><link rel="prefetch" href="/assets/js/33.d1641749.js"><link rel="prefetch" href="/assets/js/34.3f7b5531.js"><link rel="prefetch" href="/assets/js/35.10650426.js"><link rel="prefetch" href="/assets/js/36.ef18a263.js"><link rel="prefetch" href="/assets/js/37.1be93404.js"><link rel="prefetch" href="/assets/js/38.f301ebe7.js"><link rel="prefetch" href="/assets/js/39.cc742ddc.js"><link rel="prefetch" href="/assets/js/4.523f8496.js"><link rel="prefetch" href="/assets/js/40.85b9851e.js"><link rel="prefetch" href="/assets/js/5.ab2f819c.js"><link rel="prefetch" href="/assets/js/6.027987a4.js"><link rel="prefetch" href="/assets/js/7.850f1c73.js"><link rel="prefetch" href="/assets/js/8.b2525be5.js"><link rel="prefetch" href="/assets/js/9.42fab877.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.546f0649.css">
+  </head>
+  <body class="theme-mode-light">
+    <div id="app" data-server-rendered="true"><div class="theme-container sidebar-open have-rightmenu"><header class="navbar blur"><div title="目录" class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://img.kubesre.com/logo.png" alt="CloudNative Operations" class="logo"> <span class="site-name can-hide">CloudNative Operations</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">首页</a></div><div class="nav-item"><a href="/archives/" class="nav-link">归档</a></div><div class="nav-item"><a href="/books/" class="nav-link">书籍</a></div><div class="nav-item"><a href="/about/" class="nav-link">关于</a></div><div class="nav-item"><a href="/friends/" class="nav-link">友链</a></div> <a href="https://github.com/cf1998/kubernetes" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar" style="display:none;"><div class="blogger"><img src="https://img.kubesre.com/logo.png"> <div class="blogger-info"><h3>船长</h3> <span>CloudNative Operations</span></div></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">首页</a></div><div class="nav-item"><a href="/archives/" class="nav-link">归档</a></div><div class="nav-item"><a href="/books/" class="nav-link">书籍</a></div><div class="nav-item"><a href="/about/" class="nav-link">关于</a></div><div class="nav-item"><a href="/friends/" class="nav-link">友链</a></div> <a href="https://github.com/cf1998/kubernetes" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav> <div class="sidebar-slot sidebar-slot-top"><!--  固定100% * 150px可显示，max-height:150px 未见显示-->
+    <ins class="adsbygoogle"
+          style="display:inline-block;width:100%;max-height:150px"
+          data-ad-client="ca-pub-9354336437522810"
+          data-ad-slot="8897973395"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Istio Sidecar 自动注入详解</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/pages/k220120/#背景" class="sidebar-link">背景</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/k220120/#什么是-admission" class="sidebar-link">什么是 Admission</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/k220120/#启用-webhook" class="sidebar-link">启用 Webhook</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/k220120/#webhook自动注入sidecar" class="sidebar-link">Webhook自动注入Sidecar</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/pages/k220120/#分析注入配置" class="sidebar-link">分析注入配置</a></li><li class="sidebar-sub-header"><a href="/pages/k220120/#分析注入的webhook" class="sidebar-link">分析注入的Webhook</a></li><li class="sidebar-sub-header"><a href="/pages/k220120/#注入条件" class="sidebar-link">注入条件</a></li></ul></li><li><a href="/pages/k220120/#案例" class="sidebar-link">案例</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/pages/k220120/#小结" class="sidebar-link">小结</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> <div class="sidebar-slot sidebar-slot-bottom"><!-- 正方形 -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-9354336437522810"
+          data-ad-slot="8897973395"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div></aside> <div><main class="page"><div class="theme-vdoing-wrapper "><div class="articleInfo-wrap" data-v-1cd794fe><div class="articleInfo" data-v-1cd794fe><!----> <div class="info" data-v-1cd794fe><div title="作者" class="author iconfont icon-touxiang" data-v-1cd794fe><a href="javascript:;" data-v-1cd794fe>船长</a></div> <div title="创建时间" class="date iconfont icon-riqi" data-v-1cd794fe><a href="javascript:;" data-v-1cd794fe>2022-01-20</a></div> <div title="分类" class="date iconfont icon-wenjian" data-v-1cd794fe><a href="/categories/?category=Kubernetes" data-v-1cd794fe>Kubernetes </a></div></div></div></div> <!----> <div class="content-wrapper"><div class="right-menu-wrapper"><div class="right-menu-margin"><div class="right-menu-content"></div></div></div> <h1><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAABGpJREFUSA3tVVtoXFUU3fvOI53UlmCaKIFmwEhsE7QK0ipFEdHEKpXaZGrp15SINsXUWvBDpBgQRKi0+KKoFeJHfZA+ED9KKoIU2gYD9UejTW4rVIzm0VSTziPzuNu1z507dibTTjL4U/DAzLn3nL3X2o91ziX6f9wMFdh6Jvbm9nNSV0msViVO6tN1Rm7NMu2OpeJ9lWBUTDxrJbYTS0hInuwciu9eLHlFxCLCZEk3MegsJmZ5K/JD6t7FkFdEvGUo1g7qJoG3MHImqRIn8/nzY1K9UPKKiJmtnUqHVE3Gbuay6vJE/N2FEmuxFjW2nUuE0yQXRRxLiTUAzs36zhZvOXJPdX850EVnnLZkB8prodQoM5JGj7Xk2mvC7JB8tG04Ef5PiXtG0UtxupRQSfTnBoCy554x18yJHI6I+G5Eru4LHmPJZEQsrvPUbMiA8G/WgMK7w7I+ez7++o2ANfbrjvaOl1tFMs+htG3IrZH9/hDX1Pr8Tc0UvH8tcX29KzAgIGcEkINyW5BF9x891hw6VYqgJHEk0huccS7vh3C6gTiODL+26huuBtbct8eZnqLML8PkxGYpuPZBqtqwkSjgc4mB5gbgig5i+y0UDK35LMxXisn9xQtK+nd26gTIHsHe/oblK/b29fUmN/8Y+9jAQrnBp56m1LcDlDp9irKTExSKduXJVWSqdBMA08pEJnEIOB3FPPMybu/oeV8zFeYN3xx576Q6RH+VmplE4ncQV5v+5rzSoyOU7PuEAg8g803PwBJ0CExno/jcMbN8tONYeOmHiuUNryvm3fRUy4tMPVLdAGkUhNWuggGrJcXPv+ouCjz0MKUHz1J2/E8IC9nqTabcxgaBYM0hPhD5Y65FsbxRQKxCQrDjDctW7PUM3HuZunFyifSAqEfuzCp48Il24luWUWZoyJCaPR82jE0+kFA643wRFVni4RYSq3ohJO2pZ7B5dO4xkDWbEpossJPLSrPjYID8rS2UHTlvyNxqIGsg674XJJ7vnh5L7PNwC4hh2sjCI96mzszOTpxLF0T7l88Yz7lAuK6OnL8gXLOnTvpzSb22YG8W7us3jSebFHeeqnXRG1vt+MoUM84LQIBmMsCTAcOauTh0T0l0neQK7m2bLMt2mGxU3HYssS0J2cdv5wljlPsrIuZLAG/2DOZIXgCYT8uMGZN+e2kSirfxZOPCsC0f24nTZzspnVn9VePS1Z5vubmAGGXG8ZFno9Hel0yfA5ZPhF7Dh972BQJ2qCpgH67lmWtBYbvk6sz02wjky2vXyz0XErP/kFB619js1BtwfOV4OPRqOQBjy3Qbk18vigUPPSD5ceHnwck7W9bhAqZdd7SuG7w4/P2F/GaJh8c7e9qgow+Q7cGBo+98WsLkuktFqiZabtXuQTu/Y5ETbR0v7tNSFnvrmu6pjdoan2KjMu8q/Hmj1EfCO2ZGfEIbIXKUlw8qaX9/b2oeSJmFksSeT/Fn0V3nSypChh4Gjh74ybO9aeZ/AN2dwciu2/MhAAAAAElFTkSuQmCC">
+          Istio Sidecar 自动注入详解
+        </h1> <div class="page-slot page-slot-top"><!-- 固定100% * 90px可显示，max-height:90px未见显示-->
+     <ins class="adsbygoogle"
+          style="display:inline-block;width:100%;max-height:90px"
+          data-ad-client="ca-pub-9354336437522810"
+          data-ad-slot="8897973395"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <div class="theme-vdoing-content content__default"><h2 id="背景"><a href="#背景" class="header-anchor">#</a> 背景</h2> <p>当通过执行<code>kubectl label namespace sample istio-injection=enabled</code>此命令后（为sample命名命名空间开启自动注入Sidecar），在sample命名空间进行部署应用时，会发现每个Pod都会自动注入Sidecar，是不是很神奇，接下来我们一步一步分析一下！</p> <h2 id="什么是-admission"><a href="#什么是-admission" class="header-anchor">#</a> 什么是 Admission</h2> <p>Admission是Kubernetes中的一个术语，指的是Kubernetes API Server资源请求过程中的一个阶段。它会在请求通过认证和授权之后、对象被持久化之前拦截到达 API 服务器的请求，然后经过Admission处理（ 根据 API 中的配置，分别执行变更和验证准入控制 webhook，最后再保存到etcd。</p> <p><img src="https://img.kubesre.com/img/kubernets-sidecar.png" alt=""></p> <p><strong>从上图看出，Admission有两个重要的阶段：Mutating和Validating，这两个阶段中执行的逻辑如下：</strong></p> <ul><li>Mutating，从字面上可以知道，在Mutating阶段可以对请求内容进行修改。</li> <li>Validating，指在该阶段不允许修改请求内容，但可以根据请求的内容判断是继续执行该请求还是拒绝该请求。</li></ul> <p>Kubernetes 1.9版本开始引入了Admission Webhook扩展机制，通过Webhook回调功能，开发者可以非常灵活地对Kubernetes API Server的功能进行扩展，在API Server创建资源时对资源进行验证或者修改。</p> <p>使用Webhook的优势是不需要对API Server的源码进行修改和重新编译就可以扩展其功能。插入的逻辑实现为一个独立的进程，通过参数方式传入到Kubernetes中，由Kubernetes在进行自身逻辑处理时对扩展逻辑进行回调。</p> <p>通过Admission Webhook，可以加入Mutation和Validation两种类型的Webhook插件:</p> <ul><li><p>MutatingAdmissionWebhook允许你在Webhook中对资源对象进行修改。</p></li> <li><p>ValidatingAdmissionWebhook执行一些检查操作，可以拒绝用户的请求来增加额外的准入策略。</p> <blockquote><p>当集群管理员需要强制对某些请求（或所有请求）都进行校验（或者修改）的时候，就可以考虑使用ValidatingAdmissionWebhook或MutatingAdmissionWebhook。</p></blockquote></li></ul> <h2 id="启用-webhook"><a href="#启用-webhook" class="header-anchor">#</a> 启用 Webhook</h2> <p>WebHook 是一种 HTTP 回调：某些条件下触发的 HTTP POST 请求；通过 HTTP POST 发送的简单事件通知。一个基于 web 应用实现的 WebHook 会在特定事件发生时把消息发送给特定的 URL。</p> <p>在Kubernetes API Server种的有个配置参数：--enable-admission-plugins，其值为一串用逗号连接的有序的准入模块列表，设置后就可在对象操作前执行一定顺序的准入模块调用。</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token comment"># 修改api server的启动参数即可</span>
+--enable-admission-plugins<span class="token operator">=</span>NodeRestriction CertificateApproval, CertificateSigning, CertificateSubjectRestriction, DefaultIngressClass, DefaultStorageClass, DefaultTolerationSeconds, LimitRanger, MutatingAdmissionWebhook, NamespaceLifecycle, PersistentVolumeClaimResize, Priority, ResourceQuota, RuntimeClass, ServiceAccount, StorageObjectInUseProtection, TaintNodesByCondition, ValidatingAdmissionWebhook
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><h2 id="webhook自动注入sidecar"><a href="#webhook自动注入sidecar" class="header-anchor">#</a> Webhook自动注入Sidecar</h2> <p>Istio是利用了Kubernets Webook机制来实现Envoy Proxy Sidecar的自动注入。</p> <h3 id="分析注入配置"><a href="#分析注入配置" class="header-anchor">#</a> 分析注入配置</h3> <p>首先，创建Sidecar注入的配置文件istio-sidecar-injector：</p> <div class="language-yaml line-numbers-mode"><pre class="language-yaml"><code><span class="token comment">#  kubectl get cm -n istio-system istio-sidecar-injector -o yaml </span>
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">data</span><span class="token punctuation">:</span>
+  <span class="token key atrule">config</span><span class="token punctuation">:</span> <span class="token punctuation">|</span><span class="token punctuation">-</span>
+    <span class="token key atrule">defaultTemplates</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>sidecar<span class="token punctuation">]</span>
+    <span class="token key atrule">policy</span><span class="token punctuation">:</span> enabled
+    <span class="token key atrule">alwaysInjectSelector</span><span class="token punctuation">:</span>
+    <span class="token punctuation">...</span>..
+    <span class="token key atrule">templates</span><span class="token punctuation">:</span>
+      <span class="token key atrule">sidecar</span><span class="token punctuation">:</span> <span class="token punctuation">|</span><span class="token scalar string">
+        {{- $containers := list }}
+        {{- range $index, $container := .Spec.Containers }}{{ if not (eq $container.Name &quot;istio-proxy&quot;) }}{{ $containers = append $containers $container.Name }}{{end}}{{- end}}
+        metadata:
+          labels:
+            security.istio.io/tlsMode: {{ index .ObjectMeta.Labels `security.istio.io/tlsMode` | default &quot;istio&quot;  | quote }}
+            service.istio.io/canonical-name: {{ index .ObjectMeta.Labels `service.istio.io/canonical-name` | default (index .ObjectMeta.Labels `app.kubernetes.io/name`) | default (index .ObjectMeta.Labels `app`) | default .DeploymentMeta.Name  | quote }}
+            service.istio.io/canonical-revision: {{ index .ObjectMeta.Labels `service.istio.io/canonical-revision` | default (index .ObjectMeta.Labels `app.kubernetes.io/version`) | default (index .ObjectMeta.Labels `version`) | default &quot;latest&quot;  | quote }}
+            istio.io/rev: {{ .Revision | default &quot;default&quot; | quote }}
+          annotations: {
+            {{- if eq (len $containers) 1 }}
+            kubectl.kubernetes.io/default-logs-container: &quot;{{ index $containers 0 }}&quot;,
+            kubectl.kubernetes.io/default-container: &quot;{{ index $containers 0 }}&quot;,
+            {{ end }}
+        {{- if .Values.istio_cni.enabled }}
+            {{- if not .Values.istio_cni.chained }}
+            k8s.v1.cni.cncf.io/networks: '{{ appendMultusNetwork (index .ObjectMeta.Annotations `k8s.v1.cni.cncf.io/networks`) `istio-cni` }}',
+            {{- end }}
+            sidecar.istio.io/interceptionMode: &quot;{{ annotation .ObjectMeta `sidecar.istio.io/interceptionMode` .ProxyConfig.InterceptionMode }}&quot;,
+            {{ with annotation .ObjectMeta `traffic.sidecar.istio.io/includeOutboundIPRanges` .Values.global.proxy.includeIPRanges }}traffic.sidecar.istio.io/includeOutboundIPRanges: &quot;{{.}}&quot;,{{ end }}
+            {{ with annotation .ObjectMeta `traffic.sidecar.istio.io/excludeOutboundIPRanges` .Values.global.proxy.excludeIPRanges }}traffic.sidecar.istio.io/excludeOutboundIPRanges: &quot;{{.}}&quot;,{{ end }}
+            traffic.sidecar.istio.io/includeInboundPorts: &quot;{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeInboundPorts` `*` }}&quot;,
+            traffic.sidecar.istio.io/excludeInboundPorts: &quot;{{ excludeInboundPort (annotation .ObjectMeta `status.sidecar.istio.io/port` .Values.global.proxy.statusPort) (annotation .ObjectMeta `traffic.sidecar.istio.io/excludeInboundPorts` .Values.global.proxy.excludeInboundPorts) }}&quot;,
+            {{ if or (isset .ObjectMeta.Annotations `traffic.sidecar.istio.io/includeOutboundPorts`) (ne (valueOrDefault .Values.global.proxy.includeOutboundPorts &quot;&quot;) &quot;&quot;) }}
+            traffic.sidecar.istio.io/includeOutboundPorts: &quot;{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeOutboundPorts` .Values.global.proxy.includeOutboundPorts }}&quot;,
+            {{- end }}
+            {{ if or (isset .ObjectMeta.Annotations `traffic.sidecar.istio.io/excludeOutboundPorts`) (ne .Values.global.proxy.excludeOutboundPorts &quot;&quot;) }}
+            traffic.sidecar.istio.io/excludeOutboundPorts: &quot;{{ annotation .ObjectMeta `traffic.sidecar.istio.io/excludeOutboundPorts` .Values.global.proxy.excludeOutboundPorts }}&quot;,
+            {{- end }}
+            {{ with index .ObjectMeta.Annotations `traffic.sidecar.istio.io/kubevirtInterfaces` }}traffic.sidecar.istio.io/kubevirtInterfaces: &quot;{{.}}&quot;,{{ end }}
+        {{- end }}
+          }</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br></div></div><p>可以看出该configmap保存了默认的注册策略和Sidecar注入模板</p> <p><strong>策略参数：</strong></p> <ul><li>disabled：Sidecar注入器默认不会注入pod中。pod模板定义中的注解sidecar.istio.io/inject值为true，会启用注入功能。</li> <li>enabled：Sidecar注入器默认会注入pod中。pod模板定义中的注解sidecar.istio.io/inject值为false，会禁止注入功能。</li></ul> <h3 id="分析注入的webhook"><a href="#分析注入的webhook" class="header-anchor">#</a> 分析注入的Webhook</h3> <div class="language-yaml line-numbers-mode"><pre class="language-yaml"><code><span class="token comment"># kubectl get MutatingWebhookConfiguration -n istio-system -o yaml</span>
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">items</span><span class="token punctuation">:</span>
+<span class="token punctuation">-</span> <span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> admissionregistration.k8s.io/v1
+  <span class="token key atrule">kind</span><span class="token punctuation">:</span> MutatingWebhookConfiguration
+  <span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+    <span class="token key atrule">generation</span><span class="token punctuation">:</span> <span class="token number">2</span>
+    <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+      <span class="token key atrule">app</span><span class="token punctuation">:</span> sidecar<span class="token punctuation">-</span>injector
+      <span class="token key atrule">install.operator.istio.io/owning-resource</span><span class="token punctuation">:</span> unknown
+      <span class="token key atrule">install.operator.istio.io/owning-resource-namespace</span><span class="token punctuation">:</span> istio<span class="token punctuation">-</span>system
+      <span class="token key atrule">istio.io/rev</span><span class="token punctuation">:</span> default
+      <span class="token key atrule">operator.istio.io/component</span><span class="token punctuation">:</span> Pilot
+      <span class="token key atrule">operator.istio.io/managed</span><span class="token punctuation">:</span> Reconcile
+      <span class="token key atrule">operator.istio.io/version</span><span class="token punctuation">:</span> 1.10.6
+      <span class="token key atrule">release</span><span class="token punctuation">:</span> istio
+      <span class="token key atrule">manager</span><span class="token punctuation">:</span> istio<span class="token punctuation">-</span>operator
+      <span class="token key atrule">operation</span><span class="token punctuation">:</span> Apply
+      <span class="token key atrule">time</span><span class="token punctuation">:</span> <span class="token string">&quot;2021-12-31T03:27:02Z&quot;</span>
+      <span class="token key atrule">manager</span><span class="token punctuation">:</span> pilot<span class="token punctuation">-</span>discovery
+      <span class="token key atrule">operation</span><span class="token punctuation">:</span> Update
+      <span class="token key atrule">time</span><span class="token punctuation">:</span> <span class="token string">&quot;2021-12-31T03:27:32Z&quot;</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> istio<span class="token punctuation">-</span>sidecar<span class="token punctuation">-</span>injector
+    <span class="token key atrule">resourceVersion</span><span class="token punctuation">:</span> <span class="token string">&quot;3291680&quot;</span>
+    <span class="token key atrule">selfLink</span><span class="token punctuation">:</span> /apis/admissionregistration.k8s.io/v1/mutatingwebhookconfigurations/istio<span class="token punctuation">-</span>sidecar<span class="token punctuation">-</span>injector
+    <span class="token key atrule">uid</span><span class="token punctuation">:</span> 89d137e5<span class="token punctuation">-</span>fc47<span class="token punctuation">-</span>4069<span class="token punctuation">-</span>b9ba<span class="token punctuation">-</span>a8f71e4d1cc6
+  <span class="token key atrule">webhooks</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">admissionReviewVersions</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> v1beta1
+    <span class="token punctuation">-</span> v1
+    <span class="token key atrule">clientConfig</span><span class="token punctuation">:</span>  <span class="token comment"># webhook指定连接信息</span>
+      <span class="token key atrule">caBundle</span><span class="token punctuation">:</span> LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMvVENDQWVXZ0F3SUJBZ0lSQUtlRksvQmphOGVWR3VSelAzcTdXODh3RFFZSktvWklodmNOQVFFTEJRQXcKR0RFV01CUUdBMVVFQ2hNTlkyeDFjM1JsY2k1c2IyTmhiREFlRncweU1URXlNekV3TXpJM016RmFGdzB6TVRFeQpNamt3TXpJM016RmFNQmd4RmpBVUJnTlZCQW9URFdOc2RYTjBaWEl1Ykc5allXd3dnZ0VpTUEwR0NTcUdTSWIzCkRRRUJBUVVBQTRJQkR3QXdnZ0VLQW9JQkFRRFp0SmxBMkhqQURBamVlNGpUTjlOK0FjRFJybmxjT2k2SmZqOWEKQWdUSFBxcmo1MGo1aUQ5SERUbXlOOXlkeS8yR2pUUStQaFB3UkxyUG9UUjV3Q1ZVTk5JbGdUelZpSE03d3JOWQo2V2N6bVpRQ0Zxd1hEbHBnZkRFUFhjUjQ5OUwzUXp1c3phczE4S2pEckFVTFdkT3NOL2k1SS9tbGJOdVlKSnpPCnFDQ0swRnFiemtBUU9oaGduZHdQMVdoUHZHSWVXTy96d3BOQUluVXpFck5LcW8ya2tQbHZwRmQydGhlWVY2cU8KRFBtZE9LQVRwb0xqR3dVSnIraWUyWlJXbjlSeUp4ZW4wTlhKcWZRMmg1WGp3MThCaXBNUVQ2WGhTVGtkUktibApDOHk0Z0tJY2xmc2lSckUwTER5dnVtSUhDMEFucTl2eDZ2VHo3elVFMFdPcEFZVVBBZ01CQUFHalFqQkFNQTRHCkExVWREd0VCL3dRRUF3SUNCREFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQjBHQTFVZERnUVdCQlFDYko3VkZOK3QKTWZCa0t4K2NVNXZObnhqNDFEQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUF6cDdmTGR0S20vTzRwTGNNWWd3aApKZFJHSGlVOEU4bmJzWU1HamU3bEFockl0R2JoWURhT3NTRGMrc2NrUkVScDF4dDM1NnJsU1ZINGo4S2NWNnJZClRIUFM2NWdrNm1uMmEyT1A1aFQxUDdiYk8wVTQyaFM4WUpUR0IvTzRreThsYnRZWFBhRTFCbTQrOUw1eHlQMHkKSllJaDFqTVFKQ1UrOTdzS002V2xOZzh1NzMvZ2xhamJrOUNFRmJkUUVGRmVCVEJlVS9IOTY4SWFDL0txNlQ0SAo4VTBEc3hqQnZyN0gxRnpTY3lKQk8zSEdBTkhzWkRtdm9vMDk5WFdteElvSHRDb3dDdExjWFQ0cktPbmt2SERHCjZlalhuNzBjbUp5dFIrVzFJazc2VldjMXUwM2ZQZVB5WE4wOC85THFkS0J3L2dFQndTamkwanYwTVJSczZnWnUKOXc9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+      <span class="token key atrule">service</span><span class="token punctuation">:</span>
+        <span class="token key atrule">name</span><span class="token punctuation">:</span> istiod
+        <span class="token key atrule">namespace</span><span class="token punctuation">:</span> istio<span class="token punctuation">-</span>system
+        <span class="token key atrule">path</span><span class="token punctuation">:</span> /inject
+        <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">443</span>
+    <span class="token key atrule">failurePolicy</span><span class="token punctuation">:</span> Fail
+    <span class="token key atrule">matchPolicy</span><span class="token punctuation">:</span> Equivalent
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> rev.namespace.sidecar<span class="token punctuation">-</span>injector.istio.io
+    <span class="token key atrule">namespaceSelector</span><span class="token punctuation">:</span>
+      <span class="token key atrule">matchExpressions</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> istio.io/rev
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> In
+        <span class="token key atrule">values</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> default
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> istio<span class="token punctuation">-</span>injection
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> DoesNotExist
+    <span class="token key atrule">objectSelector</span><span class="token punctuation">:</span>
+      <span class="token key atrule">matchExpressions</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> sidecar.istio.io/inject
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> NotIn
+        <span class="token key atrule">values</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token string">&quot;false&quot;</span>
+    <span class="token key atrule">reinvocationPolicy</span><span class="token punctuation">:</span> Never
+    <span class="token key atrule">rules</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">apiGroups</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">&quot;&quot;</span>
+      <span class="token key atrule">apiVersions</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> v1
+      <span class="token key atrule">operations</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> CREATE
+      <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> pods
+      <span class="token key atrule">scope</span><span class="token punctuation">:</span> <span class="token string">'*'</span>
+    <span class="token key atrule">sideEffects</span><span class="token punctuation">:</span> None
+    <span class="token key atrule">timeoutSeconds</span><span class="token punctuation">:</span> <span class="token number">10</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">admissionReviewVersions</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> v1beta1
+    <span class="token punctuation">-</span> v1
+    <span class="token key atrule">clientConfig</span><span class="token punctuation">:</span>
+      <span class="token key atrule">caBundle</span><span class="token punctuation">:</span> LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMvVENDQWVXZ0F3SUJBZ0lSQUtlRksvQmphOGVWR3VSelAzcTdXODh3RFFZSktvWklodmNOQVFFTEJRQXcKR0RFV01CUUdBMVVFQ2hNTlkyeDFjM1JsY2k1c2IyTmhiREFlRncweU1URXlNekV3TXpJM016RmFGdzB6TVRFeQpNamt3TXpJM016RmFNQmd4RmpBVUJnTlZCQW9URFdOc2RYTjBaWEl1Ykc5allXd3dnZ0VpTUEwR0NTcUdTSWIzCkRRRUJBUVVBQTRJQkR3QXdnZ0VLQW9JQkFRRFp0SmxBMkhqQURBamVlNGpUTjlOK0FjRFJybmxjT2k2SmZqOWEKQWdUSFBxcmo1MGo1aUQ5SERUbXlOOXlkeS8yR2pUUStQaFB3UkxyUG9UUjV3Q1ZVTk5JbGdUelZpSE03d3JOWQo2V2N6bVpRQ0Zxd1hEbHBnZkRFUFhjUjQ5OUwzUXp1c3phczE4S2pEckFVTFdkT3NOL2k1SS9tbGJOdVlKSnpPCnFDQ0swRnFiemtBUU9oaGduZHdQMVdoUHZHSWVXTy96d3BOQUluVXpFck5LcW8ya2tQbHZwRmQydGhlWVY2cU8KRFBtZE9LQVRwb0xqR3dVSnIraWUyWlJXbjlSeUp4ZW4wTlhKcWZRMmg1WGp3MThCaXBNUVQ2WGhTVGtkUktibApDOHk0Z0tJY2xmc2lSckUwTER5dnVtSUhDMEFucTl2eDZ2VHo3elVFMFdPcEFZVVBBZ01CQUFHalFqQkFNQTRHCkExVWREd0VCL3dRRUF3SUNCREFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQjBHQTFVZERnUVdCQlFDYko3VkZOK3QKTWZCa0t4K2NVNXZObnhqNDFEQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUF6cDdmTGR0S20vTzRwTGNNWWd3aApKZFJHSGlVOEU4bmJzWU1HamU3bEFockl0R2JoWURhT3NTRGMrc2NrUkVScDF4dDM1NnJsU1ZINGo4S2NWNnJZClRIUFM2NWdrNm1uMmEyT1A1aFQxUDdiYk8wVTQyaFM4WUpUR0IvTzRreThsYnRZWFBhRTFCbTQrOUw1eHlQMHkKSllJaDFqTVFKQ1UrOTdzS002V2xOZzh1NzMvZ2xhamJrOUNFRmJkUUVGRmVCVEJlVS9IOTY4SWFDL0txNlQ0SAo4VTBEc3hqQnZyN0gxRnpTY3lKQk8zSEdBTkhzWkRtdm9vMDk5WFdteElvSHRDb3dDdExjWFQ0cktPbmt2SERHCjZlalhuNzBjbUp5dFIrVzFJazc2VldjMXUwM2ZQZVB5WE4wOC85THFkS0J3L2dFQndTamkwanYwTVJSczZnWnUKOXc9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+      <span class="token key atrule">service</span><span class="token punctuation">:</span>
+        <span class="token key atrule">name</span><span class="token punctuation">:</span> istiod
+        <span class="token key atrule">namespace</span><span class="token punctuation">:</span> istio<span class="token punctuation">-</span>system
+        <span class="token key atrule">path</span><span class="token punctuation">:</span> /inject
+        <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">443</span>
+    <span class="token key atrule">failurePolicy</span><span class="token punctuation">:</span> Fail
+    <span class="token key atrule">matchPolicy</span><span class="token punctuation">:</span> Equivalent
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> rev.object.sidecar<span class="token punctuation">-</span>injector.istio.io
+    <span class="token key atrule">namespaceSelector</span><span class="token punctuation">:</span>
+      <span class="token key atrule">matchExpressions</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> istio.io/rev
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> DoesNotExist
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> istio<span class="token punctuation">-</span>injection
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> DoesNotExist
+    <span class="token key atrule">objectSelector</span><span class="token punctuation">:</span>
+      <span class="token key atrule">matchExpressions</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> sidecar.istio.io/inject
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> NotIn
+        <span class="token key atrule">values</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token string">&quot;false&quot;</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> istio.io/rev
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> In
+        <span class="token key atrule">values</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> default
+    <span class="token key atrule">reinvocationPolicy</span><span class="token punctuation">:</span> Never
+    <span class="token key atrule">rules</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">apiGroups</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">&quot;&quot;</span>
+      <span class="token key atrule">apiVersions</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> v1
+      <span class="token key atrule">operations</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> CREATE
+      <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> pods
+      <span class="token key atrule">scope</span><span class="token punctuation">:</span> <span class="token string">'*'</span>
+    <span class="token key atrule">sideEffects</span><span class="token punctuation">:</span> None
+    <span class="token key atrule">timeoutSeconds</span><span class="token punctuation">:</span> <span class="token number">10</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">admissionReviewVersions</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> v1beta1
+    <span class="token punctuation">-</span> v1
+    <span class="token key atrule">clientConfig</span><span class="token punctuation">:</span>
+      <span class="token key atrule">caBundle</span><span class="token punctuation">:</span> LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMvVENDQWVXZ0F3SUJBZ0lSQUtlRksvQmphOGVWR3VSelAzcTdXODh3RFFZSktvWklodmNOQVFFTEJRQXcKR0RFV01CUUdBMVVFQ2hNTlkyeDFjM1JsY2k1c2IyTmhiREFlRncweU1URXlNekV3TXpJM016RmFGdzB6TVRFeQpNamt3TXpJM016RmFNQmd4RmpBVUJnTlZCQW9URFdOc2RYTjBaWEl1Ykc5allXd3dnZ0VpTUEwR0NTcUdTSWIzCkRRRUJBUVVBQTRJQkR3QXdnZ0VLQW9JQkFRRFp0SmxBMkhqQURBamVlNGpUTjlOK0FjRFJybmxjT2k2SmZqOWEKQWdUSFBxcmo1MGo1aUQ5SERUbXlOOXlkeS8yR2pUUStQaFB3UkxyUG9UUjV3Q1ZVTk5JbGdUelZpSE03d3JOWQo2V2N6bVpRQ0Zxd1hEbHBnZkRFUFhjUjQ5OUwzUXp1c3phczE4S2pEckFVTFdkT3NOL2k1SS9tbGJOdVlKSnpPCnFDQ0swRnFiemtBUU9oaGduZHdQMVdoUHZHSWVXTy96d3BOQUluVXpFck5LcW8ya2tQbHZwRmQydGhlWVY2cU8KRFBtZE9LQVRwb0xqR3dVSnIraWUyWlJXbjlSeUp4ZW4wTlhKcWZRMmg1WGp3MThCaXBNUVQ2WGhTVGtkUktibApDOHk0Z0tJY2xmc2lSckUwTER5dnVtSUhDMEFucTl2eDZ2VHo3elVFMFdPcEFZVVBBZ01CQUFHalFqQkFNQTRHCkExVWREd0VCL3dRRUF3SUNCREFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQjBHQTFVZERnUVdCQlFDYko3VkZOK3QKTWZCa0t4K2NVNXZObnhqNDFEQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUF6cDdmTGR0S20vTzRwTGNNWWd3aApKZFJHSGlVOEU4bmJzWU1HamU3bEFockl0R2JoWURhT3NTRGMrc2NrUkVScDF4dDM1NnJsU1ZINGo4S2NWNnJZClRIUFM2NWdrNm1uMmEyT1A1aFQxUDdiYk8wVTQyaFM4WUpUR0IvTzRreThsYnRZWFBhRTFCbTQrOUw1eHlQMHkKSllJaDFqTVFKQ1UrOTdzS002V2xOZzh1NzMvZ2xhamJrOUNFRmJkUUVGRmVCVEJlVS9IOTY4SWFDL0txNlQ0SAo4VTBEc3hqQnZyN0gxRnpTY3lKQk8zSEdBTkhzWkRtdm9vMDk5WFdteElvSHRDb3dDdExjWFQ0cktPbmt2SERHCjZlalhuNzBjbUp5dFIrVzFJazc2VldjMXUwM2ZQZVB5WE4wOC85THFkS0J3L2dFQndTamkwanYwTVJSczZnWnUKOXc9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+      <span class="token key atrule">service</span><span class="token punctuation">:</span>
+        <span class="token key atrule">name</span><span class="token punctuation">:</span> istiod
+        <span class="token key atrule">namespace</span><span class="token punctuation">:</span> istio<span class="token punctuation">-</span>system
+        <span class="token key atrule">path</span><span class="token punctuation">:</span> /inject
+        <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">443</span>
+    <span class="token key atrule">failurePolicy</span><span class="token punctuation">:</span> Fail
+    <span class="token key atrule">matchPolicy</span><span class="token punctuation">:</span> Equivalent
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> namespace.sidecar<span class="token punctuation">-</span>injector.istio.io
+    <span class="token key atrule">namespaceSelector</span><span class="token punctuation">:</span>
+      <span class="token key atrule">matchExpressions</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> istio<span class="token punctuation">-</span>injection
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> In
+        <span class="token key atrule">values</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> enabled
+    <span class="token key atrule">objectSelector</span><span class="token punctuation">:</span>
+      <span class="token key atrule">matchExpressions</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> sidecar.istio.io/inject
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> NotIn
+        <span class="token key atrule">values</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token string">&quot;false&quot;</span>
+    <span class="token key atrule">reinvocationPolicy</span><span class="token punctuation">:</span> Never
+    <span class="token key atrule">rules</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">apiGroups</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">&quot;&quot;</span>
+      <span class="token key atrule">apiVersions</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> v1
+      <span class="token key atrule">operations</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> CREATE
+      <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> pods
+      <span class="token key atrule">scope</span><span class="token punctuation">:</span> <span class="token string">'*'</span>
+    <span class="token key atrule">sideEffects</span><span class="token punctuation">:</span> None
+    <span class="token key atrule">timeoutSeconds</span><span class="token punctuation">:</span> <span class="token number">10</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">admissionReviewVersions</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> v1beta1
+    <span class="token punctuation">-</span> v1
+    <span class="token key atrule">clientConfig</span><span class="token punctuation">:</span>
+      <span class="token key atrule">caBundle</span><span class="token punctuation">:</span> LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMvVENDQWVXZ0F3SUJBZ0lSQUtlRksvQmphOGVWR3VSelAzcTdXODh3RFFZSktvWklodmNOQVFFTEJRQXcKR0RFV01CUUdBMVVFQ2hNTlkyeDFjM1JsY2k1c2IyTmhiREFlRncweU1URXlNekV3TXpJM016RmFGdzB6TVRFeQpNamt3TXpJM016RmFNQmd4RmpBVUJnTlZCQW9URFdOc2RYTjBaWEl1Ykc5allXd3dnZ0VpTUEwR0NTcUdTSWIzCkRRRUJBUVVBQTRJQkR3QXdnZ0VLQW9JQkFRRFp0SmxBMkhqQURBamVlNGpUTjlOK0FjRFJybmxjT2k2SmZqOWEKQWdUSFBxcmo1MGo1aUQ5SERUbXlOOXlkeS8yR2pUUStQaFB3UkxyUG9UUjV3Q1ZVTk5JbGdUelZpSE03d3JOWQo2V2N6bVpRQ0Zxd1hEbHBnZkRFUFhjUjQ5OUwzUXp1c3phczE4S2pEckFVTFdkT3NOL2k1SS9tbGJOdVlKSnpPCnFDQ0swRnFiemtBUU9oaGduZHdQMVdoUHZHSWVXTy96d3BOQUluVXpFck5LcW8ya2tQbHZwRmQydGhlWVY2cU8KRFBtZE9LQVRwb0xqR3dVSnIraWUyWlJXbjlSeUp4ZW4wTlhKcWZRMmg1WGp3MThCaXBNUVQ2WGhTVGtkUktibApDOHk0Z0tJY2xmc2lSckUwTER5dnVtSUhDMEFucTl2eDZ2VHo3elVFMFdPcEFZVVBBZ01CQUFHalFqQkFNQTRHCkExVWREd0VCL3dRRUF3SUNCREFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQjBHQTFVZERnUVdCQlFDYko3VkZOK3QKTWZCa0t4K2NVNXZObnhqNDFEQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUF6cDdmTGR0S20vTzRwTGNNWWd3aApKZFJHSGlVOEU4bmJzWU1HamU3bEFockl0R2JoWURhT3NTRGMrc2NrUkVScDF4dDM1NnJsU1ZINGo4S2NWNnJZClRIUFM2NWdrNm1uMmEyT1A1aFQxUDdiYk8wVTQyaFM4WUpUR0IvTzRreThsYnRZWFBhRTFCbTQrOUw1eHlQMHkKSllJaDFqTVFKQ1UrOTdzS002V2xOZzh1NzMvZ2xhamJrOUNFRmJkUUVGRmVCVEJlVS9IOTY4SWFDL0txNlQ0SAo4VTBEc3hqQnZyN0gxRnpTY3lKQk8zSEdBTkhzWkRtdm9vMDk5WFdteElvSHRDb3dDdExjWFQ0cktPbmt2SERHCjZlalhuNzBjbUp5dFIrVzFJazc2VldjMXUwM2ZQZVB5WE4wOC85THFkS0J3L2dFQndTamkwanYwTVJSczZnWnUKOXc9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+      <span class="token key atrule">service</span><span class="token punctuation">:</span>
+        <span class="token key atrule">name</span><span class="token punctuation">:</span> istiod
+        <span class="token key atrule">namespace</span><span class="token punctuation">:</span> istio<span class="token punctuation">-</span>system
+        <span class="token key atrule">path</span><span class="token punctuation">:</span> /inject
+        <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">443</span>
+    <span class="token key atrule">failurePolicy</span><span class="token punctuation">:</span> Fail
+    <span class="token key atrule">matchPolicy</span><span class="token punctuation">:</span> Equivalent
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> object.sidecar<span class="token punctuation">-</span>injector.istio.io
+    <span class="token key atrule">namespaceSelector</span><span class="token punctuation">:</span>
+      <span class="token key atrule">matchExpressions</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> istio<span class="token punctuation">-</span>injection
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> DoesNotExist
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> istio.io/rev
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> DoesNotExist
+    <span class="token key atrule">objectSelector</span><span class="token punctuation">:</span>
+      <span class="token key atrule">matchExpressions</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> sidecar.istio.io/inject
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> In
+        <span class="token key atrule">values</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token string">&quot;true&quot;</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> istio.io/rev
+        <span class="token key atrule">operator</span><span class="token punctuation">:</span> DoesNotExist
+    <span class="token key atrule">reinvocationPolicy</span><span class="token punctuation">:</span> Never
+    <span class="token key atrule">rules</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">apiGroups</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">&quot;&quot;</span>
+      <span class="token key atrule">apiVersions</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> v1
+      <span class="token key atrule">operations</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> CREATE
+      <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> pods
+      <span class="token key atrule">scope</span><span class="token punctuation">:</span> <span class="token string">'*'</span>
+    <span class="token key atrule">sideEffects</span><span class="token punctuation">:</span> None
+    <span class="token key atrule">timeoutSeconds</span><span class="token punctuation">:</span> <span class="token number">10</span>
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> List
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">resourceVersion</span><span class="token punctuation">:</span> <span class="token string">&quot;&quot;</span>
+  <span class="token key atrule">selfLink</span><span class="token punctuation">:</span> <span class="token string">&quot;&quot;</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br><span class="line-number">166</span><br><span class="line-number">167</span><br><span class="line-number">168</span><br><span class="line-number">169</span><br><span class="line-number">170</span><br><span class="line-number">171</span><br><span class="line-number">172</span><br><span class="line-number">173</span><br><span class="line-number">174</span><br><span class="line-number">175</span><br><span class="line-number">176</span><br><span class="line-number">177</span><br><span class="line-number">178</span><br><span class="line-number">179</span><br><span class="line-number">180</span><br><span class="line-number">181</span><br><span class="line-number">182</span><br><span class="line-number">183</span><br><span class="line-number">184</span><br><span class="line-number">185</span><br><span class="line-number">186</span><br><span class="line-number">187</span><br><span class="line-number">188</span><br><span class="line-number">189</span><br><span class="line-number">190</span><br><span class="line-number">191</span><br></div></div><blockquote><p>如果enableNamespacesByDefault设置为true时，会根据命名空间选择器的匹配规则来决定是否默认启用Sidecar自动注入，即istio-injection不为disabled；反之，如果enableNamespacesByDefault设置为false时，只有命令空间中设置了标签istio-injection并且值为enabled，才会启用Sidecar自动注入。</p></blockquote> <p><strong>匹配请求-规则</strong></p> <ul><li><code>operations</code> 列出一个或多个要匹配的操作。 可以是 <code>CREATE</code>、<code>UPDATE</code>、<code>DELETE</code>、<code>CONNECT</code> 或 <code>*</code> 以匹配所有内容。</li> <li><code>apiGroups</code> 列出了一个或多个要匹配的 API 组。<code>&quot;&quot;</code> 是核心 API 组。<code>&quot;*&quot;</code> 匹配所有 API 组。</li> <li><code>apiVersions</code> 列出了一个或多个要匹配的 API 版本。<code>&quot;*&quot;</code> 匹配所有 API 版本。</li> <li><code>resources</code> 列出了一个或多个要匹配的资源。</li></ul> <ul><li><code>&quot;*&quot;</code> 匹配所有资源，但不包括子资源。</li> <li><code>&quot;*/*&quot;</code> 匹配所有资源，包括子资源。</li> <li><code>&quot;pods/*&quot;</code> 匹配 pod 的所有子资源。</li> <li><code>&quot;*/status&quot;</code> 匹配所有 status 子资源。</li></ul> <ul><li><code>scope</code> 指定要匹配的范围。有效值为 <code>&quot;Cluster&quot;</code>、<code>&quot;Namespaced&quot;</code> 和 <code>&quot;*&quot;</code>。 子资源匹配其父资源的范围。在 Kubernetes v1.14+ 版本中才被支持。 默认值为 <code>&quot;*&quot;</code>，对应 1.14 版本之前的行为。</li></ul> <ul><li><code>&quot;Cluster&quot;</code> 表示只有集群作用域的资源才能匹配此规则（API 对象 Namespace 是集群作用域的）。</li> <li><code>&quot;Namespaced&quot;</code> 意味着仅具有名字空间的资源才符合此规则。</li> <li><code>&quot;*&quot;</code> 表示没有范围限制。</li></ul> <h3 id="注入条件"><a href="#注入条件" class="header-anchor">#</a> 注入条件</h3> <ul><li>Webhook的namespaceSelector机制。</li> <li>默认策略。</li> <li>每个pod的可覆盖注解。</li></ul> <h2 id="案例"><a href="#案例" class="header-anchor">#</a> 案例</h2> <p>Sidecar自动注入的规则，enableNamespacesByDefault设置为false时，命名空间中设置了标签istio-injection并且值为enabled，才会启用Sidecar自动注入。</p> <div class="language-shell line-numbers-mode"><pre class="language-shell"><code><span class="token comment"># 为命名空间default增加标签istio-injection且值设为enabled</span>
+$ kubectl label namespaces default istio-injection<span class="token operator">=</span>enabled
+namespace/default labeled
+
+$  <span class="token function">cat</span> nginx-deployment.yml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: <span class="token number">1</span>
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: <span class="token number">80</span>
+$ kubectl apply -f nginx-deployment.yml 
+deployment.apps/nginx-deployment created
+
+
+<span class="token comment"># 通过查看pod详情可以发现sidecar已注入</span>
+$ kubectl describe pods nginx-deployment-66b6c48dd5-swz7j 
+Name:         nginx-deployment-66b6c48dd5-swz7j
+Namespace:    default
+Priority:     <span class="token number">0</span>
+Node:         k8s-node02/192.168.1.105
+Start Time:   Thu, <span class="token number">20</span> Jan <span class="token number">2022</span> <span class="token number">16</span>:37:28 +0800
+Labels:       <span class="token assign-left variable">app</span><span class="token operator">=</span>nginx
+              istio.io/rev<span class="token operator">=</span>default
+              pod-template-hash<span class="token operator">=</span>66b6c48dd5
+              security.istio.io/tlsMode<span class="token operator">=</span>istio
+              service.istio.io/canonical-name<span class="token operator">=</span>nginx
+              service.istio.io/canonical-revision<span class="token operator">=</span>latest
+Annotations:  cni.projectcalico.org/podIP: <span class="token number">100.125</span>.152.31/32
+              cni.projectcalico.org/podIPs: <span class="token number">100.125</span>.152.31/32
+              kubectl.kubernetes.io/default-container: nginx
+              kubectl.kubernetes.io/default-logs-container: nginx
+              prometheus.io/path: /stats/prometheus
+              prometheus.io/port: <span class="token number">15020</span>
+              prometheus.io/scrape: <span class="token boolean">true</span>
+              sidecar.istio.io/status:
+                <span class="token punctuation">{</span><span class="token string">&quot;initContainers&quot;</span>:<span class="token punctuation">[</span><span class="token string">&quot;istio-init&quot;</span><span class="token punctuation">]</span>,<span class="token string">&quot;containers&quot;</span>:<span class="token punctuation">[</span><span class="token string">&quot;istio-proxy&quot;</span><span class="token punctuation">]</span>,<span class="token string">&quot;volumes&quot;</span>:<span class="token punctuation">[</span><span class="token string">&quot;istio-envoy&quot;</span>,<span class="token string">&quot;istio-data&quot;</span>,<span class="token string">&quot;istio-podinfo&quot;</span>,<span class="token string">&quot;istiod-ca-cert&quot;</span><span class="token punctuation">]</span>,<span class="token string">&quot;ima...
+Status:       Running
+IP:           100.125.152.31
+IPs:
+  IP:           100.125.152.31
+Controlled By:  ReplicaSet/nginx-deployment-66b6c48dd5
+Init Containers:
+  istio-init:
+    Container ID:  docker://3d1d8f5c7840df4e680b222a44d5597c2f1363aeddf75337c84a5d31349fece5
+    Image:         docker.io/istio/proxyv2:1.10.6
+    Image ID:      docker-pullable://istio/proxyv2@sha256:c26d5a662ffb9e931b71198c1c5647466e0423e5408a37acb92d97dadcf00f2c
+    Port:          &lt;none&gt;
+    Host Port:     &lt;none&gt;
+    Args:
+      istio-iptables
+      -p
+      15001
+      -z
+      15006
+      -u
+      1337
+      -m
+      REDIRECT
+      -i
+      *
+      -x
+      
+      -b
+      *
+      -d
+      15090,15021,15020
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Thu, 20 Jan 2022 16:37:29 +0800
+      Finished:     Thu, 20 Jan 2022 16:37:29 +0800
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     2
+      memory:  1Gi
+    Requests:
+      cpu:        100m
+      memory:     128Mi
+    Environment:  &lt;none&gt;
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-xr52f (ro)
+Containers:
+  nginx:
+    Container ID:   docker://4deec4c4a8573445fc086275ae8665e75778e1c615e33fa12e9014eb5f721db0
+    Image:          nginx:1.14.2
+    Image ID:       docker-pullable://nginx@sha256:f7988fb6c02e0ce69257d9bd9cf37ae20a60f1df7563c3a2a6abe24160306b8d
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Thu, 20 Jan 2022 16:37:30 +0800
+    Ready:          True
+    Restart Count:  0
+    Environment:    &lt;none&gt;
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-xr52f (ro)
+  istio-proxy:
+    Container ID:  docker://9b183d318f0b73ec8d42bf69abc7cf41ff2290f59ed9e2cca6e513e1a85ac775
+    Image:         docker.io/istio/proxyv2:1.10.6
+    Image ID:      docker-pullable://istio/proxyv2@sha256:c26d5a662ffb9e931b71198c1c5647466e0423e5408a37acb92d97dadcf00f2c
+    Port:          15090/TCP
+    Host Port:     0/TCP
+    Args:
+      proxy
+      sidecar
+      --domain
+      <span class="token variable"><span class="token variable">$(</span>POD_NAMESPACE<span class="token variable">)</span></span>.svc.cluster.local
+      --serviceCluster
+      nginx.<span class="token variable"><span class="token variable">$(</span>POD_NAMESPACE<span class="token variable">)</span></span>
+      --proxyLogLevel=warning
+      --proxyComponentLogLevel=misc:error
+      --log_output_level=default:info
+      --concurrency
+      2
+    State:          Running
+      Started:      Thu, 20 Jan 2022 16:37:30 +0800
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     2
+      memory:  1Gi
+    Requests:
+      cpu:      100m
+      memory:   128Mi
+    Readiness:  http-get http://:15021/healthz/ready delay=1s timeout=3s period=2s #success=1 #failure=30
+    Environment:
+      JWT_POLICY:                    first-party-jwt
+      PILOT_CERT_PROVIDER:           istiod
+      CA_ADDR:                       istiod.istio-system.svc:15012
+      POD_NAME:                      nginx-deployment-66b6c48dd5-swz7j (v1:metadata.name)
+      POD_NAMESPACE:                 default (v1:metadata.namespace)
+      INSTANCE_IP:                    (v1:status.podIP)
+      SERVICE_ACCOUNT:                (v1:spec.serviceAccountName)
+      HOST_IP:                        (v1:status.hostIP)
+      CANONICAL_SERVICE:              (v1:metadata.labels['service.istio.io/canonical-name'])
+      CANONICAL_REVISION:             (v1:metadata.labels['service.istio.io/canonical-revision'])
+      PROXY_CONFIG:                  {}
+                                     
+      ISTIO_META_POD_PORTS:          [
+                                         {&quot;</span>containerPort<span class="token string">&quot;:80,&quot;</span>protocol<span class="token string">&quot;:&quot;</span>TCP&quot;<span class="token punctuation">}</span>
+                                     <span class="token punctuation">]</span>
+      ISTIO_META_APP_CONTAINERS:     nginx
+      ISTIO_META_CLUSTER_ID:         Kubernetes
+      ISTIO_META_INTERCEPTION_MODE:  REDIRECT
+      ISTIO_META_WORKLOAD_NAME:      nginx-deployment
+      ISTIO_META_OWNER:              kubernetes://apis/apps/v1/namespaces/default/deployments/nginx-deployment
+      ISTIO_META_MESH_ID:            cluster.local
+      TRUST_DOMAIN:                  cluster.local
+    Mounts:
+      /etc/istio/pod from istio-podinfo <span class="token punctuation">(</span>rw<span class="token punctuation">)</span>
+      /etc/istio/proxy from istio-envoy <span class="token punctuation">(</span>rw<span class="token punctuation">)</span>
+      /var/lib/istio/data from istio-data <span class="token punctuation">(</span>rw<span class="token punctuation">)</span>
+      /var/run/secrets/istio from istiod-ca-cert <span class="token punctuation">(</span>rw<span class="token punctuation">)</span>
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-xr52f <span class="token punctuation">(</span>ro
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br><span class="line-number">166</span><br><span class="line-number">167</span><br><span class="line-number">168</span><br><span class="line-number">169</span><br><span class="line-number">170</span><br></div></div><h2 id="小结"><a href="#小结" class="header-anchor">#</a> 小结</h2> <p>Istio 自动注入Sidecar是根据kubernets Apiserver准入Webook实现。当请求通过认证和授权后， 对象被持久化之前拦截到达 API 服务器的请求，会根据Api sever中的配置，分配去执行变更和验证准入的Webhook。这时istio-sidecar-injector Webhook会根据注入条件进行更改Pod模板达到目的。</p></div></div> <div class="page-slot page-slot-bottom"><!-- 横向自适应 -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-9354336437522810"
+          data-ad-slot="8897973395"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <div class="page-edit"><div class="edit-link"><a href="https://github.com/cf1998/kubernetes/edit/master/docs/_posts/Kubernetes/istio sidecar自动注入详解.md" target="_blank" rel="noopener noreferrer">编辑</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <div class="tags"><a href="/tags/?tag=Kubernetes" title="标签">#Kubernetes</a></div> <!----></div> <div class="page-nav-wapper"><!----> <!----></div></div> <div class="article-list"><div class="article-title"><a href="/archives/" class="iconfont icon-bi">最近更新</a></div> <div class="article-wrapper"><dl><dd>01</dd> <dt><a href="/pages/k220119/"><div>你真的了解Kubernetes HPA吗？</div></a> <span>01-19</span></dt></dl><dl><dd>02</dd> <dt><a href="/pages/etcd02/"><div>创建一个Pod背后etcd的故事</div></a> <span>12-23</span></dt></dl><dl><dd>03</dd> <dt><a href="/pages/etcd01/"><div>初识 etcd</div></a> <span>12-22</span></dt></dl> <dl><dd></dd> <dt><a href="/archives/" class="more">更多文章&gt;</a></dt></dl></div></div></main></div> <div class="footer"><div class="icons"><a href="mailto:995345781@qq.com" title="发邮件" target="_blank" class="iconfont icon-youjian"></a><a href="https://github.com/cf1998" title="GitHub" target="_blank" class="iconfont icon-github"></a><a href="https://music.163.com/#" title="听音乐" target="_blank" class="iconfont icon-erji"></a></div> 
+  Theme by
+  <a href="https://github.com/xugaoyi/vuepress-theme-vdoing" target="_blank" title="本站主题">Vdoing</a> 
+    | Copyright © 2021-2022
+    <span>CloudNative Operations</span></div> <div class="buttons"><div title="返回顶部" class="button blur go-to-top iconfont icon-fanhuidingbu" style="display:none;"></div> <div title="去评论" class="button blur go-to-comment iconfont icon-pinglun" style="display:none;"></div> <div title="主题模式" class="button blur theme-mode-but iconfont icon-zhuti"><ul class="select-box" style="display:none;"><li class="iconfont icon-zidong">
+          跟随系统
+        </li><li class="iconfont icon-rijianmoshi">
+          浅色模式
+        </li><li class="iconfont icon-yejianmoshi">
+          深色模式
+        </li><li class="iconfont icon-yuedu">
+          阅读模式
+        </li></ul></div></div> <!----> <div class="custom-html-window custom-html-window-lb" style="display:;"><div class="custom-wrapper"><i class="close-but">×</i> <div><!-- 固定200*200px -->
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle"
+          style="display:inline-block;width:200px;height:200px"
+          data-ad-client="ca-pub-9354336437522810"
+          data-ad-slot="8897973395"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div></div></div> <div class="custom-html-window custom-html-window-rb" style="display:;"><div class="custom-wrapper"><i class="close-but">×</i> <div><!-- 固定160*160px -->
+      <ins class="adsbygoogle"
+          style="display:inline-block;max-width:160px;max-height:160px"
+          data-ad-client="ca-pub-9354336437522810"
+          data-ad-slot="8897973395"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </div></div></div></div><div class="global-ui"><div></div></div></div>
+    <script src="/assets/js/app.c70c28d9.js" defer></script><script src="/assets/js/2.f3cfc96e.js" defer></script><script src="/assets/js/17.421f8e8f.js" defer></script>
+  </body>
+</html>
