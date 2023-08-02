@@ -1,0 +1,4 @@
+const data = JSON.parse('{"key":"v-b5b89078","path":"/blogs/operator/Operatorkaifaer.html","title":"开发自己的Kubernetes Operator：生成Events篇（二）","lang":"en-US","frontmatter":{"title":"开发自己的Kubernetes Operator：生成Events篇（二）","date":"2023-08-02T00:00:00.000Z","author":"蜡笔","tags":["Kubernetes","Operator"],"categories":["Kubernetes","Operator"]},"headers":[{"level":2,"title":"创建事件","slug":"创建事件","link":"#创建事件","children":[]},{"level":2,"title":"在控制器上使用EventRecorder","slug":"在控制器上使用eventrecorder","link":"#在控制器上使用eventrecorder","children":[]},{"level":2,"title":"如何能够引发事件？","slug":"如何能够引发事件","link":"#如何能够引发事件","children":[]},{"level":2,"title":"生成Events","slug":"生成events","link":"#生成events","children":[{"level":3,"title":"事件刨析","slug":"事件刨析","link":"#事件刨析","children":[]},{"level":3,"title":"用法示例","slug":"用法示例","link":"#用法示例","children":[]}]}],"git":{},"filePathRelative":"blogs/operator/Operator开发二.md"}');
+export {
+  data
+};
