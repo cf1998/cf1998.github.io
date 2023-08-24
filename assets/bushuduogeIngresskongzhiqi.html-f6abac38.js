@@ -1,0 +1,4 @@
+const data = JSON.parse('{"key":"v-0340c4d2","path":"/blogs/ingress/bushuduogeIngresskongzhiqi.html","title":"Ingress企业实战：部署多个Ingress控制器篇","lang":"en-US","frontmatter":{"title":"Ingress企业实战：部署多个Ingress控制器篇","date":"2023-08-23T00:00:00.000Z","author":"船长","tags":["Kubernetes","Ingress"],"categories":["All","Kubernetes","Ingress"]},"headers":[{"level":2,"title":"背景","slug":"背景","link":"#背景","children":[]},{"level":2,"title":"架构图","slug":"架构图","link":"#架构图","children":[]},{"level":2,"title":"Ingress 配置参数说明","slug":"ingress-配置参数说明","link":"#ingress-配置参数说明","children":[]},{"level":2,"title":"部署多个Ingress Nginx","slug":"部署多个ingress-nginx","link":"#部署多个ingress-nginx","children":[]},{"level":2,"title":"部署示例服务","slug":"部署示例服务","link":"#部署示例服务","children":[]},{"level":2,"title":"验证","slug":"验证","link":"#验证","children":[]},{"level":2,"title":"总结","slug":"总结","link":"#总结","children":[]}],"git":{},"filePathRelative":"blogs/ingress/部署多个Ingress控制器.md"}');
+export {
+  data
+};

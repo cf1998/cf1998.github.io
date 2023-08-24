@@ -1,0 +1,4 @@
+const data = JSON.parse('{"key":"v-e879793e","path":"/blogs/ingress/HTTPSzhengshuguanliyushuangxiangrenzhengpian.html","title":"Ingress企业实战：HTTPS证书管理与双向认证篇","lang":"en-US","frontmatter":{"title":"Ingress企业实战：HTTPS证书管理与双向认证篇","date":"2023-08-15T00:00:00.000Z","author":"船长","tags":["Kubernetes","Ingress"],"categories":["All","Kubernetes","Ingress"]},"headers":[{"level":2,"title":"数字证书基本概念","slug":"数字证书基本概念","link":"#数字证书基本概念","children":[]},{"level":2,"title":"什么是HTTPS单向认证","slug":"什么是https单向认证","link":"#什么是https单向认证","children":[]},{"level":2,"title":"什么是HTTPS双向认证","slug":"什么是https双向认证","link":"#什么是https双向认证","children":[]},{"level":2,"title":"配置HTTPS单向认证","slug":"配置https单向认证","link":"#配置https单向认证","children":[]},{"level":2,"title":"配置HTTPS双向认证","slug":"配置https双向认证","link":"#配置https双向认证","children":[]},{"level":2,"title":"总结","slug":"总结","link":"#总结","children":[]}],"git":{},"filePathRelative":"blogs/ingress/HTTPS证书管理与双向认证篇.md"}');
+export {
+  data
+};

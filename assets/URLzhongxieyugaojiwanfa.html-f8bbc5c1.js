@@ -1,0 +1,4 @@
+const data = JSON.parse('{"key":"v-1ad8e0c7","path":"/blogs/ingress/URLzhongxieyugaojiwanfa.html","title":"Ingress企业实战：URL重写与高级玩法","lang":"en-US","frontmatter":{"title":"Ingress企业实战：URL重写与高级玩法","date":"2023-08-16T00:00:00.000Z","author":"船长","tags":["Kubernetes","Ingress"],"categories":["All","Kubernetes","Ingress"]},"headers":[{"level":2,"title":"什么是URL重写","slug":"什么是url重写","link":"#什么是url重写","children":[]},{"level":2,"title":"Ingress 内置变量","slug":"ingress-内置变量","link":"#ingress-内置变量","children":[]},{"level":2,"title":"Ingress 正则表达式","slug":"ingress-正则表达式","link":"#ingress-正则表达式","children":[]},{"level":2,"title":"配置URL重写规则","slug":"配置url重写规则","link":"#配置url重写规则","children":[]},{"level":2,"title":"高级URL重写规则","slug":"高级url重写规则","link":"#高级url重写规则","children":[]},{"level":2,"title":"总结","slug":"总结","link":"#总结","children":[]}],"git":{},"filePathRelative":"blogs/ingress/URL重写与高级玩法.md"}');
+export {
+  data
+};
