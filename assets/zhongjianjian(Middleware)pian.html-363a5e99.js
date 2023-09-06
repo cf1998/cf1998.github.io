@@ -1,0 +1,4 @@
+const data = JSON.parse('{"key":"v-02b2ee6a","path":"/blogs/taefik/zhongjianjian(Middleware)pian.html","title":"Traefik企业实战：部署生产级Traefik篇","lang":"en-US","frontmatter":{"title":"Traefik企业实战：部署生产级Traefik篇","date":"2023-08-30T00:00:00.000Z","author":"Jack","tags":["Traefik"],"categories":["All","Traefik"]},"headers":[{"level":2,"title":"简介","slug":"简介","link":"#简介","children":[]},{"level":2,"title":"重定向-redirectScheme","slug":"重定向-redirectscheme","link":"#重定向-redirectscheme","children":[]},{"level":2,"title":"白名单-IPWhiteList","slug":"白名单-ipwhitelist","link":"#白名单-ipwhitelist","children":[]},{"level":2,"title":"用户认证-basicAuth","slug":"用户认证-basicauth","link":"#用户认证-basicauth","children":[]},{"level":2,"title":"更多中间件","slug":"更多中间件","link":"#更多中间件","children":[]}],"git":{},"filePathRelative":"blogs/taefik/中间件(Middleware)篇.md"}');
+export {
+  data
+};
