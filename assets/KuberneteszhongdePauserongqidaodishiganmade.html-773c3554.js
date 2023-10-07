@@ -1,0 +1,4 @@
+const data = JSON.parse('{"key":"v-41f15254","path":"/blogs/kubernetes/KuberneteszhongdePauserongqidaodishiganmade.html","title":"Kubernetes中的Pause容器到底是干嘛的","lang":"en-US","frontmatter":{"title":"Kubernetes中的Pause容器到底是干嘛的","date":"2023-09-21T00:00:00.000Z","author":"Jack","tags":["Kubernetes"],"categories":["All","Kubernetes"]},"headers":[{"level":2,"title":"引言","slug":"引言","link":"#引言","children":[]},{"level":2,"title":"Pause容器是个啥","slug":"pause容器是个啥","link":"#pause容器是个啥","children":[]},{"level":2,"title":"Pause容器的作用","slug":"pause容器的作用","link":"#pause容器的作用","children":[]},{"level":2,"title":"Pause容器工作原理","slug":"pause容器工作原理","link":"#pause容器工作原理","children":[]},{"level":2,"title":"手工模拟Pod","slug":"手工模拟pod","link":"#手工模拟pod","children":[]},{"level":2,"title":"如何回收僵尸进程","slug":"如何回收僵尸进程","link":"#如何回收僵尸进程","children":[]}],"git":{},"filePathRelative":"blogs/kubernetes/Kubernetes中的Pause容器到底是干嘛的.md"}');
+export {
+  data
+};
